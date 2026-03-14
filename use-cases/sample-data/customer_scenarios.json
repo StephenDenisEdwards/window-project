@@ -1,0 +1,193 @@
+[
+  {
+    "id": "SC001",
+    "persona": "professional_contractor",
+    "path": "fast_track",
+    "description": "Experienced cabinet installer replacing hinges on an existing kitchen remodel",
+    "inputs": {
+      "cabinet_type": "frameless",
+      "door_thickness_mm": 19,
+      "door_height_mm": 720,
+      "door_width_mm": 450,
+      "door_weight_kg": 5.2,
+      "application": "full_overlay",
+      "desired_overlay_mm": 16,
+      "boring_pattern_mm": 45,
+      "soft_close": true,
+      "cabinet_position": "standard",
+      "preferred_brand": "Blum",
+      "has_adjacent_door": false
+    },
+    "expected_result": {
+      "hinge_sku": "BLM-71B3550",
+      "plate_sku": "BLM-173L6100",
+      "hinges_per_door": 2,
+      "explanation": "Blum CLIP top BLUMOTION 110° full overlay with 0mm cruciform plate. 16mm overlay within plate range (14-20mm). 2 hinges for 720mm door height, total capacity 15kg > 5.2kg door weight."
+    }
+  },
+  {
+    "id": "SC002",
+    "persona": "professional_contractor",
+    "path": "fast_track",
+    "description": "Cabinet maker building corner cabinet with bi-fold doors requiring wide opening",
+    "inputs": {
+      "cabinet_type": "frameless",
+      "door_thickness_mm": 19,
+      "door_height_mm": 800,
+      "door_width_mm": 400,
+      "door_weight_kg": 4.0,
+      "application": "full_overlay",
+      "desired_overlay_mm": 16,
+      "boring_pattern_mm": 45,
+      "soft_close": true,
+      "cabinet_position": "corner",
+      "preferred_brand": null,
+      "has_adjacent_door": false
+    },
+    "expected_result": {
+      "hinge_sku": "BLM-79B3550",
+      "plate_sku": "BLM-173L6100",
+      "hinges_per_door": 2,
+      "alternative_hinge_sku": "GRS-F045138295",
+      "explanation": "Corner cabinet requires >= 155° opening. Blum 155° BLUMOTION or Grass Tiomos 160° both valid. Weight check: 4.0kg door, derated capacity (wide angle) = 5.0 * 0.75 * 2 = 7.5kg — passes."
+    }
+  },
+  {
+    "id": "SC003",
+    "persona": "guided_buyer",
+    "path": "guided_discovery",
+    "description": "Homeowner renovating kitchen, knows cabinet dimensions but not hinge terminology",
+    "conversation_flow": [
+      {"agent": "What type of project are you working on?", "user": "I'm replacing the doors on my kitchen cabinets"},
+      {"agent": "Are the cabinets frameless (European-style, doors cover the full box) or face-frame (have a visible wood frame around the opening)?", "user": "I think they're the European style, no frame visible"},
+      {"agent": "What are your door dimensions? I need the height, width, and thickness.", "user": "About 28 inches tall, 18 inches wide, and 3/4 inch thick"},
+      {"agent": "How much of the cabinet side do you want the door to cover? Full overlay covers most of the cabinet box, half overlay splits the space between two doors.", "user": "Full overlay I think, each door covers the whole side"},
+      {"agent": "Would you like soft-close hinges? They prevent doors from slamming.", "user": "Yes definitely"},
+      {"agent": "Are any of these corner cabinets or standard?", "user": "All standard, no corners"}
+    ],
+    "derived_inputs": {
+      "cabinet_type": "frameless",
+      "door_thickness_mm": 19,
+      "door_height_mm": 711,
+      "door_width_mm": 457,
+      "door_weight_kg": 4.5,
+      "application": "full_overlay",
+      "desired_overlay_mm": 16,
+      "boring_pattern_mm": 45,
+      "soft_close": true,
+      "cabinet_position": "standard"
+    },
+    "expected_result": {
+      "hinge_sku": "BLM-71B3550",
+      "plate_sku": "BLM-173L6100",
+      "hinges_per_door": 2,
+      "explanation": "Converted imperial measurements. Standard frameless full overlay with soft-close. Multiple brand options available — Blum, Grass Tiomos, or Hafele Duomatic all satisfy constraints."
+    }
+  },
+  {
+    "id": "SC004",
+    "persona": "professional_contractor",
+    "path": "fast_track",
+    "description": "Contractor needing inset hinges for face-frame bathroom vanity",
+    "inputs": {
+      "cabinet_type": "face_frame",
+      "door_thickness_mm": 19,
+      "door_height_mm": 600,
+      "door_width_mm": 380,
+      "door_weight_kg": 3.5,
+      "application": "inset",
+      "desired_overlay_mm": 0,
+      "boring_pattern_mm": 45,
+      "soft_close": false,
+      "cabinet_position": "standard",
+      "face_frame_width_mm": 38,
+      "preferred_brand": "Blum",
+      "has_adjacent_door": false
+    },
+    "expected_result": {
+      "hinge_sku": "BLM-75T1550",
+      "plate_sku": "BLM-175H9100",
+      "hinges_per_door": 2,
+      "notes": "Face frame inset application. Limited options — must use face-frame-specific plate and hinge combination. Note: Blum face-frame CLIP top at 107° opening."
+    }
+  },
+  {
+    "id": "SC005",
+    "persona": "professional_contractor",
+    "path": "fast_track",
+    "description": "Tall pantry door requiring extra hinges for weight and height",
+    "inputs": {
+      "cabinet_type": "frameless",
+      "door_thickness_mm": 22,
+      "door_height_mm": 1600,
+      "door_width_mm": 500,
+      "door_weight_kg": 14.0,
+      "application": "full_overlay",
+      "desired_overlay_mm": 16,
+      "boring_pattern_mm": 45,
+      "soft_close": true,
+      "cabinet_position": "standard",
+      "preferred_brand": "Grass",
+      "has_adjacent_door": false
+    },
+    "expected_result": {
+      "hinge_sku": "GRS-F045138281",
+      "plate_sku": "GRS-F058139761",
+      "hinges_per_door": 4,
+      "explanation": "1600mm door height requires 4 hinges (rule R008). Grass Tiomos 110° has 9.0kg per hinge, 4 hinges = 36kg capacity > 14kg door. 22mm door within 16-24mm range."
+    }
+  },
+  {
+    "id": "SC006",
+    "persona": "professional_contractor",
+    "path": "fast_track",
+    "description": "Constraint violation scenario — door too heavy for wide-angle hinge",
+    "inputs": {
+      "cabinet_type": "frameless",
+      "door_thickness_mm": 22,
+      "door_height_mm": 900,
+      "door_width_mm": 600,
+      "door_weight_kg": 12.0,
+      "application": "full_overlay",
+      "desired_overlay_mm": 16,
+      "boring_pattern_mm": 45,
+      "soft_close": true,
+      "cabinet_position": "corner",
+      "preferred_brand": "Blum",
+      "has_adjacent_door": false
+    },
+    "expected_result": {
+      "valid": false,
+      "reason": "Corner cabinet requires >= 155° hinge (R013). Blum 155° BLUMOTION (79B3550) has 5.0kg max, derated to 3.75kg for wide angle (R010). 2 hinges = 7.5kg capacity < 12kg door weight. FAILS R007.",
+      "suggested_resolution": "Use 3 hinges (non-standard for 900mm door) bringing capacity to 11.25kg — still insufficient. Consider Grass Tiomos 160° with 3 hinges: 5.0 * 0.75 * 3 = 11.25kg — still fails. Recommend lighter door material or standard cabinet position to allow 110° hinge with higher weight rating."
+    }
+  },
+  {
+    "id": "SC007",
+    "persona": "professional_contractor",
+    "path": "fast_track",
+    "description": "Adjacent doors on shared partition — overlay clearance check",
+    "inputs": {
+      "cabinet_type": "frameless",
+      "door_thickness_mm": 19,
+      "door_height_mm": 720,
+      "door_width_mm": 400,
+      "door_weight_kg": 4.0,
+      "application": "half_overlay",
+      "desired_overlay_mm": 6,
+      "boring_pattern_mm": 45,
+      "soft_close": true,
+      "cabinet_position": "standard",
+      "preferred_brand": "Blum",
+      "has_adjacent_door": true,
+      "partition_thickness_mm": 19,
+      "adjacent_door_overlay_mm": 6
+    },
+    "expected_result": {
+      "hinge_sku": "BLM-71B3650",
+      "plate_sku": "BLM-173L6130",
+      "hinges_per_door": 2,
+      "explanation": "Half overlay, 6mm each side. Combined overlay 6+6=12mm < 19mm partition (R012 passes). 3mm plate gives overlay range 0-6mm — 6mm is at the edge of range. Alternatively, 0mm plate with 3-9mm range also works."
+    }
+  }
+]
