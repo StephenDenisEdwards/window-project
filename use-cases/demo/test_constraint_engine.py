@@ -114,8 +114,8 @@ class TestSeriesCompatibility:
         assert result.passed
 
     def test_incompatible_series_fails(self, engine, catalog):
-        h = _hinge(catalog, "GRS-F045138281")  # Tiomos
-        p = _plate(catalog, "GRS-348322100")   # Nexis plates only
+        h = _hinge(catalog, "GRS-F028138519")  # Tiomos
+        p = _plate(catalog, "GRS-314493700")   # Nexis plates only
         result = engine._check_series_compat(h, p)
         assert not result.passed
 
@@ -391,7 +391,8 @@ class TestScenario1StandardKitchenRemodel:
             boring_pattern_mm=45, soft_close=True, preferred_brand="Blum",
         )
         solutions = engine.solve(req)
-        assert solutions[0].total_price_usd <= solutions[-1].total_price_usd
+        priced = [s for s in solutions if s.total_price_usd is not None]
+        assert priced[0].total_price_usd <= priced[-1].total_price_usd
 
     def test_all_solutions_have_soft_close(self, engine):
         req = CustomerRequirements(

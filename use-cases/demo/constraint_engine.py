@@ -107,9 +107,11 @@ class Configuration:
 
     @property
     def total_price_usd(self) -> float:
-        return round(
-            (self.hinge.price_usd + self.plate.price_usd) * self.hinges_per_door, 2
-        )
+        h_price = self.hinge.price_usd or 0
+        p_price = self.plate.price_usd or 0
+        if self.hinge.price_usd is None or self.plate.price_usd is None:
+            return None
+        return round((h_price + p_price) * self.hinges_per_door, 2)
 
 
 # ---------------------------------------------------------------------------
@@ -285,8 +287,8 @@ class HingeConstraintEngine:
                 if config.valid:
                     valid.append(config)
 
-        # Sort by price, then by weight capacity (descending)
-        valid.sort(key=lambda c: (c.total_price_usd, -c.total_weight_capacity_kg))
+        # Sort by price (None last), then by weight capacity (descending)
+        valid.sort(key=lambda c: (c.total_price_usd if c.total_price_usd is not None else float('inf'), -c.total_weight_capacity_kg))
         return valid
 
     def solve_with_explanation(self, req: CustomerRequirements) -> dict:
