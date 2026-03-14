@@ -1,16 +1,22 @@
 # Production Roadmap — From PoC to Production Constraint Engine
 
-## Current State (PoC)
+## Current State
 
-The proof-of-concept demonstrates that the constraint reasoning approach works. It's a single-file Python module (~530 lines) with:
+The engine has moved beyond the original single-file PoC into a modular production codebase (`poc/engine/`). Completed work:
 
-- 53 hinges, 55 mounting plates, 15 rules across 3 brands
-- Brute-force exhaustive search over all hinge × plate pairs
-- Flat JSON files for product data and rules
-- Hardcoded rule logic in Python methods
-- No persistence, no API, no auth, no multi-tenancy
+- Pydantic v2 domain models with full enum typing (no raw strings)
+- Rules extracted to standalone functions in `rules.py` with a `RULES` list
+- Structured `OverlayTable` (BPH × DD lookup) replacing flat `[min, max]` ranges
+- R010 (wide-angle derating) removed — uses manufacturer's published ratings directly
+- `ManufacturerProduct` base class with `DistributorSKU` overlay for SKU identity
+- `RuleResult` extended with `category`, `values_compared`, and `remediation`
+- Indexed pre-filtering on hinges (by brand, cabinet type, application)
+- 70+ tests including 7 customer scenarios
+- Original single-file demo removed
 
-This document evaluates what needs to change to meet the work brief requirements: a production-grade, multi-brand constraint reasoning engine deployed as part of a three-layer architecture (knowledge foundation + reasoning engine + conversational layer) with SOC 2 compliance.
+Still in place from the PoC: flat JSON data files, in-memory loading, brute-force plate scanning, single-threaded execution, no API layer.
+
+This document evaluates what remains to meet the work brief requirements: a production-grade, multi-brand constraint reasoning engine deployed as part of a three-layer architecture (knowledge foundation + reasoning engine + conversational layer) with SOC 2 compliance.
 
 ---
 
@@ -46,11 +52,9 @@ def _check_door_thickness(self, h, req):
 
 **Recommendation:** Start with a typed rule DSL covering the common patterns (equality, range, lookup, conditional). Add an escape hatch for Python callables for complex rules (weight derating, overlay calculations). Avoid a full solver — the search space is manageable with indexed lookups.
 
-### 1.2 Remove R010 (wide-angle derating)
+### ~~1.2 Remove R010 (wide-angle derating)~~ DONE
 
-**Problem:** The PoC applies a 25% weight derating to all hinges >120°. But `max_door_weight_kg` in the catalog data already reflects the manufacturer's published rating for that specific hinge — the derating is already baked in. Applying it again means a 155° hinge rated at 5kg gets evaluated as 3.75kg, which is incorrect.
-
-**Fix:** Remove R010 entirely. Use `max_door_weight_kg` directly in R007. This is the single highest-impact correctness fix.
+R010 removed. `max_door_weight_kg` is used directly in R007.
 
 ### 1.3 Overlay calculation — accept drilling distance
 
@@ -75,18 +79,13 @@ HINGES_PER_DOOR = {
 }
 ```
 
-### 1.5 Indexed pre-filtering
+### 1.5 Indexed pre-filtering — PARTIALLY DONE
 
-**Problem:** The PoC does exhaustive search over all hinge × plate pairs. At 53 × 55 = 2,915 combinations this is fast. At 5,000 hinges × 2,000 plates across 13 product families, it's 10M evaluations per query.
+Hinge indexes are built at init (by brand, cabinet type, application). Remaining work:
 
-**Target:** Pre-compute compatibility indices on data load:
-
-- **Brand index:** `{brand → [hinges]}`, `{brand → [plates]}`
-- **Series compatibility index:** `{hinge_series → [compatible_plates]}`
-- **Cabinet type index:** `{cabinet_type → [hinges]}`, `{cabinet_type → [plates]}`
-- **Application index:** `{application → [hinges]}`
-
-With indices, a typical query touches ~50–200 candidate pairs instead of 10M. Brute force within that subset is fine — no solver needed.
+- **Plate indexes not yet implemented** — plates are still scanned linearly. Indexing by `compatible_hinge_series` and `cabinet_type` would cut the inner loop.
+- **No short-circuiting** — `evaluate()` runs all rules even after the first failure. Needed for `solve_with_explanation()` but wasteful for `solve()`.
+- **No hinge-only rule caching** — rules like R006 (door thickness) and R009 (boring pattern) depend only on hinge + requirements, not the plate, but are re-evaluated per plate pairing.
 
 ---
 
@@ -154,15 +153,9 @@ This also makes the engine self-consistent: if a rule changes, compatibility cha
 
 **Framework:** FastAPI is the natural choice — Python-first (matching the brief), async, auto-generated OpenAPI docs, and good typing support.
 
-### 3.2 Constraint trace as a first-class output
+### ~~3.2 Constraint trace as a first-class output~~ DONE
 
-**Problem:** The PoC returns a constraint trace, but it's a flat list of pass/fail strings. The conversational layer needs structured trace data to explain *why* a recommendation was made or *why* a configuration failed — this is core to the "always correct" value prop.
-
-**Target:** Trace output should include:
-- Rule ID, name, category (hard constraint vs preference vs derived value)
-- Pass/fail with the exact values compared
-- Human-readable explanation (for the conversational layer to present)
-- Suggested remediation for failures ("Consider a 155° hinge for corner cabinets")
+`RuleResult` now includes `rule_id`, `rule_name`, `category` (hard_constraint | soft_constraint | preference | derived), `passed`, `detail`, `values_compared`, and `remediation`.
 
 ### 3.3 Testing strategy
 
@@ -185,19 +178,19 @@ This also makes the engine self-consistent: if a rule changes, compatibility cha
 - Query latency tracked (p50, p95, p99)
 - Alert on rule evaluation errors or unexpected None values
 
-### 3.5 Remove the demo scaffolding
+### 3.5 Remove the demo scaffolding — PARTIALLY DONE
 
-The PoC has several patterns that are appropriate for a demo but wrong for production:
+The original single-file demo (`poc/demo/`) has been removed. Remaining items:
 
-| PoC pattern | Production replacement |
-|-------------|----------------------|
-| `load_catalog()` reads JSON files on every call | Data loaded once at startup, cached, refreshed on catalog update |
-| `compatible_mounting_plate_skus` maintained by hand | Derived from rules at query time |
-| `effective_max_weight_kg` applies derating in the model | Remove R010, use published weight directly |
-| `price_usd` embedded in product data | Separate pricing service/feed |
-| Brute-force search over all combinations | Indexed pre-filtering |
-| Hardcoded rule methods on engine class | Data-driven rule definitions |
-| `run_demo()` with hardcoded scenarios | API endpoints + customer_scenarios.json as test fixtures |
+| PoC pattern | Status |
+|-------------|--------|
+| `compatible_mounting_plate_skus` maintained by hand | **Done** — compatibility derived from rules at query time |
+| `effective_max_weight_kg` applies derating in the model | **Done** — R010 removed, uses published weight directly |
+| Hardcoded rule methods on engine class | **Done** — standalone functions in `rules.py` with `RULES` list |
+| `load_catalog()` reads JSON files on every call | Remaining — no startup caching or refresh |
+| `price_usd` embedded in product data | Remaining — no separate pricing feed |
+| Brute-force plate scanning | Remaining — plates not indexed |
+| `run_demo()` with hardcoded scenarios | Remaining — no API endpoints yet |
 
 ---
 
@@ -291,7 +284,7 @@ New catalog data → Ingestion pipeline
 |------|-----------|--------|------------|
 | Internal sales document is incomplete or messy | High | High | Budget Week 1–2 for SME interviews alongside document review |
 | Overlay simplification causes incorrect recommendations | Medium | High | Implement full BPH × DD lookup tables in Phase 1 |
-| R010 double-derating ships to production | High (if not fixed) | Medium | Remove R010 immediately — single highest-impact fix |
+| ~~R010 double-derating ships to production~~ | ~~High~~ | ~~Medium~~ | **RESOLVED** — R010 removed |
 | Third brand has incompatible data format | Medium | Medium | Design ingestion pipeline with per-brand parsers from the start |
 | 13 product families take longer than expected | High | Medium | Prioritise families by commercial value, not engineering ease |
 | Price data unavailable or stale | Medium | Low | Engine works without prices — pricing is a sort layer, not a constraint |
@@ -301,11 +294,12 @@ New catalog data → Ingestion pipeline
 
 ## Summary
 
-The PoC proves the approach works. The gap to production is not in the constraint logic — that's the easy part. The gap is in:
+The engine has progressed from a single-file PoC to a modular, typed codebase with structured rule output, enum safety, and hinge-side indexing. The remaining gap to production is:
 
 1. **Data architecture** — moving from flat JSON to a proper data store with versioning, validation, and audit trails
-2. **Rule abstraction** — moving from hardcoded Python to data-driven rules that can be authored and maintained without engineering
+2. **Rule abstraction** — rules are now standalone functions (not class methods), but still Python code, not data-driven definitions
 3. **Data completeness** — getting the internal sales process document, manufacturer spec sheets, and SME validation that catalogs alone can't provide
-4. **Operational infrastructure** — API layer, testing strategy, catalog update pipeline, SOC 2 controls
+4. **Operational infrastructure** — API layer, catalog update pipeline, SOC 2 controls
+5. **Search efficiency** — plate indexing, short-circuiting for `solve()`, hinge-only rule caching
 
-The constraint engine itself is ~500 lines of Python and will likely stay under 2,000 lines in production. The surrounding infrastructure — ingestion, validation, API, testing, deployment, monitoring — is where the bulk of the engineering effort goes. This is consistent with the brief's timeline: Weeks 3–6 for the engine build is realistic if the data is clean. If it's not, data cleaning is where the schedule slips.
+The constraint engine itself is currently ~800 lines of Python across 6 modules. The surrounding infrastructure — ingestion, validation, API, testing, deployment, monitoring — is where the bulk of the remaining engineering effort goes.
