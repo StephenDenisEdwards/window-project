@@ -13,9 +13,23 @@
     "setback_mm": 37,
     "material": "stamped_steel",
     "fixing_points": 3,
-    "compatible_hinge_series": ["CLIP top", "CLIP top BLUMOTION", "CLIP"],
-    "overlay_range_mm": {"full": [14, 20], "half": [3, 9], "inset": true},
-    "price_usd": 1.20,
+    "compatible_hinge_series": [
+      "CLIP top",
+      "CLIP top BLUMOTION",
+      "CLIP"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        14,
+        20
+      ],
+      "half": [
+        3,
+        9
+      ],
+      "inset": true
+    },
+    "price_usd": 1.2,
     "manufacturer_part": "173L6100",
     "image": "images/blum-cruciform-mounting-plate.jpg"
   },
@@ -33,9 +47,23 @@
     "setback_mm": 37,
     "material": "stamped_steel",
     "fixing_points": 3,
-    "compatible_hinge_series": ["CLIP top", "CLIP top BLUMOTION", "CLIP"],
-    "overlay_range_mm": {"full": [11, 17], "half": [0, 6], "inset": true},
-    "price_usd": 1.20,
+    "compatible_hinge_series": [
+      "CLIP top",
+      "CLIP top BLUMOTION",
+      "CLIP"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        11,
+        17
+      ],
+      "half": [
+        0,
+        6
+      ],
+      "inset": true
+    },
+    "price_usd": 1.2,
     "manufacturer_part": "173L6130",
     "image": "images/blum-cruciform-mounting-plate.jpg"
   },
@@ -54,11 +82,25 @@
     "material": "stamped_steel",
     "fixing_points": 3,
     "notes": "Pre-mounted 5mm system screws",
-    "compatible_hinge_series": ["CLIP top", "CLIP top BLUMOTION", "CLIP"],
-    "overlay_range_mm": {"full": [14, 20], "half": [3, 9], "inset": true},
+    "compatible_hinge_series": [
+      "CLIP top",
+      "CLIP top BLUMOTION",
+      "CLIP"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        14,
+        20
+      ],
+      "half": [
+        3,
+        9
+      ],
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "173L8100",
-    "image": null
+    "image": "images/blum-clip-plate-cruciform-b.jpeg"
   },
   {
     "sku": "BLM-173L8130",
@@ -75,11 +117,25 @@
     "material": "stamped_steel",
     "fixing_points": 3,
     "notes": "Pre-mounted 5mm system screws",
-    "compatible_hinge_series": ["CLIP top", "CLIP top BLUMOTION", "CLIP"],
-    "overlay_range_mm": {"full": [11, 17], "half": [0, 6], "inset": true},
+    "compatible_hinge_series": [
+      "CLIP top",
+      "CLIP top BLUMOTION",
+      "CLIP"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        11,
+        17
+      ],
+      "half": [
+        0,
+        6
+      ],
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "173L8130",
-    "image": null
+    "image": "images/blum-clip-plate-cruciform-b.jpeg"
   },
   {
     "sku": "BLM-173H7100",
@@ -96,11 +152,25 @@
     "material": "stamped_steel",
     "fixing_points": 4,
     "notes": "Cam adjustable wing mounting plate",
-    "compatible_hinge_series": ["CLIP top", "CLIP top BLUMOTION", "CLIP"],
-    "overlay_range_mm": {"full": [14, 20], "half": [3, 9], "inset": true},
+    "compatible_hinge_series": [
+      "CLIP top",
+      "CLIP top BLUMOTION",
+      "CLIP"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        14,
+        20
+      ],
+      "half": [
+        3,
+        9
+      ],
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "173H7100",
-    "image": null
+    "image": "images/blum-clip-plate-wing-cam.jpeg"
   },
   {
     "sku": "BLM-173H7130",
@@ -117,11 +187,25 @@
     "material": "stamped_steel",
     "fixing_points": 4,
     "notes": "Cam adjustable wing mounting plate",
-    "compatible_hinge_series": ["CLIP top", "CLIP top BLUMOTION", "CLIP"],
-    "overlay_range_mm": {"full": [11, 17], "half": [0, 6], "inset": true},
+    "compatible_hinge_series": [
+      "CLIP top",
+      "CLIP top BLUMOTION",
+      "CLIP"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        11,
+        17
+      ],
+      "half": [
+        0,
+        6
+      ],
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "173H7130",
-    "image": null
+    "image": "images/blum-clip-plate-wing-cam.jpeg"
   },
   {
     "sku": "BLM-175H7100",
@@ -137,8 +221,22 @@
     "setback_mm": 37,
     "material": "zinc_diecast",
     "fixing_points": 2,
-    "compatible_hinge_series": ["CLIP top", "CLIP top BLUMOTION", "CLIP"],
-    "overlay_range_mm": {"full": [14, 20], "half": [3, 9], "inset": false},
+    "compatible_hinge_series": [
+      "CLIP top",
+      "CLIP top BLUMOTION",
+      "CLIP"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        14,
+        20
+      ],
+      "half": [
+        3,
+        9
+      ],
+      "inset": false
+    },
     "price_usd": 0.85,
     "manufacturer_part": "175H7100",
     "image": null
@@ -157,8 +255,22 @@
     "setback_mm": 37,
     "material": "zinc_diecast",
     "fixing_points": 2,
-    "compatible_hinge_series": ["CLIP top", "CLIP top BLUMOTION", "CLIP"],
-    "overlay_range_mm": {"full": [11, 17], "half": [0, 6], "inset": false},
+    "compatible_hinge_series": [
+      "CLIP top",
+      "CLIP top BLUMOTION",
+      "CLIP"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        11,
+        17
+      ],
+      "half": [
+        0,
+        6
+      ],
+      "inset": false
+    },
     "price_usd": null,
     "manufacturer_part": "175H7130",
     "image": null
@@ -177,8 +289,19 @@
     "setback_mm": 37,
     "material": "zinc_diecast",
     "fixing_points": 2,
-    "compatible_hinge_series": ["CLIP top", "CLIP top BLUMOTION", "CLIP"],
-    "overlay_range_mm": {"full": [5, 11], "half": null, "inset": false},
+    "compatible_hinge_series": [
+      "CLIP top",
+      "CLIP top BLUMOTION",
+      "CLIP"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        5,
+        11
+      ],
+      "half": null,
+      "inset": false
+    },
     "price_usd": null,
     "manufacturer_part": "175H7190",
     "image": null
@@ -198,8 +321,22 @@
     "material": "zinc_diecast",
     "fixing_points": 3,
     "notes": "Pre-mounted 5mm system screws. Zinc die-cast one-piece wing plate.",
-    "compatible_hinge_series": ["CLIP top", "CLIP top BLUMOTION", "CLIP"],
-    "overlay_range_mm": {"full": [14, 20], "half": [3, 9], "inset": true},
+    "compatible_hinge_series": [
+      "CLIP top",
+      "CLIP top BLUMOTION",
+      "CLIP"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        14,
+        20
+      ],
+      "half": [
+        3,
+        9
+      ],
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "175L8100",
     "image": null
@@ -219,8 +356,22 @@
     "material": "zinc_diecast",
     "fixing_points": 3,
     "notes": "Pre-mounted 5mm system screws. Zinc die-cast one-piece wing plate.",
-    "compatible_hinge_series": ["CLIP top", "CLIP top BLUMOTION", "CLIP"],
-    "overlay_range_mm": {"full": [11, 17], "half": [0, 6], "inset": true},
+    "compatible_hinge_series": [
+      "CLIP top",
+      "CLIP top BLUMOTION",
+      "CLIP"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        11,
+        17
+      ],
+      "half": [
+        0,
+        6
+      ],
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "175L8130",
     "image": null
@@ -240,8 +391,19 @@
     "material": "zinc_diecast",
     "fixing_points": 3,
     "notes": "Pre-mounted 5mm system screws. 9mm height.",
-    "compatible_hinge_series": ["CLIP top", "CLIP top BLUMOTION", "CLIP"],
-    "overlay_range_mm": {"full": [5, 11], "half": null, "inset": true},
+    "compatible_hinge_series": [
+      "CLIP top",
+      "CLIP top BLUMOTION",
+      "CLIP"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        5,
+        11
+      ],
+      "half": null,
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "175L8190",
     "image": null
@@ -261,8 +423,22 @@
     "material": "zinc_diecast",
     "fixing_points": 2,
     "notes": "Cam adjustable in-line mounting plate",
-    "compatible_hinge_series": ["CLIP top", "CLIP top BLUMOTION", "CLIP"],
-    "overlay_range_mm": {"full": [14, 20], "half": [3, 9], "inset": true},
+    "compatible_hinge_series": [
+      "CLIP top",
+      "CLIP top BLUMOTION",
+      "CLIP"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        14,
+        20
+      ],
+      "half": [
+        3,
+        9
+      ],
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "175H3100",
     "image": null
@@ -281,11 +457,25 @@
     "setback_mm": 9.5,
     "material": "zinc_diecast",
     "fixing_points": 2,
-    "compatible_hinge_series": ["CLIP top", "CLIP top BLUMOTION", "CLIP"],
-    "overlay_range_mm": {"full": [9.5, 15.9], "half": [3, 6.4], "inset": true},
-    "price_usd": 1.40,
+    "compatible_hinge_series": [
+      "CLIP top",
+      "CLIP top BLUMOTION",
+      "CLIP"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        9.5,
+        15.9
+      ],
+      "half": [
+        3,
+        6.4
+      ],
+      "inset": true
+    },
+    "price_usd": 1.4,
     "manufacturer_part": "175H9100",
-    "image": null
+    "image": "images/blum-clip-face-frame-plate.jpeg"
   },
   {
     "sku": "BLM-175H9130",
@@ -301,11 +491,25 @@
     "setback_mm": 9.5,
     "material": "zinc_diecast",
     "fixing_points": 2,
-    "compatible_hinge_series": ["CLIP top", "CLIP top BLUMOTION", "CLIP"],
-    "overlay_range_mm": {"full": [6.5, 12.9], "half": [0, 3.4], "inset": true},
-    "price_usd": 1.40,
+    "compatible_hinge_series": [
+      "CLIP top",
+      "CLIP top BLUMOTION",
+      "CLIP"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        6.5,
+        12.9
+      ],
+      "half": [
+        0,
+        3.4
+      ],
+      "inset": true
+    },
+    "price_usd": 1.4,
     "manufacturer_part": "175H9130",
-    "image": null
+    "image": "images/blum-clip-face-frame-plate.jpeg"
   },
   {
     "sku": "BLM-175H9160",
@@ -321,11 +525,22 @@
     "setback_mm": 9.5,
     "material": "zinc_diecast",
     "fixing_points": 2,
-    "compatible_hinge_series": ["CLIP top", "CLIP top BLUMOTION", "CLIP"],
-    "overlay_range_mm": {"full": [3.5, 9.9], "half": null, "inset": true},
+    "compatible_hinge_series": [
+      "CLIP top",
+      "CLIP top BLUMOTION",
+      "CLIP"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        3.5,
+        9.9
+      ],
+      "half": null,
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "175H9160",
-    "image": null
+    "image": "images/blum-clip-face-frame-plate.jpeg"
   },
   {
     "sku": "BLM-175H9190",
@@ -341,11 +556,22 @@
     "setback_mm": 9.5,
     "material": "zinc_diecast",
     "fixing_points": 2,
-    "compatible_hinge_series": ["CLIP top", "CLIP top BLUMOTION", "CLIP"],
-    "overlay_range_mm": {"full": [0.5, 6.9], "half": null, "inset": true},
+    "compatible_hinge_series": [
+      "CLIP top",
+      "CLIP top BLUMOTION",
+      "CLIP"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        0.5,
+        6.9
+      ],
+      "half": null,
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "175H9190",
-    "image": null
+    "image": "images/blum-clip-face-frame-plate.jpeg"
   },
   {
     "sku": "BLM-175H6000",
@@ -362,11 +588,25 @@
     "material": "stamped_steel",
     "fixing_points": 2,
     "notes": "Cam adjustable center mount face frame adapter plate. Use #7 x 3/4 inch wood screws.",
-    "compatible_hinge_series": ["CLIP top", "CLIP top BLUMOTION", "CLIP"],
-    "overlay_range_mm": {"full": [9.5, 15.9], "half": [3, 6.4], "inset": true},
+    "compatible_hinge_series": [
+      "CLIP top",
+      "CLIP top BLUMOTION",
+      "CLIP"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        9.5,
+        15.9
+      ],
+      "half": [
+        3,
+        6.4
+      ],
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "175H6000",
-    "image": null
+    "image": "images/blum-clip-face-frame-adapter.png"
   },
   {
     "sku": "BLM-175H6030",
@@ -383,11 +623,25 @@
     "material": "stamped_steel",
     "fixing_points": 2,
     "notes": "Cam adjustable center mount face frame adapter plate",
-    "compatible_hinge_series": ["CLIP top", "CLIP top BLUMOTION", "CLIP"],
-    "overlay_range_mm": {"full": [6.5, 12.9], "half": [0, 3.4], "inset": true},
+    "compatible_hinge_series": [
+      "CLIP top",
+      "CLIP top BLUMOTION",
+      "CLIP"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        6.5,
+        12.9
+      ],
+      "half": [
+        0,
+        3.4
+      ],
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "175H6030",
-    "image": null
+    "image": "images/blum-clip-face-frame-adapter.png"
   },
   {
     "sku": "BLM-175H6060",
@@ -404,11 +658,22 @@
     "material": "stamped_steel",
     "fixing_points": 2,
     "notes": "Cam adjustable center mount face frame adapter plate",
-    "compatible_hinge_series": ["CLIP top", "CLIP top BLUMOTION", "CLIP"],
-    "overlay_range_mm": {"full": [3.5, 9.9], "half": null, "inset": true},
+    "compatible_hinge_series": [
+      "CLIP top",
+      "CLIP top BLUMOTION",
+      "CLIP"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        3.5,
+        9.9
+      ],
+      "half": null,
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "175H6060",
-    "image": null
+    "image": "images/blum-clip-face-frame-adapter.png"
   },
   {
     "sku": "GRS-F058139761",
@@ -425,11 +690,23 @@
     "material": "steel_nickel_plated",
     "fixing_points": 4,
     "notes": "Pre-mounted 13.5mm Euro screws. Worm gear height adjustment.",
-    "compatible_hinge_series": ["Tiomos"],
-    "overlay_range_mm": {"full": [14, 22], "half": [5, 12.5], "inset": true},
-    "price_usd": 1.50,
+    "compatible_hinge_series": [
+      "Tiomos"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        14,
+        22
+      ],
+      "half": [
+        5,
+        12.5
+      ],
+      "inset": true
+    },
+    "price_usd": 1.5,
     "manufacturer_part": "F058139761228",
-    "image": "images/grass-tiomos-cruciform-plate.jpg"
+    "image": "images/grass-tiomos-wing-baseplate-a.png"
   },
   {
     "sku": "GRS-F058139762",
@@ -446,11 +723,23 @@
     "material": "steel_nickel_plated",
     "fixing_points": 4,
     "notes": "Pre-mounted 13.5mm Euro screws. Worm gear height adjustment.",
-    "compatible_hinge_series": ["Tiomos"],
-    "overlay_range_mm": {"full": [12, 20], "half": [3, 10.5], "inset": true},
-    "price_usd": 1.50,
+    "compatible_hinge_series": [
+      "Tiomos"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        12,
+        20
+      ],
+      "half": [
+        3,
+        10.5
+      ],
+      "inset": true
+    },
+    "price_usd": 1.5,
     "manufacturer_part": "F058139762228",
-    "image": "images/grass-tiomos-cruciform-plate.jpg"
+    "image": "images/grass-tiomos-wing-baseplate-a.png"
   },
   {
     "sku": "GRS-F058139763",
@@ -467,11 +756,23 @@
     "material": "steel_nickel_plated",
     "fixing_points": 4,
     "notes": "Pre-mounted 13.5mm Euro screws. Worm gear height adjustment.",
-    "compatible_hinge_series": ["Tiomos"],
-    "overlay_range_mm": {"full": [11, 19], "half": [2, 9.5], "inset": true},
+    "compatible_hinge_series": [
+      "Tiomos"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        11,
+        19
+      ],
+      "half": [
+        2,
+        9.5
+      ],
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "F058139763228",
-    "image": null
+    "image": "images/grass-tiomos-wing-baseplate-a.png"
   },
   {
     "sku": "GRS-F058139764",
@@ -488,11 +789,23 @@
     "material": "steel_nickel_plated",
     "fixing_points": 4,
     "notes": "Pre-mounted 13.5mm Euro screws. Worm gear height adjustment.",
-    "compatible_hinge_series": ["Tiomos"],
-    "overlay_range_mm": {"full": [10.5, 18.5], "half": [1.5, 9], "inset": true},
+    "compatible_hinge_series": [
+      "Tiomos"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        10.5,
+        18.5
+      ],
+      "half": [
+        1.5,
+        9
+      ],
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "F058139764228",
-    "image": null
+    "image": "images/grass-tiomos-wing-baseplate-a.png"
   },
   {
     "sku": "GRS-F058139746",
@@ -509,11 +822,23 @@
     "material": "steel_nickel_plated",
     "fixing_points": 4,
     "notes": "Wood screw fixing. Worm gear height adjustment.",
-    "compatible_hinge_series": ["Tiomos"],
-    "overlay_range_mm": {"full": [14, 22], "half": [5, 12.5], "inset": true},
+    "compatible_hinge_series": [
+      "Tiomos"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        14,
+        22
+      ],
+      "half": [
+        5,
+        12.5
+      ],
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "F058139746228",
-    "image": null
+    "image": "images/grass-tiomos-wing-baseplate-b.png"
   },
   {
     "sku": "GRS-F058139748",
@@ -530,11 +855,23 @@
     "material": "steel_nickel_plated",
     "fixing_points": 4,
     "notes": "Wood screw fixing. Worm gear height adjustment.",
-    "compatible_hinge_series": ["Tiomos"],
-    "overlay_range_mm": {"full": [11, 19], "half": [2, 9.5], "inset": true},
+    "compatible_hinge_series": [
+      "Tiomos"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        11,
+        19
+      ],
+      "half": [
+        2,
+        9.5
+      ],
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "F058139748228",
-    "image": null
+    "image": "images/grass-tiomos-wing-baseplate-b.png"
   },
   {
     "sku": "GRS-F058139766",
@@ -551,11 +888,23 @@
     "material": "steel_nickel_plated",
     "fixing_points": 4,
     "notes": "Expanding dowel (5mm) fixing. Worm gear height adjustment.",
-    "compatible_hinge_series": ["Tiomos"],
-    "overlay_range_mm": {"full": [14, 22], "half": [5, 12.5], "inset": false},
-    "price_usd": 1.10,
+    "compatible_hinge_series": [
+      "Tiomos"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        14,
+        22
+      ],
+      "half": [
+        5,
+        12.5
+      ],
+      "inset": false
+    },
+    "price_usd": 1.1,
     "manufacturer_part": "F058139766228",
-    "image": null
+    "image": "images/grass-tiomos-wing-baseplate-c.jpeg"
   },
   {
     "sku": "GRS-F058139767",
@@ -572,11 +921,23 @@
     "material": "steel_nickel_plated",
     "fixing_points": 4,
     "notes": "Expanding dowel (5mm) fixing. Worm gear height adjustment.",
-    "compatible_hinge_series": ["Tiomos"],
-    "overlay_range_mm": {"full": [12, 20], "half": [3, 10.5], "inset": false},
+    "compatible_hinge_series": [
+      "Tiomos"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        12,
+        20
+      ],
+      "half": [
+        3,
+        10.5
+      ],
+      "inset": false
+    },
     "price_usd": null,
     "manufacturer_part": "F058139767228",
-    "image": null
+    "image": "images/grass-tiomos-wing-baseplate-c.jpeg"
   },
   {
     "sku": "GRS-F058139768",
@@ -593,11 +954,23 @@
     "material": "steel_nickel_plated",
     "fixing_points": 4,
     "notes": "Expanding dowel (5mm) fixing. Worm gear height adjustment.",
-    "compatible_hinge_series": ["Tiomos"],
-    "overlay_range_mm": {"full": [11, 19], "half": [2, 9.5], "inset": false},
+    "compatible_hinge_series": [
+      "Tiomos"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        11,
+        19
+      ],
+      "half": [
+        2,
+        9.5
+      ],
+      "inset": false
+    },
     "price_usd": null,
     "manufacturer_part": "F058139768228",
-    "image": null
+    "image": "images/grass-tiomos-wing-baseplate-c.jpeg"
   },
   {
     "sku": "GRS-F058139721",
@@ -614,11 +987,23 @@
     "material": "steel_nickel_plated",
     "fixing_points": 3,
     "notes": "Standard one-piece steel plate. Height adjustment via elongated screw holes.",
-    "compatible_hinge_series": ["Tiomos"],
-    "overlay_range_mm": {"full": [14, 22], "half": [5, 12.5], "inset": true},
+    "compatible_hinge_series": [
+      "Tiomos"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        14,
+        22
+      ],
+      "half": [
+        5,
+        12.5
+      ],
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "F058139721228",
-    "image": null
+    "image": "images/grass-tiomos-cruciform-plate.jpg"
   },
   {
     "sku": "GRS-F058139723",
@@ -635,11 +1020,23 @@
     "material": "steel_nickel_plated",
     "fixing_points": 3,
     "notes": "Standard one-piece steel plate. Height adjustment via elongated screw holes.",
-    "compatible_hinge_series": ["Tiomos"],
-    "overlay_range_mm": {"full": [11, 19], "half": [2, 9.5], "inset": true},
+    "compatible_hinge_series": [
+      "Tiomos"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        11,
+        19
+      ],
+      "half": [
+        2,
+        9.5
+      ],
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "F058139723228",
-    "image": null
+    "image": "images/grass-tiomos-cruciform-plate.jpg"
   },
   {
     "sku": "GRS-F058139892",
@@ -656,8 +1053,17 @@
     "material": "zinc_diecast_steel",
     "fixing_points": 2,
     "notes": "Cam adjustable thick wing plate. Worm gear height adjustment.",
-    "compatible_hinge_series": ["Tiomos"],
-    "overlay_range_mm": {"full": [8, 16], "half": null, "inset": true},
+    "compatible_hinge_series": [
+      "Tiomos"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        8,
+        16
+      ],
+      "half": null,
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "F058139892217",
     "image": null
@@ -677,8 +1083,17 @@
     "material": "zinc_diecast_steel",
     "fixing_points": 2,
     "notes": "Cam adjustable thick wing plate for half overlay applications.",
-    "compatible_hinge_series": ["Tiomos"],
-    "overlay_range_mm": {"full": [4.5, 12.5], "half": null, "inset": true},
+    "compatible_hinge_series": [
+      "Tiomos"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        4.5,
+        12.5
+      ],
+      "half": null,
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "F058139888217",
     "image": null
@@ -698,8 +1113,14 @@
     "material": "zinc_diecast_steel",
     "fixing_points": 2,
     "notes": "Cam adjustable thick wing plate for inset applications.",
-    "compatible_hinge_series": ["Tiomos"],
-    "overlay_range_mm": {"full": null, "half": null, "inset": true},
+    "compatible_hinge_series": [
+      "Tiomos"
+    ],
+    "overlay_range_mm": {
+      "full": null,
+      "half": null,
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "F058139894217",
     "image": null
@@ -719,8 +1140,14 @@
     "material": "zinc_diecast_steel",
     "fixing_points": 2,
     "notes": "Cam adjustable thick wing plate for inset/mitered corner applications.",
-    "compatible_hinge_series": ["Tiomos"],
-    "overlay_range_mm": {"full": null, "half": null, "inset": true},
+    "compatible_hinge_series": [
+      "Tiomos"
+    ],
+    "overlay_range_mm": {
+      "full": null,
+      "half": null,
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "F058139895217",
     "image": null
@@ -740,8 +1167,20 @@
     "material": "steel_nickel_plated",
     "fixing_points": 2,
     "notes": "Straight/inline base plate for wood screws. Worm gear adjustments.",
-    "compatible_hinge_series": ["Tiomos"],
-    "overlay_range_mm": {"full": [14, 22], "half": [5, 12.5], "inset": true},
+    "compatible_hinge_series": [
+      "Tiomos"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        14,
+        22
+      ],
+      "half": [
+        5,
+        12.5
+      ],
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "F059139701228",
     "image": null
@@ -761,11 +1200,23 @@
     "material": "steel_nickel_plated",
     "fixing_points": 2,
     "notes": "Cam adjustable face frame adapter plate. Worm gear height adjustment.",
-    "compatible_hinge_series": ["Tiomos"],
-    "overlay_range_mm": {"full": [9.5, 16], "half": [3, 8], "inset": false},
+    "compatible_hinge_series": [
+      "Tiomos"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        9.5,
+        16
+      ],
+      "half": [
+        3,
+        8
+      ],
+      "inset": false
+    },
     "price_usd": null,
     "manufacturer_part": "F058149670228",
-    "image": null
+    "image": "images/grass-tiomos-face-frame-plate.png"
   },
   {
     "sku": "GRS-F058149671",
@@ -782,11 +1233,23 @@
     "material": "steel_nickel_plated",
     "fixing_points": 2,
     "notes": "Cam adjustable face frame adapter plate. Worm gear height adjustment.",
-    "compatible_hinge_series": ["Tiomos"],
-    "overlay_range_mm": {"full": [7.5, 14], "half": [1, 6], "inset": false},
+    "compatible_hinge_series": [
+      "Tiomos"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        7.5,
+        14
+      ],
+      "half": [
+        1,
+        6
+      ],
+      "inset": false
+    },
     "price_usd": null,
     "manufacturer_part": "F058149671228",
-    "image": null
+    "image": "images/grass-tiomos-face-frame-plate.png"
   },
   {
     "sku": "GRS-F058149673",
@@ -803,11 +1266,20 @@
     "material": "steel_nickel_plated",
     "fixing_points": 2,
     "notes": "Cam adjustable face frame adapter plate. Worm gear height adjustment.",
-    "compatible_hinge_series": ["Tiomos"],
-    "overlay_range_mm": {"full": [6, 12.5], "half": null, "inset": false},
+    "compatible_hinge_series": [
+      "Tiomos"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        6,
+        12.5
+      ],
+      "half": null,
+      "inset": false
+    },
     "price_usd": null,
     "manufacturer_part": "F058149673228",
-    "image": null
+    "image": "images/grass-tiomos-face-frame-plate.png"
   },
   {
     "sku": "GRS-F058139831",
@@ -824,11 +1296,17 @@
     "material": "steel_nickel_plated",
     "fixing_points": 3,
     "notes": "Inset face frame adapter plate. Requires 9.5 crank (half-overlay) hinge.",
-    "compatible_hinge_series": ["Tiomos"],
-    "overlay_range_mm": {"full": null, "half": null, "inset": true},
+    "compatible_hinge_series": [
+      "Tiomos"
+    ],
+    "overlay_range_mm": {
+      "full": null,
+      "half": null,
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "F058139831228",
-    "image": null
+    "image": "images/grass-tiomos-face-frame-plate.png"
   },
   {
     "sku": "GRS-314493700",
@@ -845,9 +1323,21 @@
     "material": "steel_nickel_plated",
     "fixing_points": 3,
     "notes": "Cam base plate for wood screws. 3-point fixing.",
-    "compatible_hinge_series": ["Nexis"],
-    "overlay_range_mm": {"full": [14, 20], "half": [4, 12], "inset": false},
-    "price_usd": 0.90,
+    "compatible_hinge_series": [
+      "Nexis"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        14,
+        20
+      ],
+      "half": [
+        4,
+        12
+      ],
+      "inset": false
+    },
+    "price_usd": 0.9,
     "manufacturer_part": "314.493.70.0015",
     "image": null
   },
@@ -866,9 +1356,21 @@
     "material": "steel_nickel_plated",
     "fixing_points": 3,
     "notes": "Cam base plate for wood screws. 3-point fixing.",
-    "compatible_hinge_series": ["Nexis"],
-    "overlay_range_mm": {"full": [12, 18], "half": [2, 10], "inset": false},
-    "price_usd": 0.90,
+    "compatible_hinge_series": [
+      "Nexis"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        12,
+        18
+      ],
+      "half": [
+        2,
+        10
+      ],
+      "inset": false
+    },
+    "price_usd": 0.9,
     "manufacturer_part": "314.493.70.0215",
     "image": null
   },
@@ -887,8 +1389,20 @@
     "material": "steel_nickel_plated",
     "fixing_points": 3,
     "notes": "Cam base plate for wood screws. 3-point fixing.",
-    "compatible_hinge_series": ["Nexis"],
-    "overlay_range_mm": {"full": [10, 16], "half": [0, 8], "inset": true},
+    "compatible_hinge_series": [
+      "Nexis"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        10,
+        16
+      ],
+      "half": [
+        0,
+        8
+      ],
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "314.493.70.0415",
     "image": null
@@ -908,8 +1422,17 @@
     "material": "steel_nickel_plated",
     "fixing_points": 3,
     "notes": "Cam base plate for wood screws. 3-point fixing. For half overlay use.",
-    "compatible_hinge_series": ["Nexis"],
-    "overlay_range_mm": {"full": [6, 12], "half": null, "inset": true},
+    "compatible_hinge_series": [
+      "Nexis"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        6,
+        12
+      ],
+      "half": null,
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "314.493.70.0815",
     "image": null
@@ -929,8 +1452,20 @@
     "material": "steel_nickel_plated",
     "fixing_points": 3,
     "notes": "Cam base plate with pre-mounted Euro screws. 3-point fixing.",
-    "compatible_hinge_series": ["Nexis"],
-    "overlay_range_mm": {"full": [14, 20], "half": [4, 12], "inset": false},
+    "compatible_hinge_series": [
+      "Nexis"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        14,
+        20
+      ],
+      "half": [
+        4,
+        12
+      ],
+      "inset": false
+    },
     "price_usd": null,
     "manufacturer_part": "318.493.70.0015",
     "image": null
@@ -950,8 +1485,20 @@
     "material": "steel_nickel_plated",
     "fixing_points": 3,
     "notes": "Cam base plate with pre-mounted Euro screws. 3-point fixing.",
-    "compatible_hinge_series": ["Nexis"],
-    "overlay_range_mm": {"full": [12, 18], "half": [2, 10], "inset": false},
+    "compatible_hinge_series": [
+      "Nexis"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        12,
+        18
+      ],
+      "half": [
+        2,
+        10
+      ],
+      "inset": false
+    },
     "price_usd": null,
     "manufacturer_part": "318.493.70.0215",
     "image": null
@@ -971,8 +1518,20 @@
     "material": "steel_nickel_plated",
     "fixing_points": 2,
     "notes": "Cam height adjustable base plate. 2-point fixing for wood screws.",
-    "compatible_hinge_series": ["Nexis"],
-    "overlay_range_mm": {"full": [14, 20], "half": [4, 12], "inset": false},
+    "compatible_hinge_series": [
+      "Nexis"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        14,
+        20
+      ],
+      "half": [
+        4,
+        12
+      ],
+      "inset": false
+    },
     "price_usd": null,
     "manufacturer_part": "314.393.69.0015",
     "image": null
@@ -992,8 +1551,20 @@
     "material": "steel_diecast_nickel_plated",
     "fixing_points": 3,
     "notes": "2-piece height adjustable base plate. Height adjustment via screw.",
-    "compatible_hinge_series": ["Nexis"],
-    "overlay_range_mm": {"full": [14, 20], "half": [4, 12], "inset": false},
+    "compatible_hinge_series": [
+      "Nexis"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        14,
+        20
+      ],
+      "half": [
+        4,
+        12
+      ],
+      "inset": false
+    },
     "price_usd": null,
     "manufacturer_part": "315.393.55.0015",
     "image": null
@@ -1013,8 +1584,17 @@
     "material": "steel_diecast_nickel_plated",
     "fixing_points": 3,
     "notes": "2-piece height adjustable base plate. For half overlay use.",
-    "compatible_hinge_series": ["Nexis"],
-    "overlay_range_mm": {"full": [6, 12], "half": null, "inset": true},
+    "compatible_hinge_series": [
+      "Nexis"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        6,
+        12
+      ],
+      "half": null,
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "315.393.55.0815",
     "image": null
@@ -1034,8 +1614,14 @@
     "material": "steel_diecast_nickel_plated",
     "fixing_points": 3,
     "notes": "2-piece height adjustable base plate. For inset applications.",
-    "compatible_hinge_series": ["Nexis"],
-    "overlay_range_mm": {"full": null, "half": null, "inset": true},
+    "compatible_hinge_series": [
+      "Nexis"
+    ],
+    "overlay_range_mm": {
+      "full": null,
+      "half": null,
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "315.393.55.1815",
     "image": null
@@ -1055,8 +1641,20 @@
     "material": "steel_nickel_plated",
     "fixing_points": 2,
     "notes": "FFA cam base plate for wood screws. Height and depth adjustment via eccentric cam.",
-    "compatible_hinge_series": ["Nexis"],
-    "overlay_range_mm": {"full": [9.5, 15], "half": [3, 8], "inset": false},
+    "compatible_hinge_series": [
+      "Nexis"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        9.5,
+        15
+      ],
+      "half": [
+        3,
+        8
+      ],
+      "inset": false
+    },
     "price_usd": null,
     "manufacturer_part": "346.290.91.0015",
     "image": null
@@ -1076,8 +1674,17 @@
     "material": "steel_nickel_plated",
     "fixing_points": 2,
     "notes": "FFA cam base plate for wood screws.",
-    "compatible_hinge_series": ["Nexis"],
-    "overlay_range_mm": {"full": [5.5, 11], "half": null, "inset": true},
+    "compatible_hinge_series": [
+      "Nexis"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        5.5,
+        11
+      ],
+      "half": null,
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "346.290.91.0415",
     "image": null
@@ -1097,8 +1704,14 @@
     "material": "steel_nickel_plated",
     "fixing_points": 2,
     "notes": "Inset FFA base plate. For inset doors. Use with half overlay (cranking 08) hinges.",
-    "compatible_hinge_series": ["Nexis"],
-    "overlay_range_mm": {"full": null, "half": null, "inset": true},
+    "compatible_hinge_series": [
+      "Nexis"
+    ],
+    "overlay_range_mm": {
+      "full": null,
+      "half": null,
+      "inset": true
+    },
     "price_usd": null,
     "manufacturer_part": "346.290.90.0215",
     "image": null
@@ -1117,9 +1730,21 @@
     "setback_mm": 37,
     "material": null,
     "fixing_points": null,
-    "compatible_hinge_series": ["Duomatic"],
-    "overlay_range_mm": {"full": [14, 19], "half": [3, 8], "inset": true},
-    "price_usd": 1.10,
+    "compatible_hinge_series": [
+      "Duomatic"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        14,
+        19
+      ],
+      "half": [
+        3,
+        8
+      ],
+      "inset": true
+    },
+    "price_usd": 1.1,
     "manufacturer_part": "311.97.1",
     "image": null
   },
@@ -1137,9 +1762,21 @@
     "setback_mm": 37,
     "material": null,
     "fixing_points": null,
-    "compatible_hinge_series": ["Duomatic"],
-    "overlay_range_mm": {"full": [11, 16], "half": [0, 5], "inset": true},
-    "price_usd": 1.10,
+    "compatible_hinge_series": [
+      "Duomatic"
+    ],
+    "overlay_range_mm": {
+      "full": [
+        11,
+        16
+      ],
+      "half": [
+        0,
+        5
+      ],
+      "inset": true
+    },
+    "price_usd": 1.1,
     "manufacturer_part": "311.97.2",
     "image": null
   }
