@@ -13,7 +13,8 @@
     "compatible_hinge_series": ["CLIP top", "CLIP top BLUMOTION"],
     "overlay_range_mm": {"full": [14, 20], "half": [3, 9], "inset": true},
     "price_usd": 1.20,
-    "manufacturer_part": "173L6100"
+    "manufacturer_part": "173L6100",
+    "image": "images/blum-cruciform-mounting-plate.jpg"
   },
   {
     "sku": "BLM-173L6130",
@@ -29,7 +30,8 @@
     "compatible_hinge_series": ["CLIP top", "CLIP top BLUMOTION"],
     "overlay_range_mm": {"full": [11, 17], "half": [0, 6], "inset": true},
     "price_usd": 1.20,
-    "manufacturer_part": "173L6130"
+    "manufacturer_part": "173L6130",
+    "image": "images/blum-cruciform-mounting-plate.jpg"
   },
   {
     "sku": "BLM-175H7100",
@@ -45,7 +47,8 @@
     "compatible_hinge_series": ["CLIP top", "CLIP top BLUMOTION"],
     "overlay_range_mm": {"full": [14, 20], "half": [3, 9], "inset": false},
     "price_usd": 0.85,
-    "manufacturer_part": "175H7100"
+    "manufacturer_part": "175H7100",
+    "image": null
   },
   {
     "sku": "BLM-175H9100",
@@ -61,7 +64,8 @@
     "compatible_hinge_series": ["CLIP top", "CLIP top BLUMOTION"],
     "overlay_range_mm": {"full": [9.5, 15.9], "half": [3, 6.4], "inset": true},
     "price_usd": 1.40,
-    "manufacturer_part": "175H9100"
+    "manufacturer_part": "175H9100",
+    "image": null
   },
   {
     "sku": "BLM-175H9130",
@@ -77,7 +81,8 @@
     "compatible_hinge_series": ["CLIP top", "CLIP top BLUMOTION"],
     "overlay_range_mm": {"full": [6.5, 12.9], "half": [0, 3.4], "inset": true},
     "price_usd": 1.40,
-    "manufacturer_part": "175H9130"
+    "manufacturer_part": "175H9130",
+    "image": null
   },
   {
     "sku": "GRS-F058139761",
@@ -93,7 +98,8 @@
     "compatible_hinge_series": ["Tiomos"],
     "overlay_range_mm": {"full": [14, 21], "half": [3, 10], "inset": true},
     "price_usd": 1.50,
-    "manufacturer_part": "F058139761"
+    "manufacturer_part": "F058139761",
+    "image": "images/grass-tiomos-cruciform-plate.jpg"
   },
   {
     "sku": "GRS-F058139762",
@@ -109,7 +115,8 @@
     "compatible_hinge_series": ["Tiomos"],
     "overlay_range_mm": {"full": [11, 18], "half": [0, 7], "inset": true},
     "price_usd": 1.50,
-    "manufacturer_part": "F058139762"
+    "manufacturer_part": "F058139762",
+    "image": "images/grass-tiomos-cruciform-plate.jpg"
   },
   {
     "sku": "GRS-F058139766",
@@ -125,7 +132,8 @@
     "compatible_hinge_series": ["Tiomos"],
     "overlay_range_mm": {"full": [14, 21], "half": [3, 10], "inset": false},
     "price_usd": 1.10,
-    "manufacturer_part": "F058139766"
+    "manufacturer_part": "F058139766",
+    "image": null
   },
   {
     "sku": "GRS-348322100",
@@ -141,7 +149,8 @@
     "compatible_hinge_series": ["Nexis"],
     "overlay_range_mm": {"full": [14, 19], "half": [3, 8], "inset": false},
     "price_usd": 0.90,
-    "manufacturer_part": "348.322.10.0015"
+    "manufacturer_part": "348.322.10.0015",
+    "image": null
   },
   {
     "sku": "GRS-348322103",
@@ -157,7 +166,8 @@
     "compatible_hinge_series": ["Nexis"],
     "overlay_range_mm": {"full": [11, 16], "half": [0, 5], "inset": false},
     "price_usd": 0.90,
-    "manufacturer_part": "348.322.10.3015"
+    "manufacturer_part": "348.322.10.3015",
+    "image": null
   },
   {
     "sku": "HFL-311971",
@@ -173,7 +183,8 @@
     "compatible_hinge_series": ["Duomatic"],
     "overlay_range_mm": {"full": [14, 19], "half": [3, 8], "inset": true},
     "price_usd": 1.10,
-    "manufacturer_part": "311.97.1"
+    "manufacturer_part": "311.97.1",
+    "image": null
   },
   {
     "sku": "HFL-311972",
@@ -189,6 +200,7 @@
     "compatible_hinge_series": ["Duomatic"],
     "overlay_range_mm": {"full": [11, 16], "half": [0, 5], "inset": true},
     "price_usd": 1.10,
-    "manufacturer_part": "311.97.2"
+    "manufacturer_part": "311.97.2",
+    "image": null
   }
 ]

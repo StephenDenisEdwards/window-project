@@ -17,7 +17,8 @@
     "crank_mm": 9.5,
     "compatible_mounting_plate_skus": ["BLM-173L6100", "BLM-173L6130", "BLM-175H7100"],
     "price_usd": 4.85,
-    "manufacturer_part": "71B3550"
+    "manufacturer_part": "71B3550",
+    "image": "images/blum-clip-top-blumotion-110-hinge.jpg"
   },
   {
     "sku": "BLM-71B3650",
@@ -37,7 +38,8 @@
     "crank_mm": 4.5,
     "compatible_mounting_plate_skus": ["BLM-173L6100", "BLM-173L6130", "BLM-175H7100"],
     "price_usd": 4.85,
-    "manufacturer_part": "71B3650"
+    "manufacturer_part": "71B3650",
+    "image": "images/blum-clip-top-blumotion-110-hinge.jpg"
   },
   {
     "sku": "BLM-71B3580",
@@ -57,7 +59,8 @@
     "crank_mm": 0,
     "compatible_mounting_plate_skus": ["BLM-173L6100", "BLM-173L6130"],
     "price_usd": 5.20,
-    "manufacturer_part": "71B3580"
+    "manufacturer_part": "71B3580",
+    "image": "images/blum-clip-top-blumotion-110-hinge.jpg"
   },
   {
     "sku": "BLM-71T3550",
@@ -77,7 +80,8 @@
     "crank_mm": 9.5,
     "compatible_mounting_plate_skus": ["BLM-173L6100", "BLM-173L6130", "BLM-175H7100"],
     "price_usd": 3.10,
-    "manufacturer_part": "71T3550"
+    "manufacturer_part": "71T3550",
+    "image": "images/blum-clip-top-blumotion-110-hinge.jpg"
   },
   {
     "sku": "BLM-79B3550",
@@ -97,7 +101,8 @@
     "crank_mm": 9.5,
     "compatible_mounting_plate_skus": ["BLM-173L6100", "BLM-173L6130"],
     "price_usd": 12.40,
-    "manufacturer_part": "79B3550"
+    "manufacturer_part": "79B3550",
+    "image": null
   },
   {
     "sku": "BLM-79B9550",
@@ -117,7 +122,8 @@
     "crank_mm": 9.5,
     "compatible_mounting_plate_skus": ["BLM-173L6100", "BLM-173L6130"],
     "price_usd": 18.75,
-    "manufacturer_part": "79B9550"
+    "manufacturer_part": "79B9550",
+    "image": null
   },
   {
     "sku": "BLM-75T1550",
@@ -137,7 +143,8 @@
     "crank_mm": 12.7,
     "compatible_mounting_plate_skus": ["BLM-175H9100", "BLM-175H9130"],
     "price_usd": 3.50,
-    "manufacturer_part": "75T1550"
+    "manufacturer_part": "75T1550",
+    "image": null
   },
   {
     "sku": "GRS-F045138281",
@@ -157,7 +164,8 @@
     "crank_mm": 9.5,
     "compatible_mounting_plate_skus": ["GRS-F058139761", "GRS-F058139762", "GRS-F058139766"],
     "price_usd": 5.60,
-    "manufacturer_part": "F045138281"
+    "manufacturer_part": "F045138281",
+    "image": "images/grass-tiomos-110-hinge.jpg"
   },
   {
     "sku": "GRS-F045138283",
@@ -177,7 +185,8 @@
     "crank_mm": 4.5,
     "compatible_mounting_plate_skus": ["GRS-F058139761", "GRS-F058139762", "GRS-F058139766"],
     "price_usd": 5.60,
-    "manufacturer_part": "F045138283"
+    "manufacturer_part": "F045138283",
+    "image": "images/grass-tiomos-110-hinge.jpg"
   },
   {
     "sku": "GRS-F045138285",
@@ -197,7 +206,8 @@
     "crank_mm": 0,
     "compatible_mounting_plate_skus": ["GRS-F058139761", "GRS-F058139762"],
     "price_usd": 5.90,
-    "manufacturer_part": "F045138285"
+    "manufacturer_part": "F045138285",
+    "image": "images/grass-tiomos-110-hinge.jpg"
   },
   {
     "sku": "GRS-F045138295",
@@ -217,7 +227,8 @@
     "crank_mm": 9.5,
     "compatible_mounting_plate_skus": ["GRS-F058139761", "GRS-F058139762"],
     "price_usd": 15.20,
-    "manufacturer_part": "F045138295"
+    "manufacturer_part": "F045138295",
+    "image": "images/grass-tiomos-110-hinge.jpg"
   },
   {
     "sku": "GRS-146322540",
@@ -237,7 +248,8 @@
     "crank_mm": 9.5,
     "compatible_mounting_plate_skus": ["GRS-348322100", "GRS-348322103"],
     "price_usd": 2.80,
-    "manufacturer_part": "146.322.54.0015"
+    "manufacturer_part": "146.322.54.0015",
+    "image": null
   },
   {
     "sku": "GRS-146325540",
@@ -257,7 +269,8 @@
     "crank_mm": 4.5,
     "compatible_mounting_plate_skus": ["GRS-348322100", "GRS-348322103"],
     "price_usd": 2.80,
-    "manufacturer_part": "146.325.54.0015"
+    "manufacturer_part": "146.325.54.0015",
+    "image": null
   },
   {
     "sku": "HFL-311131",
@@ -277,7 +290,8 @@
     "crank_mm": 9.5,
     "compatible_mounting_plate_skus": ["HFL-311971", "HFL-311972"],
     "price_usd": 4.20,
-    "manufacturer_part": "311.13.1"
+    "manufacturer_part": "311.13.1",
+    "image": null
   },
   {
     "sku": "HFL-311133",
@@ -297,6 +311,7 @@
     "crank_mm": 4.5,
     "compatible_mounting_plate_skus": ["HFL-311971", "HFL-311972"],
     "price_usd": 4.20,
-    "manufacturer_part": "311.13.3"
+    "manufacturer_part": "311.13.3",
+    "image": null
   }
 ]
