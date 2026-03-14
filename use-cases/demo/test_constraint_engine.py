@@ -59,8 +59,11 @@ class TestDerivedValues:
     def test_short_door_gets_2_hinges(self):
         assert HingeConstraintEngine.hinges_per_door(720) == 2
 
-    def test_boundary_900mm_gets_2_hinges(self):
-        assert HingeConstraintEngine.hinges_per_door(900) == 2
+    def test_boundary_889mm_gets_2_hinges(self):
+        assert HingeConstraintEngine.hinges_per_door(889) == 2
+
+    def test_boundary_890mm_gets_3_hinges(self):
+        assert HingeConstraintEngine.hinges_per_door(890) == 3
 
     def test_medium_door_gets_3_hinges(self):
         assert HingeConstraintEngine.hinges_per_door(1200) == 3

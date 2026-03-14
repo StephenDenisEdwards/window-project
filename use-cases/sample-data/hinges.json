@@ -20,7 +20,17 @@
     "compatible_mounting_plate_skus": [
       "BLM-173L6100",
       "BLM-173L6130",
-      "BLM-175H7100"
+      "BLM-173L8100",
+      "BLM-173L8130",
+      "BLM-173H7100",
+      "BLM-173H7130",
+      "BLM-175H7100",
+      "BLM-175H7130",
+      "BLM-175H7190",
+      "BLM-175L8100",
+      "BLM-175L8130",
+      "BLM-175L8190",
+      "BLM-175H3100"
     ],
     "price_usd": 4.85,
     "manufacturer_part": "71B3550",
@@ -47,7 +57,17 @@
     "compatible_mounting_plate_skus": [
       "BLM-173L6100",
       "BLM-173L6130",
-      "BLM-175H7100"
+      "BLM-173L8100",
+      "BLM-173L8130",
+      "BLM-173H7100",
+      "BLM-173H7130",
+      "BLM-175H7100",
+      "BLM-175H7130",
+      "BLM-175H7190",
+      "BLM-175L8100",
+      "BLM-175L8130",
+      "BLM-175L8190",
+      "BLM-175H3100"
     ],
     "price_usd": 4.85,
     "manufacturer_part": "71B3650",
@@ -73,7 +93,18 @@
     "crank_mm": 0,
     "compatible_mounting_plate_skus": [
       "BLM-173L6100",
-      "BLM-173L6130"
+      "BLM-173L6130",
+      "BLM-173L8100",
+      "BLM-173L8130",
+      "BLM-173H7100",
+      "BLM-173H7130",
+      "BLM-175H7100",
+      "BLM-175H7130",
+      "BLM-175H7190",
+      "BLM-175L8100",
+      "BLM-175L8130",
+      "BLM-175L8190",
+      "BLM-175H3100"
     ],
     "price_usd": 5.2,
     "manufacturer_part": "71B3750",
@@ -98,9 +129,11 @@
     "cabinet_type": "frameless",
     "crank_mm": 9.5,
     "compatible_mounting_plate_skus": [
-      "BLM-173L6100",
-      "BLM-173L6130",
-      "BLM-175H7100"
+      "BLM-173L8100",
+      "BLM-173L8130",
+      "BLM-175L8100",
+      "BLM-175L8130",
+      "BLM-175L8190"
     ],
     "price_usd": 4.85,
     "manufacturer_part": "71B3580",
@@ -127,7 +160,17 @@
     "compatible_mounting_plate_skus": [
       "BLM-173L6100",
       "BLM-173L6130",
-      "BLM-175H7100"
+      "BLM-173L8100",
+      "BLM-173L8130",
+      "BLM-173H7100",
+      "BLM-173H7130",
+      "BLM-175H7100",
+      "BLM-175H7130",
+      "BLM-175H7190",
+      "BLM-175L8100",
+      "BLM-175L8130",
+      "BLM-175L8190",
+      "BLM-175H3100"
     ],
     "price_usd": 3.1,
     "manufacturer_part": "71T3550",
@@ -154,7 +197,17 @@
     "compatible_mounting_plate_skus": [
       "BLM-173L6100",
       "BLM-173L6130",
-      "BLM-175H7100"
+      "BLM-173L8100",
+      "BLM-173L8130",
+      "BLM-173H7100",
+      "BLM-173H7130",
+      "BLM-175H7100",
+      "BLM-175H7130",
+      "BLM-175H7190",
+      "BLM-175L8100",
+      "BLM-175L8130",
+      "BLM-175L8190",
+      "BLM-175H3100"
     ],
     "price_usd": 3.1,
     "manufacturer_part": "71T3650",
@@ -180,7 +233,18 @@
     "crank_mm": 0,
     "compatible_mounting_plate_skus": [
       "BLM-173L6100",
-      "BLM-173L6130"
+      "BLM-173L6130",
+      "BLM-173L8100",
+      "BLM-173L8130",
+      "BLM-173H7100",
+      "BLM-173H7130",
+      "BLM-175H7100",
+      "BLM-175H7130",
+      "BLM-175H7190",
+      "BLM-175L8100",
+      "BLM-175L8130",
+      "BLM-175L8190",
+      "BLM-175H3100"
     ],
     "price_usd": 3.1,
     "manufacturer_part": "71T3750",
@@ -208,7 +272,17 @@
     "compatible_mounting_plate_skus": [
       "BLM-173L6100",
       "BLM-173L6130",
-      "BLM-175H7100"
+      "BLM-173L8100",
+      "BLM-173L8130",
+      "BLM-173H7100",
+      "BLM-173H7130",
+      "BLM-175H7100",
+      "BLM-175H7130",
+      "BLM-175H7190",
+      "BLM-175L8100",
+      "BLM-175L8130",
+      "BLM-175L8190",
+      "BLM-175H3100"
     ],
     "price_usd": null,
     "manufacturer_part": "73B3550",
@@ -235,7 +309,17 @@
     "compatible_mounting_plate_skus": [
       "BLM-173L6100",
       "BLM-173L6130",
-      "BLM-175H7100"
+      "BLM-173L8100",
+      "BLM-173L8130",
+      "BLM-173H7100",
+      "BLM-173H7130",
+      "BLM-175H7100",
+      "BLM-175H7130",
+      "BLM-175H7190",
+      "BLM-175L8100",
+      "BLM-175L8130",
+      "BLM-175L8190",
+      "BLM-175H3100"
     ],
     "price_usd": null,
     "manufacturer_part": "71T5550",
@@ -262,7 +346,17 @@
     "compatible_mounting_plate_skus": [
       "BLM-173L6100",
       "BLM-173L6130",
-      "BLM-175H7100"
+      "BLM-173L8100",
+      "BLM-173L8130",
+      "BLM-173H7100",
+      "BLM-173H7130",
+      "BLM-175H7100",
+      "BLM-175H7130",
+      "BLM-175H7190",
+      "BLM-175L8100",
+      "BLM-175L8130",
+      "BLM-175L8190",
+      "BLM-175H3100"
     ],
     "price_usd": null,
     "manufacturer_part": "71T5650",
@@ -289,7 +383,18 @@
     "notes": "Zero protrusion hinge for cabinets with interior roll-outs",
     "compatible_mounting_plate_skus": [
       "BLM-173L6100",
-      "BLM-173L6130"
+      "BLM-173L6130",
+      "BLM-173L8100",
+      "BLM-173L8130",
+      "BLM-173H7100",
+      "BLM-173H7130",
+      "BLM-175H7100",
+      "BLM-175H7130",
+      "BLM-175H7190",
+      "BLM-175L8100",
+      "BLM-175L8130",
+      "BLM-175L8190",
+      "BLM-175H3100"
     ],
     "price_usd": 12.4,
     "manufacturer_part": "71B7550",
@@ -316,7 +421,18 @@
     "notes": "Zero protrusion hinge for cabinets with interior roll-outs",
     "compatible_mounting_plate_skus": [
       "BLM-173L6100",
-      "BLM-173L6130"
+      "BLM-173L6130",
+      "BLM-173L8100",
+      "BLM-173L8130",
+      "BLM-173H7100",
+      "BLM-173H7130",
+      "BLM-175H7100",
+      "BLM-175H7130",
+      "BLM-175H7190",
+      "BLM-175L8100",
+      "BLM-175L8130",
+      "BLM-175L8190",
+      "BLM-175H3100"
     ],
     "price_usd": null,
     "manufacturer_part": "71B7650",
@@ -343,7 +459,18 @@
     "notes": "Zero protrusion hinge for cabinets with interior roll-outs",
     "compatible_mounting_plate_skus": [
       "BLM-173L6100",
-      "BLM-173L6130"
+      "BLM-173L6130",
+      "BLM-173L8100",
+      "BLM-173L8130",
+      "BLM-173H7100",
+      "BLM-173H7130",
+      "BLM-175H7100",
+      "BLM-175H7130",
+      "BLM-175H7190",
+      "BLM-175L8100",
+      "BLM-175L8130",
+      "BLM-175L8190",
+      "BLM-175H3100"
     ],
     "price_usd": null,
     "manufacturer_part": "71T7550",
@@ -370,7 +497,18 @@
     "notes": "125 degree zero protrusion hinge for thicker doors up to 30mm",
     "compatible_mounting_plate_skus": [
       "BLM-173L6100",
-      "BLM-173L6130"
+      "BLM-173L6130",
+      "BLM-173L8100",
+      "BLM-173L8130",
+      "BLM-173H7100",
+      "BLM-173H7130",
+      "BLM-175H7100",
+      "BLM-175H7130",
+      "BLM-175H7190",
+      "BLM-175L8100",
+      "BLM-175L8130",
+      "BLM-175L8190",
+      "BLM-175H3100"
     ],
     "price_usd": null,
     "manufacturer_part": "71B7550D",
@@ -398,7 +536,17 @@
     "compatible_mounting_plate_skus": [
       "BLM-173L6100",
       "BLM-173L6130",
-      "BLM-175H7100"
+      "BLM-173L8100",
+      "BLM-173L8130",
+      "BLM-173H7100",
+      "BLM-173H7130",
+      "BLM-175H7100",
+      "BLM-175H7130",
+      "BLM-175H7190",
+      "BLM-175L8100",
+      "BLM-175L8130",
+      "BLM-175L8190",
+      "BLM-175H3100"
     ],
     "price_usd": null,
     "manufacturer_part": "71B9550",
@@ -426,7 +574,17 @@
     "compatible_mounting_plate_skus": [
       "BLM-173L6100",
       "BLM-173L6130",
-      "BLM-175H7100"
+      "BLM-173L8100",
+      "BLM-173L8130",
+      "BLM-173H7100",
+      "BLM-173H7130",
+      "BLM-175H7100",
+      "BLM-175H7130",
+      "BLM-175H7190",
+      "BLM-175L8100",
+      "BLM-175L8130",
+      "BLM-175L8190",
+      "BLM-175H3100"
     ],
     "price_usd": null,
     "manufacturer_part": "71B9650",
@@ -453,7 +611,18 @@
     "notes": "Thick door hinge for door thicknesses up to 30mm",
     "compatible_mounting_plate_skus": [
       "BLM-173L6100",
-      "BLM-173L6130"
+      "BLM-173L6130",
+      "BLM-173L8100",
+      "BLM-173L8130",
+      "BLM-173H7100",
+      "BLM-173H7130",
+      "BLM-175H7100",
+      "BLM-175H7130",
+      "BLM-175H7190",
+      "BLM-175L8100",
+      "BLM-175L8130",
+      "BLM-175L8190",
+      "BLM-175H3100"
     ],
     "price_usd": null,
     "manufacturer_part": "71B9750",
@@ -479,7 +648,18 @@
     "crank_mm": 9.5,
     "compatible_mounting_plate_skus": [
       "BLM-173L6100",
-      "BLM-173L6130"
+      "BLM-173L6130",
+      "BLM-173L8100",
+      "BLM-173L8130",
+      "BLM-173H7100",
+      "BLM-173H7130",
+      "BLM-175H7100",
+      "BLM-175H7130",
+      "BLM-175H7190",
+      "BLM-175L8100",
+      "BLM-175L8130",
+      "BLM-175L8190",
+      "BLM-175H3100"
     ],
     "price_usd": null,
     "manufacturer_part": "71T6550",
@@ -505,7 +685,18 @@
     "crank_mm": 4.5,
     "compatible_mounting_plate_skus": [
       "BLM-173L6100",
-      "BLM-173L6130"
+      "BLM-173L6130",
+      "BLM-173L8100",
+      "BLM-173L8130",
+      "BLM-173H7100",
+      "BLM-173H7130",
+      "BLM-175H7100",
+      "BLM-175H7130",
+      "BLM-175H7190",
+      "BLM-175L8100",
+      "BLM-175L8130",
+      "BLM-175L8190",
+      "BLM-175H3100"
     ],
     "price_usd": null,
     "manufacturer_part": "71T6650",
@@ -531,7 +722,18 @@
     "crank_mm": 9.5,
     "compatible_mounting_plate_skus": [
       "BLM-173L6100",
-      "BLM-173L6130"
+      "BLM-173L6130",
+      "BLM-173L8100",
+      "BLM-173L8130",
+      "BLM-173H7100",
+      "BLM-173H7130",
+      "BLM-175H7100",
+      "BLM-175H7130",
+      "BLM-175H7190",
+      "BLM-175L8100",
+      "BLM-175L8130",
+      "BLM-175L8190",
+      "BLM-175H3100"
     ],
     "price_usd": 12.4,
     "manufacturer_part": "79B3550",
@@ -557,7 +759,18 @@
     "crank_mm": 9.5,
     "compatible_mounting_plate_skus": [
       "BLM-173L6100",
-      "BLM-173L6130"
+      "BLM-173L6130",
+      "BLM-173L8100",
+      "BLM-173L8130",
+      "BLM-173H7100",
+      "BLM-173H7130",
+      "BLM-175H7100",
+      "BLM-175H7130",
+      "BLM-175H7190",
+      "BLM-175L8100",
+      "BLM-175L8130",
+      "BLM-175L8190",
+      "BLM-175H3100"
     ],
     "price_usd": 18.75,
     "manufacturer_part": "79B9550",
@@ -583,7 +796,12 @@
     "crank_mm": 12.7,
     "compatible_mounting_plate_skus": [
       "BLM-175H9100",
-      "BLM-175H9130"
+      "BLM-175H9130",
+      "BLM-175H9160",
+      "BLM-175H9190",
+      "BLM-175H6000",
+      "BLM-175H6030",
+      "BLM-175H6060"
     ],
     "price_usd": 3.5,
     "manufacturer_part": "75T1550",
@@ -611,7 +829,17 @@
     "compatible_mounting_plate_skus": [
       "BLM-173L6100",
       "BLM-173L6130",
-      "BLM-175H7100"
+      "BLM-173L8100",
+      "BLM-173L8130",
+      "BLM-173H7100",
+      "BLM-173H7130",
+      "BLM-175H7100",
+      "BLM-175H7130",
+      "BLM-175H7190",
+      "BLM-175L8100",
+      "BLM-175L8130",
+      "BLM-175L8190",
+      "BLM-175H3100"
     ],
     "price_usd": null,
     "manufacturer_part": "71M2550",
@@ -639,7 +867,17 @@
     "compatible_mounting_plate_skus": [
       "BLM-173L6100",
       "BLM-173L6130",
-      "BLM-175H7100"
+      "BLM-173L8100",
+      "BLM-173L8130",
+      "BLM-173H7100",
+      "BLM-173H7130",
+      "BLM-175H7100",
+      "BLM-175H7130",
+      "BLM-175H7190",
+      "BLM-175L8100",
+      "BLM-175L8130",
+      "BLM-175L8190",
+      "BLM-175H3100"
     ],
     "price_usd": null,
     "manufacturer_part": "71M2650",
@@ -666,7 +904,18 @@
     "notes": "100 degree CLIP self-close hinge, add-on BLUMOTION available",
     "compatible_mounting_plate_skus": [
       "BLM-173L6100",
-      "BLM-173L6130"
+      "BLM-173L6130",
+      "BLM-173L8100",
+      "BLM-173L8130",
+      "BLM-173H7100",
+      "BLM-173H7130",
+      "BLM-175H7100",
+      "BLM-175H7130",
+      "BLM-175H7190",
+      "BLM-175L8100",
+      "BLM-175L8130",
+      "BLM-175L8190",
+      "BLM-175H3100"
     ],
     "price_usd": null,
     "manufacturer_part": "71M2750",
@@ -694,7 +943,16 @@
       "GRS-F058139761",
       "GRS-F058139762",
       "GRS-F058139763",
-      "GRS-F058139766"
+      "GRS-F058139764",
+      "GRS-F058139746",
+      "GRS-F058139748",
+      "GRS-F058139721",
+      "GRS-F058139723",
+      "GRS-F058139892",
+      "GRS-F058139888",
+      "GRS-F058139894",
+      "GRS-F058139895",
+      "GRS-F059139701"
     ],
     "price_usd": 5.6,
     "manufacturer_part": "F028138519228",
@@ -722,7 +980,16 @@
       "GRS-F058139761",
       "GRS-F058139762",
       "GRS-F058139763",
-      "GRS-F058139766"
+      "GRS-F058139764",
+      "GRS-F058139746",
+      "GRS-F058139748",
+      "GRS-F058139721",
+      "GRS-F058139723",
+      "GRS-F058139892",
+      "GRS-F058139888",
+      "GRS-F058139894",
+      "GRS-F058139895",
+      "GRS-F059139701"
     ],
     "price_usd": 5.6,
     "manufacturer_part": "F028138521228",
@@ -748,7 +1015,18 @@
     "crank_mm": 0,
     "compatible_mounting_plate_skus": [
       "GRS-F058139761",
-      "GRS-F058139762"
+      "GRS-F058139762",
+      "GRS-F058139763",
+      "GRS-F058139764",
+      "GRS-F058139746",
+      "GRS-F058139748",
+      "GRS-F058139721",
+      "GRS-F058139723",
+      "GRS-F058139892",
+      "GRS-F058139888",
+      "GRS-F058139894",
+      "GRS-F058139895",
+      "GRS-F059139701"
     ],
     "price_usd": 5.9,
     "manufacturer_part": "F028138522228",
@@ -777,7 +1055,16 @@
       "GRS-F058139761",
       "GRS-F058139762",
       "GRS-F058139763",
-      "GRS-F058139766"
+      "GRS-F058139764",
+      "GRS-F058139746",
+      "GRS-F058139748",
+      "GRS-F058139721",
+      "GRS-F058139723",
+      "GRS-F058139892",
+      "GRS-F058139888",
+      "GRS-F058139894",
+      "GRS-F058139895",
+      "GRS-F059139701"
     ],
     "price_usd": null,
     "manufacturer_part": "F045138457228",
@@ -806,7 +1093,16 @@
       "GRS-F058139761",
       "GRS-F058139762",
       "GRS-F058139763",
-      "GRS-F058139766"
+      "GRS-F058139764",
+      "GRS-F058139746",
+      "GRS-F058139748",
+      "GRS-F058139721",
+      "GRS-F058139723",
+      "GRS-F058139892",
+      "GRS-F058139888",
+      "GRS-F058139894",
+      "GRS-F058139895",
+      "GRS-F059139701"
     ],
     "price_usd": null,
     "manufacturer_part": "F028138520228",
@@ -834,7 +1130,16 @@
       "GRS-F058139761",
       "GRS-F058139762",
       "GRS-F058139763",
-      "GRS-F058139766"
+      "GRS-F058139764",
+      "GRS-F058139746",
+      "GRS-F058139748",
+      "GRS-F058139721",
+      "GRS-F058139723",
+      "GRS-F058139892",
+      "GRS-F058139888",
+      "GRS-F058139894",
+      "GRS-F058139895",
+      "GRS-F059139701"
     ],
     "price_usd": null,
     "manufacturer_part": "F028138547228",
@@ -862,7 +1167,16 @@
       "GRS-F058139761",
       "GRS-F058139762",
       "GRS-F058139763",
-      "GRS-F058139766"
+      "GRS-F058139764",
+      "GRS-F058139746",
+      "GRS-F058139748",
+      "GRS-F058139721",
+      "GRS-F058139723",
+      "GRS-F058139892",
+      "GRS-F058139888",
+      "GRS-F058139894",
+      "GRS-F058139895",
+      "GRS-F059139701"
     ],
     "price_usd": null,
     "manufacturer_part": "F028138549228",
@@ -891,7 +1205,16 @@
       "GRS-F058139761",
       "GRS-F058139762",
       "GRS-F058139763",
-      "GRS-F058139766"
+      "GRS-F058139764",
+      "GRS-F058139746",
+      "GRS-F058139748",
+      "GRS-F058139721",
+      "GRS-F058139723",
+      "GRS-F058139892",
+      "GRS-F058139888",
+      "GRS-F058139894",
+      "GRS-F058139895",
+      "GRS-F059139701"
     ],
     "price_usd": null,
     "manufacturer_part": "F028138548228",
@@ -918,7 +1241,18 @@
     "notes": "Zero protrusion at 90 degrees. 10mm cup depth for thicker doors up to 32mm.",
     "compatible_mounting_plate_skus": [
       "GRS-F058139761",
-      "GRS-F058139762"
+      "GRS-F058139762",
+      "GRS-F058139763",
+      "GRS-F058139764",
+      "GRS-F058139746",
+      "GRS-F058139748",
+      "GRS-F058139721",
+      "GRS-F058139723",
+      "GRS-F058139892",
+      "GRS-F058139888",
+      "GRS-F058139894",
+      "GRS-F058139895",
+      "GRS-F059139701"
     ],
     "price_usd": null,
     "manufacturer_part": "F028138561217",
@@ -945,7 +1279,18 @@
     "notes": "Zero protrusion at 90 degrees. 10mm cup depth.",
     "compatible_mounting_plate_skus": [
       "GRS-F058139761",
-      "GRS-F058139762"
+      "GRS-F058139762",
+      "GRS-F058139763",
+      "GRS-F058139764",
+      "GRS-F058139746",
+      "GRS-F058139748",
+      "GRS-F058139721",
+      "GRS-F058139723",
+      "GRS-F058139892",
+      "GRS-F058139888",
+      "GRS-F058139894",
+      "GRS-F058139895",
+      "GRS-F059139701"
     ],
     "price_usd": null,
     "manufacturer_part": "F028138563217",
@@ -972,7 +1317,18 @@
     "notes": "Cranking 03 - overlay up to 19mm. Zero protrusion. 10mm cup depth.",
     "compatible_mounting_plate_skus": [
       "GRS-F058139761",
-      "GRS-F058139762"
+      "GRS-F058139762",
+      "GRS-F058139763",
+      "GRS-F058139764",
+      "GRS-F058139746",
+      "GRS-F058139748",
+      "GRS-F058139721",
+      "GRS-F058139723",
+      "GRS-F058139892",
+      "GRS-F058139888",
+      "GRS-F058139894",
+      "GRS-F058139895",
+      "GRS-F059139701"
     ],
     "price_usd": null,
     "manufacturer_part": "F028138562217",
@@ -1001,7 +1357,16 @@
       "GRS-F058139761",
       "GRS-F058139762",
       "GRS-F058139763",
-      "GRS-F058139766"
+      "GRS-F058139764",
+      "GRS-F058139746",
+      "GRS-F058139748",
+      "GRS-F058139721",
+      "GRS-F058139723",
+      "GRS-F058139892",
+      "GRS-F058139888",
+      "GRS-F058139894",
+      "GRS-F058139895",
+      "GRS-F059139701"
     ],
     "price_usd": null,
     "manufacturer_part": "F028138567228",
@@ -1030,7 +1395,16 @@
       "GRS-F058139761",
       "GRS-F058139762",
       "GRS-F058139763",
-      "GRS-F058139766"
+      "GRS-F058139764",
+      "GRS-F058139746",
+      "GRS-F058139748",
+      "GRS-F058139721",
+      "GRS-F058139723",
+      "GRS-F058139892",
+      "GRS-F058139888",
+      "GRS-F058139894",
+      "GRS-F058139895",
+      "GRS-F059139701"
     ],
     "price_usd": null,
     "manufacturer_part": "F028138569228",
@@ -1057,7 +1431,18 @@
     "notes": "Thick door inset hinge. Max door thickness 28mm for inset application.",
     "compatible_mounting_plate_skus": [
       "GRS-F058139761",
-      "GRS-F058139762"
+      "GRS-F058139762",
+      "GRS-F058139763",
+      "GRS-F058139764",
+      "GRS-F058139746",
+      "GRS-F058139748",
+      "GRS-F058139721",
+      "GRS-F058139723",
+      "GRS-F058139892",
+      "GRS-F058139888",
+      "GRS-F058139894",
+      "GRS-F058139895",
+      "GRS-F059139701"
     ],
     "price_usd": null,
     "manufacturer_part": "F028138570228",
@@ -1082,11 +1467,7 @@
     "cabinet_type": "frameless",
     "crank_mm": 9.5,
     "notes": "Shallow 11mm cup depth. Accommodates overlays up to 20mm.",
-    "compatible_mounting_plate_skus": [
-      "GRS-314493700",
-      "GRS-314493702",
-      "GRS-318493700"
-    ],
+    "compatible_mounting_plate_skus": [],
     "price_usd": 2.8,
     "manufacturer_part": "146.322.54.0015",
     "image": "images/grass-nexis-110-hinge.jpeg"
@@ -1113,7 +1494,14 @@
     "compatible_mounting_plate_skus": [
       "GRS-314493700",
       "GRS-314493702",
-      "GRS-318493700"
+      "GRS-314493704",
+      "GRS-314493708",
+      "GRS-318493700",
+      "GRS-318493702",
+      "GRS-314393690",
+      "GRS-315393550",
+      "GRS-315393558",
+      "GRS-31539355018"
     ],
     "price_usd": null,
     "manufacturer_part": "148.322.53.0015",
@@ -1141,7 +1529,14 @@
     "compatible_mounting_plate_skus": [
       "GRS-314493700",
       "GRS-314493702",
-      "GRS-318493700"
+      "GRS-314493704",
+      "GRS-314493708",
+      "GRS-318493700",
+      "GRS-318493702",
+      "GRS-314393690",
+      "GRS-315393550",
+      "GRS-315393558",
+      "GRS-31539355018"
     ],
     "price_usd": null,
     "manufacturer_part": "148.322.53.0815",
@@ -1169,7 +1564,14 @@
     "compatible_mounting_plate_skus": [
       "GRS-314493700",
       "GRS-314493702",
-      "GRS-318493700"
+      "GRS-314493704",
+      "GRS-314493708",
+      "GRS-318493700",
+      "GRS-318493702",
+      "GRS-314393690",
+      "GRS-315393550",
+      "GRS-315393558",
+      "GRS-31539355018"
     ],
     "price_usd": null,
     "manufacturer_part": "148.304.53.1515",
@@ -1194,11 +1596,7 @@
     "cabinet_type": "frameless",
     "crank_mm": 4.5,
     "notes": "Shallow 11mm cup depth. 48mm boring pattern.",
-    "compatible_mounting_plate_skus": [
-      "GRS-314493700",
-      "GRS-314493702",
-      "GRS-318493700"
-    ],
+    "compatible_mounting_plate_skus": [],
     "price_usd": 2.8,
     "manufacturer_part": "146.325.54.0015",
     "image": "images/grass-nexis-110-hinge.jpeg"
@@ -1222,11 +1620,7 @@
     "cabinet_type": "frameless",
     "crank_mm": 9.5,
     "notes": "125 degree wide angle hinge. Overlay up to 19mm. Max door thickness 19mm.",
-    "compatible_mounting_plate_skus": [
-      "GRS-314493700",
-      "GRS-314493702",
-      "GRS-318493700"
-    ],
+    "compatible_mounting_plate_skus": [],
     "price_usd": null,
     "manufacturer_part": "148.329.32.0015",
     "image": "images/grass-nexis-110-hinge.jpeg"
@@ -1253,7 +1647,14 @@
     "compatible_mounting_plate_skus": [
       "GRS-314493700",
       "GRS-314493702",
-      "GRS-318493700"
+      "GRS-314493704",
+      "GRS-314493708",
+      "GRS-318493700",
+      "GRS-318493702",
+      "GRS-314393690",
+      "GRS-315393550",
+      "GRS-315393558",
+      "GRS-31539355018"
     ],
     "price_usd": null,
     "manufacturer_part": "138.329.73.0015",
@@ -1281,7 +1682,14 @@
     "compatible_mounting_plate_skus": [
       "GRS-314493700",
       "GRS-314493702",
-      "GRS-318493700"
+      "GRS-314493704",
+      "GRS-314493708",
+      "GRS-318493700",
+      "GRS-318493702",
+      "GRS-314393690",
+      "GRS-315393550",
+      "GRS-315393558",
+      "GRS-31539355018"
     ],
     "price_usd": null,
     "manufacturer_part": "138.329.73.0815",
@@ -1309,7 +1717,14 @@
     "compatible_mounting_plate_skus": [
       "GRS-314493700",
       "GRS-314493702",
-      "GRS-318493700"
+      "GRS-314493704",
+      "GRS-314493708",
+      "GRS-318493700",
+      "GRS-318493702",
+      "GRS-314393690",
+      "GRS-315393550",
+      "GRS-315393558",
+      "GRS-31539355018"
     ],
     "price_usd": null,
     "manufacturer_part": "138.765.73.0015",
@@ -1334,11 +1749,7 @@
     "cabinet_type": "frameless",
     "crank_mm": 9.5,
     "notes": "170 degree wide angle hinge. Zero protrusion at 90 degrees. 45mm pattern dowelled.",
-    "compatible_mounting_plate_skus": [
-      "GRS-314493700",
-      "GRS-314493702",
-      "GRS-318493700"
-    ],
+    "compatible_mounting_plate_skus": [],
     "price_usd": null,
     "manufacturer_part": "148.765.54.0015",
     "image": "images/grass-nexis-170-hinge.jpeg"
@@ -1365,7 +1776,14 @@
     "compatible_mounting_plate_skus": [
       "GRS-314493700",
       "GRS-314493702",
-      "GRS-318493700"
+      "GRS-314493704",
+      "GRS-314493708",
+      "GRS-318493700",
+      "GRS-318493702",
+      "GRS-314393690",
+      "GRS-315393550",
+      "GRS-315393558",
+      "GRS-31539355018"
     ],
     "price_usd": null,
     "manufacturer_part": "138.765.73.0815",
@@ -1393,7 +1811,14 @@
     "compatible_mounting_plate_skus": [
       "GRS-314493700",
       "GRS-314493702",
-      "GRS-318493700"
+      "GRS-314493704",
+      "GRS-314493708",
+      "GRS-318493700",
+      "GRS-318493702",
+      "GRS-314393690",
+      "GRS-315393550",
+      "GRS-315393558",
+      "GRS-31539355018"
     ],
     "price_usd": null,
     "manufacturer_part": "138.305.73.0015",

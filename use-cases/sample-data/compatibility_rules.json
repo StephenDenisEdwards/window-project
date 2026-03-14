@@ -1,7 +1,7 @@
 {
   "meta": {
     "description": "Deterministic constraint rules for hinge-to-mounting-plate compatibility",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "notes": "These rules encode the mathematical relationships that the constraint reasoning engine must enforce. A valid configuration must satisfy ALL applicable rules."
   },
   "rules": [
@@ -29,9 +29,9 @@
     {
       "id": "R004",
       "name": "overlay_in_range",
-      "description": "The desired overlay must fall within the plate's achievable range for the given application type",
+      "description": "The desired overlay must fall within the plate's achievable range for the given application type. Note: hinges with application 'overlay' (e.g. Grass Tiomos cranking 03) map to the plate's 'full' overlay range, as cranking 03 achieves overlays within the full overlay range with a lower maximum.",
       "type": "hard_constraint",
-      "logic": "desired_overlay_mm >= plate.overlay_range_mm[hinge.application][0] AND desired_overlay_mm <= plate.overlay_range_mm[hinge.application][1]"
+      "logic": "desired_overlay_mm >= plate.overlay_range_mm[app_key][0] AND desired_overlay_mm <= plate.overlay_range_mm[app_key][1], where app_key maps full_overlay->full, half_overlay->half, inset->inset, overlay->full"
     },
     {
       "id": "R005",
@@ -57,10 +57,10 @@
     {
       "id": "R008",
       "name": "hinges_per_door_by_height",
-      "description": "Number of hinges required depends on door height",
+      "description": "Number of hinges required depends on door height. Uses most conservative thresholds across Blum and Grass catalogs.",
       "type": "derived_value",
       "logic": {
-        "door_height_mm <= 900": 2,
+        "door_height_mm <= 889": 2,
         "door_height_mm <= 1400": 3,
         "door_height_mm <= 1800": 4,
         "door_height_mm > 1800": 5
@@ -105,9 +105,16 @@
     {
       "id": "R014",
       "name": "mounting_method_match",
-      "description": "Hinge mounting method must be compatible with the plate mounting method",
+      "description": "Hinge mounting method must be compatible with the plate mounting method. Screw-on hinges work with screw_on, euro_screw, and system_screw plates. Dowel hinges work with dowel and system_screw plates.",
       "type": "hard_constraint",
-      "logic": "hinge.mounting == plate.mounting_method OR (hinge.mounting == 'dowel' AND plate.mounting_method == 'press_in')"
+      "logic": "plate.mounting_method IN MOUNTING_COMPAT[hinge.mounting], where MOUNTING_COMPAT = {screw_on: [screw_on, euro_screw, system_screw], dowel: [dowel, system_screw]}"
+    },
+    {
+      "id": "R015",
+      "name": "cup_depth_door_thickness",
+      "description": "Door thickness must be at least cup_depth_mm + 2mm for proper hinge seating. This ensures sufficient material remains behind the hinge cup bore.",
+      "type": "hard_constraint",
+      "logic": "IF hinge.cup_depth_mm IS NOT NULL THEN door_thickness_mm >= hinge.cup_depth_mm + 2"
     }
   ]
 }

@@ -36,6 +36,7 @@ class Hinge:
     crank_mm: float
     compatible_mounting_plate_skus: list[str]
     price_usd: float
+    cup_depth_mm: Optional[float] = None
 
     @property
     def effective_max_weight_kg(self) -> float:
@@ -129,7 +130,7 @@ class HingeConstraintEngine:
     @staticmethod
     def hinges_per_door(door_height_mm: float) -> int:
         """R008: hinge count derived from door height."""
-        if door_height_mm <= 900:
+        if door_height_mm <= 889:
             return 2
         if door_height_mm <= 1400:
             return 3
@@ -159,6 +160,7 @@ class HingeConstraintEngine:
         "full_overlay": "full",
         "half_overlay": "half",
         "inset": "inset",
+        "overlay": "full",
     }
 
     def _check_overlay_range(self, h: Hinge, p: MountingPlate, req: CustomerRequirements) -> RuleResult:
@@ -225,11 +227,29 @@ class HingeConstraintEngine:
         return RuleResult("R011", "face_frame_overlay", ok,
             f"Overlay {req.desired_overlay_mm}mm vs face frame limit {limit}mm (frame {req.face_frame_width_mm}mm - 3)")
 
+    # Mounting method compatibility map:
+    # screw_on hinges work with screw_on, euro_screw, and system_screw plates
+    # dowel hinges work with dowel and system_screw plates
+    MOUNTING_METHOD_COMPAT = {
+        "screw_on": {"screw_on", "euro_screw", "system_screw"},
+        "dowel": {"dowel", "system_screw"},
+    }
+
     def _check_mounting_method(self, h: Hinge, p: MountingPlate) -> RuleResult:
-        ok = (h.mounting == p.mounting_method or
-              (h.mounting == "dowel" and p.mounting_method == "press_in"))
+        allowed = self.MOUNTING_METHOD_COMPAT.get(h.mounting, {h.mounting})
+        ok = p.mounting_method in allowed
         return RuleResult("R014", "mounting_method_match", ok,
             f"Hinge mounting '{h.mounting}' vs plate '{p.mounting_method}'")
+
+    def _check_cup_depth(self, h: Hinge, req: CustomerRequirements) -> RuleResult:
+        """R015: door thickness must be at least cup_depth_mm + 2mm."""
+        if h.cup_depth_mm is None:
+            return RuleResult("R015", "cup_depth_door_thickness", True,
+                "Cup depth not specified — skipped")
+        min_thickness = h.cup_depth_mm + 2
+        ok = req.door_thickness_mm >= min_thickness
+        return RuleResult("R015", "cup_depth_door_thickness", ok,
+            f"Door {req.door_thickness_mm}mm vs min {min_thickness}mm (cup depth {h.cup_depth_mm}mm + 2mm)")
 
     def _check_soft_close(self, h: Hinge, req: CustomerRequirements) -> RuleResult:
         if not req.soft_close:
@@ -257,6 +277,7 @@ class HingeConstraintEngine:
             self._check_adjacent_clearance(req),
             self._check_face_frame_overlay(p, req),
             self._check_mounting_method(h, p),
+            self._check_cup_depth(h, req),
             self._check_soft_close(h, req),
         ]
 
@@ -391,6 +412,7 @@ def load_catalog(data_dir: Path) -> tuple[list[Hinge], list[MountingPlate]]:
             crank_mm=h["crank_mm"],
             compatible_mounting_plate_skus=h["compatible_mounting_plate_skus"],
             price_usd=h["price_usd"],
+            cup_depth_mm=h.get("cup_depth_mm"),
         )
         for h in raw_hinges
     ]
