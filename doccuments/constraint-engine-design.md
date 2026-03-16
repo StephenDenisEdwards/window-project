@@ -180,7 +180,7 @@ Currently: write a function in `rules.py`, append it to `RULES`, deploy. No solv
 1. **Products are facts, compatibility is derived** — No hand-maintained compatibility lists. Whether a hinge+plate pair works is computed by rules.
 2. **Enumerate all constrained strings** — Every meaningful string field is an Enum. No silent failures from typos.
 3. **Full rule tracing** — Every evaluation records rule ID, category, detail, and remediation. Supports explainability.
-4. **No implicit derating** — Manufacturer's published `max_door_weight_kg` is used directly. No wide-angle derating.
+4. **No implicit derating** — Manufacturer's published `max_door_weight_kg` is used directly. The engine does not silently reduce weight ratings based on opening angle or other factors. In practice, a hinge rated for 80 kg at 90° may support less at wider angles (e.g. 170°) due to increased lever stress, but applying such derating factors automatically would embed assumptions that vary by product and manufacturer. If wide-angle derating is needed in the future, it should be added as an explicit, traceable rule — not baked into the weight comparison silently.
 5. **Separate identity from presentation** — `manufacturer_part` (canonical) vs `distributor_skus` (per-retailer pricing).
 
 ## Data Loading

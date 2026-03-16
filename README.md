@@ -85,7 +85,7 @@ pytest engine/tests/
 ## Key Design Decisions
 
 - **Products are facts, compatibility is derived** — no hand-maintained compatibility lists. Whether a hinge + plate pair works is computed by rules at query time.
-- **No implicit derating** — manufacturer's published weight ratings are used directly. No wide-angle derating applied.
+- **No implicit derating** — manufacturer's published weight ratings are used directly. The engine does not silently reduce ratings for wide opening angles or other factors. If derating is needed, it must be added as an explicit rule. See [constraint-engine-design.md](doccuments/constraint-engine-design.md#design-principles) for rationale.
 - **Full enum typing** — every constrained string field is an enum. No silent failures from typos.
 - **Full rule tracing** — every evaluation records rule ID, category, detail, and remediation. Supports the "always correct and explainable" value proposition.
 - **Separate identity from pricing** — canonical manufacturer part numbers with per-distributor SKU and pricing overlays.
