@@ -90,7 +90,17 @@ Each `RuleResult` carries `rule_id`, `rule_name`, `passed`, `detail`, `category`
 
 ### HingeConstraintEngine
 
-Initialized with lists of hinges and plates. Builds three indexes on construction for pre-filtering: by brand, by cabinet type, and by application type.
+Initialized with lists of hinges and plates. On construction (`solver.py` lines 52–60), builds three `dict[str, list[ConcealedHinge]]` indexes:
+
+- `_brand_index` — hinges keyed by `brand`
+- `_cabinet_type_index` — hinges keyed by `cabinet_type`
+- `_application_index` — hinges keyed by `application`
+
+### Pre-filtering (`_pre_filter_hinges`, lines 82–97)
+
+Given a `CustomerRequirements`, retrieves matching hinges from each index and intersects the sets. Application and cabinet type are always applied; brand is applied only if `preferred_brand` is set. This narrows the candidate hinges before the brute-force plate loop.
+
+Plates are **not indexed** — every filtered hinge is evaluated against every plate (`solve()` line 105).
 
 ### Data Flow
 

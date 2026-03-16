@@ -2,9 +2,7 @@
 
 ## Problem Statement
 
-The PoC domain model grew organically — fields were added as the data expanded, business logic leaked into data classes, and there's no clear boundary between product data, compatibility relationships, pricing, and presentation. The JSON schema has 20+ fields per product that the engine dataclass only partially loads.
-
-This document defines the canonical domain model for the production constraint engine.
+This document defines the canonical domain model for the constraint engine, implemented in `engine/models.py` and `engine/enums.py`.
 
 ## Design Principles
 
@@ -264,14 +262,12 @@ class DoorMaterial(Enum):
 | `RuleResult` (flat pass/fail + string) | Adds `category`, `values_compared`, `remediation` |
 | String fields like `"frameless"` | `CabinetType.FRAMELESS` enum |
 
-## Migration Path
+## Migration Status
 
-The PoC dataclasses and JSON files remain as-is for the demo. The production model is implemented alongside them:
+The PoC dataclass-based engine has been removed. The production Pydantic models are the sole implementation in `engine/`. The migration steps below are complete:
 
-1. Define enums and value objects (zero risk — additive)
-2. Define production entity classes using Pydantic (validation built-in)
-3. Write adapters: `PoC JSON → production model` and `production model → engine input`
-4. Run both engines in parallel against the golden test scenarios
-5. Once parity is confirmed, retire the PoC loader
-
-This avoids a risky big-bang rewrite while building toward the correct architecture.
+1. ~~Define enums and value objects~~ — `engine/enums.py`
+2. ~~Define production entity classes using Pydantic~~ — `engine/models.py`
+3. ~~Write adapters: PoC JSON → production model~~ — `engine/loader.py`
+4. ~~Run both engines in parallel against golden test scenarios~~ — 70+ tests passing
+5. ~~Retire the PoC loader~~ — PoC demo deleted, production engine is sole implementation

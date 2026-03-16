@@ -69,7 +69,7 @@ The catalogs are structured product listing documents. The following fields were
 
 3. **Hinge-per-door tables vary by brand.** Grass Tiomos: ≤889mm=2, ≤1422mm=3. Blum: ≤900mm=2, ≤1400mm=3. We use the more conservative Grass thresholds, but a production system might need brand-specific tables, especially for non-standard door materials or widths.
 
-4. **R010 weight derating is an approximation.** We apply a blanket 25% derating for hinges >120°. In reality, the manufacturer simply publishes a lower max weight for wide-angle models. The derating is already baked into `max_door_weight_kg` in our data, making R010 potentially double-penalising. A production system should use the published weight directly and remove the derating rule.
+4. **R010 weight derating was an approximation — now removed.** The PoC applied a blanket 25% derating for hinges >120°. In reality, the manufacturer simply publishes a lower max weight for wide-angle models. The derating was already baked into `max_door_weight_kg`, making R010 a double penalty. R010 has been removed; the engine uses `max_door_weight_kg` directly.
 
 5. **Hafele Duomatic data is thin.** We have 2 Hafele hinges and 2 plates with no Würth Baer SKUs, no cup depth, no material data, and no images. Hafele data came from web scraping, not catalog extraction. The Würth Baer Section B catalog covers Blum, Grass, Salice, and Titus — but not Hafele Duomatic. Either Würth Baer doesn't carry Duomatic, or it's in a different catalog section.
 
@@ -93,24 +93,24 @@ The brief requires: *"Encode mathematical hinge-to-mounting-plate compatibility 
 |-----|--------|---------------|
 | Per-hinge weight capacity (kg) | R007 cannot be evaluated | Manufacturer spec sheets, not distributor catalogs |
 | Installation rules (R011, R012) | Face frame and partition constraints missing | Würth's internal sales process document, SME interviews |
-| Wide-angle derating specifics (R010) | Risk of double-penalising | Remove R010, trust published max weights directly |
+| ~~Wide-angle derating specifics (R010)~~ | ~~Risk of double-penalising~~ | **RESOLVED** — R010 removed |
 | Pricing | Cannot sort by price or calculate per-door cost | Würth's ordering system / ERP, not catalogs |
 | The remaining 12 product families | Only concealed European hinges are covered | Additional catalog sections + the internal sales document |
-| Overlay as a function of drilling distance | We use simplified [min, max] ranges | Full lookup tables from catalogs, but engine would need drilling distance as an input |
+| Overlay as a function of drilling distance | R004 still uses simplified [min, max] ranges | `OverlayTable` model exists with full BPH × DD lookup but R004 uses the legacy `overlay_range_mm` shim. `CustomerRequirements` now accepts `drilling_distance_mm` |
 
 ### Recommendations for the engagement
 
 1. **The internal sales process document is the highest-value asset.** It likely contains the installation rules (R011, R012), weight guidelines, and edge cases that catalogs don't publish. Getting access to this document early in Week 1–2 discovery is critical.
 
-2. **Don't build R010 (derating) into the engine.** Use the manufacturer's published max weight directly. The derating is already reflected in the data — applying it again in the engine is an error.
+2. ~~**Don't build R010 (derating) into the engine.**~~ **DONE** — R010 removed. The engine uses `max_door_weight_kg` directly.
 
-3. **Overlay ranges need drilling distance.** The current [min, max] simplification works for a demo but a production system should accept drilling distance as a customer input and use the full lookup tables from the catalogs. This is a meaningful UX and engine design decision.
+3. **Overlay ranges need drilling distance.** `CustomerRequirements` now accepts `drilling_distance_mm` and the `OverlayTable` model stores full BPH × DD lookup data. However, R004 still evaluates against the simplified `overlay_range_mm` shim rather than the structured table. Wiring R004 to use `OverlayTable.achievable_overlay()` is remaining work.
 
 4. **Plan for brand-specific rule parameters.** The hinge-per-door table, reveal calculations, and overlay formulas differ between Blum and Grass. The engine should support per-brand rule configuration rather than a single set of universal thresholds.
 
 5. **Hafele (or whichever third brand Würth selects) will require separate data sourcing.** The Würth Baer catalog didn't cover Hafele Duomatic. The third Phase 1 brand may have its data in a completely different format.
 
-6. **Budget 40% of Weeks 3–6 for data cleaning, not engine building.** The engine is the easy part — it's a 500-line Python module. The hard part is validating every overlay range, every weight capacity, every compatible plate SKU against source data. This is the conclusion the original evaluation predicted, and the extraction exercise confirms it.
+6. **Budget 40% of Weeks 3–6 for data cleaning, not engine building.** The engine is the easy part — it's ~800 lines of Python across 6 modules. The hard part is validating every overlay range, every weight capacity, every compatible plate SKU against source data. This is the conclusion the original evaluation predicted, and the extraction exercise confirms it.
 
 ## Summary
 

@@ -39,32 +39,33 @@ Current catalog: 53 hinges and 55 mounting plates across Blum, Grass, and Hafele
 ## Project Structure
 
 ```
-poc/
-├── engine/                 # Production constraint engine
-│   ├── models.py           # Domain models (Pydantic v2)
-│   ├── enums.py            # Enumeration types
-│   ├── rules.py            # Constraint rules (single source of truth)
-│   ├── solver.py           # Engine: solve / evaluate
-│   ├── loader.py           # JSON data adapter
-│   └── tests/
-│       └── test_engine.py  # 70+ tests including 7 customer scenarios
-├── sample-data/            # Product catalog JSON
-│   ├── hinges.json
-│   └── mounting_plates.json
-├── catalogs/               # Source PDF catalogs (Wurth Baer, Grass)
-└── doccuments/             # Design docs, roadmap, research
-    ├── constraint-engine-design.md
-    ├── production-roadmap.md
-    ├── production-tooling-research.md
-    ├── domain-model.md
-    ├── evaluation.md
-    ├── data-extraction-evaluation.md
-    └── window-tech-brief-research-report.md
+engine/                     # Production constraint engine
+├── models.py               # Domain models (Pydantic v2)
+├── enums.py                # Enumeration types
+├── rules.py                # Constraint rules (single source of truth)
+├── solver.py               # Engine: solve / evaluate
+├── loader.py               # JSON data adapter
+└── tests/
+    └── test_engine.py      # 70+ tests including 7 customer scenarios
+sample-data/                # Product catalog JSON
+├── hinges.json
+└── mounting_plates.json
+catalogs/                   # Source PDF catalogs (Wurth Baer, Grass)
+demo/                       # Demo notebook
+└── constraint_engine_demo.ipynb
+doccuments/                 # Design docs, roadmap, research
+├── constraint-engine-design.md
+├── production-roadmap.md
+├── production-tooling-research.md
+├── domain-model.md
+├── evaluation.md
+├── data-extraction-evaluation.md
+└── window-tech-brief-research-report.md
 ```
 
 ## Constraint Rules
 
-14 rules across 3 categories, defined in `poc/engine/rules.py`:
+14 rules across 3 categories, defined in `engine/rules.py`:
 
 **Hard constraints** — brand lock, series compatibility, cabinet type match, overlay range, inset support, door thickness, door weight capacity, boring pattern, face frame overlay, adjacent door clearance, corner cabinet angle, mounting method compatibility, cup depth.
 
@@ -78,7 +79,7 @@ Every rule returns structured results with rule ID, category, detail, compared v
 
 ```bash
 pip install -r requirements.txt
-pytest poc/engine/tests/
+pytest engine/tests/
 ```
 
 ## Key Design Decisions

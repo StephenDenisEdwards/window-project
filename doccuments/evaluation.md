@@ -55,7 +55,7 @@ The compatibility between a hinge cup and its mounting plate is mathematically p
 
 ## Data Ingestion Risk — The Unknown Variable
 
-The sample data in `sample-data/` was hand-crafted from web research against publicly available manufacturer specs. It demonstrates the *shape* of the problem but tells us nothing about what Würth's actual catalog data looks like or how hard ingestion will be. The real difficulty hinges on questions that can only be answered during discovery:
+The sample data in `sample-data/` (53 hinges, 55 mounting plates across Blum, Grass, and Hafele) was built from web research against publicly available manufacturer specs. It demonstrates the *shape* of the problem but tells us nothing about what Würth's actual catalog data looks like or how hard ingestion will be. The real difficulty hinges on questions that can only be answered during discovery:
 
 **Format uncertainty.** The catalog data could be anything from a well-structured database export (easy) to scanned PDF lookup tables that a sales rep printed out years ago (hard). The brief mentions an internal sales process document covering 13 product families — that could be a goldmine or a 4-page flowchart with gaps.
 
@@ -73,13 +73,13 @@ The sample data in `sample-data/` was hand-crafted from web research against pub
 
 ### Constraint Engine Design Decisions
 
-- The demo uses brute-force exhaustive search — fine for 15 hinges, won't scale to thousands of SKUs across 13 product families. Need to evaluate whether a proper CSP solver (OR-Tools, Z3) is warranted or if indexed lookups with pre-computed compatibility matrices are enough.
-- How are rules authored and maintained? The JSON rule format works for a demo but someone needs to add/modify rules as new products enter the catalog. That's an ongoing ops problem, not a one-time build.
+- The engine uses indexed pre-filtering on hinges (by brand, cabinet type, application) followed by brute-force evaluation against all plates. This handles the current catalog (53 hinges, 55 plates) easily. Tooling research (`doccuments/production-tooling-research.md`) concluded that CSP solvers (OR-Tools, Z3) are not warranted at foreseeable scale — indexed brute force works up to ~10K products per type. Solvers only become necessary for simultaneous multi-family configuration (3+ product types at once).
+- Rules are Python functions in `engine/rules.py` — the single source of truth. Adding or modifying a rule currently requires a code change and deploy. Moving simple predicate rules to a data-driven format (JSON definitions interpreted by a generic evaluator, with Python callables for complex logic) is the next step for maintainability. See `doccuments/constraint-engine-design.md` for rule maintenance risks.
 
 ### Multi-Brand Catalog Architecture
 
 - Are the 3 Phase 1 brands on separate e-commerce platforms or one shared backend? This determines whether Window integrates via API, database, or scraping.
-- SKU identity across brands — does the same Blum hinge have different SKUs at Würth Louis vs Würth Baer? If so, the knowledge layer needs a canonical product model with brand-specific mappings.
+- SKU identity across brands — the same Blum hinge has different distributor SKUs at different Würth brands (e.g. `BP71B3550` at Würth Baer). The domain model now handles this via `ManufacturerProduct` (canonical manufacturer part number) with per-brand `DistributorSKU` mappings. Pricing lives on the SKU, not the product.
 
 ### Session and State Management
 
@@ -93,7 +93,7 @@ The sample data in `sample-data/` was hand-crafted from web research against pub
 
 ### Testing and Domain Validation
 
-- How do you verify the constraint engine is correct against real-world installations? Unit tests prove internal consistency but not domain correctness. You need a domain expert validating outputs against known-good configurations.
+- How do you verify the constraint engine is correct against real-world installations? The test suite (70+ tests, 7 customer scenarios) proves internal consistency but not domain correctness. You need a domain expert validating outputs against known-good configurations.
 - Regression testing when catalog data changes — new products, discontinued SKUs, updated compatibility rules.
 
 ### The Dashboard
