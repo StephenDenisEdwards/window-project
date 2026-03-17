@@ -202,6 +202,7 @@ class CustomerRequirements(BaseModel):
     soft_close: bool
     cabinet_position: CabinetPosition = CabinetPosition.STANDARD
     preferred_brand: Optional[str] = None
+    brand_lock: bool = True
     preferred_series: Optional[str] = None
     has_adjacent_door: bool = False
     adjacent_door_overlay_mm: float = 0

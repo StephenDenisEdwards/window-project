@@ -67,7 +67,7 @@ documents/                 # Design docs, roadmap, research
 
 14 rules across 3 categories, defined in `engine/rules.py`:
 
-**Hard constraints** — brand lock, series compatibility, cabinet type match, overlay range, inset support, door thickness, door weight capacity, boring pattern, face frame overlay, adjacent door clearance, corner cabinet angle, mounting method compatibility, cup depth.
+**Hard constraints** — brand lock (conditional, controlled by `brand_lock` flag), series compatibility, cabinet type match, overlay range, inset support, door thickness, door weight capacity, boring pattern, face frame overlay, adjacent door clearance, corner cabinet angle, mounting method compatibility, cup depth.
 
 **Derived values** — hinge count from door height (2-5 hinges based on thresholds).
 
@@ -129,6 +129,7 @@ No additional packages beyond the standard library are needed. The engine itself
 - **Full enum typing** — every constrained string field is an enum. No silent failures from typos.
 - **Full rule tracing** — every evaluation records rule ID, category, detail, and remediation. Supports the "always correct and explainable" value proposition.
 - **Separate identity from pricing** — canonical manufacturer part numbers with per-distributor SKU and pricing overlays.
+- **Brand lock is a rule, not an assumption** — cross-brand hinge + plate pairing is controlled by the `brand_lock` flag on `CustomerRequirements` (default `True`). When disabled, R001 passes automatically and the trace records it. Brand policy is a configurable constraint, not a hardcoded architectural decision.
 
 ## Production Roadmap
 

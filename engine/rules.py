@@ -74,7 +74,15 @@ def hinges_per_door(door_height_mm: float, thresholds: list[tuple[float, int]] |
 
 
 def check_brand_lock(h: ConcealedHinge, p: MountingPlate, req: CustomerRequirements, num_hinges: int) -> RuleResult:
-    """R001: Hinge and plate must share the same brand."""
+    """R001: Hinge and plate must share the same brand (when brand_lock is enabled)."""
+    if not req.brand_lock:
+        return RuleResult(
+            rule_id="R001",
+            rule_name="brand_lock",
+            passed=True,
+            detail="Brand lock not required — cross-brand combinations allowed",
+            category=RuleCategory.HARD_CONSTRAINT,
+        )
     ok = h.brand == p.brand
     return RuleResult(
         rule_id="R001",

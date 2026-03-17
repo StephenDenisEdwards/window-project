@@ -53,7 +53,7 @@ Each `RuleResult` carries `rule_id`, `rule_name`, `passed`, `detail`, `category`
 
 | ID | Name | Logic |
 |----|------|-------|
-| R001 | Brand Lock | hinge.brand == plate.brand |
+| R001 | Brand Lock | if brand_lock: hinge.brand == plate.brand (conditional, skipped when brand_lock=False) |
 | R002 | Series Compatibility | hinge.series ∈ plate.compatible_hinge_series |
 | R003 | Cabinet Type Match | hinge, plate, and requirements all agree on cabinet type |
 | R004 | Overlay in Range | desired overlay within plate's range for the application type |
@@ -182,6 +182,7 @@ Currently: write a function in `rules.py`, append it to `RULES`, deploy. No solv
 3. **Full rule tracing** — Every evaluation records rule ID, category, detail, and remediation. Supports explainability.
 4. **No implicit derating** — Manufacturer's published `max_door_weight_kg` is used directly. The engine does not silently reduce weight ratings based on opening angle or other factors. In practice, a hinge rated for 80 kg at 90° may support less at wider angles (e.g. 170°) due to increased lever stress, but applying such derating factors automatically would embed assumptions that vary by product and manufacturer. If wide-angle derating is needed in the future, it should be added as an explicit, traceable rule — not baked into the weight comparison silently.
 5. **Separate identity from presentation** — `manufacturer_part` (canonical) vs `distributor_skus` (per-retailer pricing).
+6. **Brand lock is a rule, not an assumption** — Cross-brand hinge+plate pairing is controlled by the `brand_lock` flag on `CustomerRequirements` (defaults to `True`). When disabled, R001 passes automatically and the constraint trace records "Brand lock not required." This keeps brand policy as a configurable constraint rather than a hardcoded architectural assumption — different distributors or use cases may or may not require same-brand pairing.
 
 ## Data Loading
 
@@ -200,7 +201,7 @@ for each hinge in filtered_hinges:        # H iterations
 
 Every hinge is paired with every plate, and every rule is run against every pair — no early exit. The total number of rule evaluations is H × P × R. With the current catalog (53 hinges, 55 plates, 14 rules) this is ~40,810 evaluations and completes in milliseconds, but the design has structural limits worth noting.
 
-**No short-circuiting** — `evaluate()` runs all rules even after the first failure. This is intentional for `solve_with_explanation()` which needs the full trace, but `solve()` only needs to know whether a config is valid. Most combinations fail on R001 (brand lock) or R002 (series compatibility), so short-circuiting would eliminate the majority of work.
+**No short-circuiting** — `evaluate()` runs all rules even after the first failure. This is intentional for `solve_with_explanation()` which needs the full trace, but `solve()` only needs to know whether a config is valid. Most combinations fail on R001 (brand lock, when enabled) or R002 (series compatibility), so short-circuiting would eliminate the majority of work.
 
 **Plates are not indexed** — Hinges are indexed by brand, cabinet type, and application at init time, but plates are scanned linearly. Indexing plates by `compatible_hinge_series` or `cabinet_type` would cut the inner loop.
 
