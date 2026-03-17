@@ -18,7 +18,6 @@ Constraints by relationship:
 from engine_v2.core.models import Product, Requirements, RuleCategory, RuleResult
 from engine_v2.families.led_lighting.models import (
     Dimmer,
-    DimmingProtocol,
     Driver,
     LightBar,
     LightingRequirements,
@@ -29,8 +28,8 @@ from engine_v2.families.led_lighting.models import (
 
 def check_voltage_match(candidates: dict[str, Product], req: Requirements, derived: dict) -> RuleResult:
     """LED001: Light bar voltage must match driver output voltage."""
-    bar = LightBar.model_validate(candidates["light_bar"].model_dump())
-    drv = Driver.model_validate(candidates["driver"].model_dump())
+    bar: LightBar = candidates["light_bar"]  # type: ignore[assignment]
+    drv: Driver = candidates["driver"]  # type: ignore[assignment]
     passed = bar.voltage == drv.output_voltage
     return RuleResult(
         rule_id="LED001",
@@ -45,9 +44,9 @@ def check_voltage_match(candidates: dict[str, Product], req: Requirements, deriv
 
 def check_wattage_capacity(candidates: dict[str, Product], req: Requirements, derived: dict) -> RuleResult:
     """LED002: Driver must handle total wattage of all light bars with 20% headroom."""
-    bar = LightBar.model_validate(candidates["light_bar"].model_dump())
-    drv = Driver.model_validate(candidates["driver"].model_dump())
-    r = LightingRequirements.model_validate(req.model_dump())
+    bar: LightBar = candidates["light_bar"]  # type: ignore[assignment]
+    drv: Driver = candidates["driver"]  # type: ignore[assignment]
+    r: LightingRequirements = req  # type: ignore[assignment]
     total_wattage = bar.wattage * r.num_light_bars
     # 80% rule: driver should not be loaded above 80% for longevity
     safe_capacity = drv.max_wattage * 0.8
@@ -65,8 +64,8 @@ def check_wattage_capacity(candidates: dict[str, Product], req: Requirements, de
 
 def check_connector_match(candidates: dict[str, Product], req: Requirements, derived: dict) -> RuleResult:
     """LED003: Light bar connector must match driver output connector."""
-    bar = LightBar.model_validate(candidates["light_bar"].model_dump())
-    drv = Driver.model_validate(candidates["driver"].model_dump())
+    bar: LightBar = candidates["light_bar"]  # type: ignore[assignment]
+    drv: Driver = candidates["driver"]  # type: ignore[assignment]
     passed = bar.connector == drv.connector
     return RuleResult(
         rule_id="LED003",
@@ -81,8 +80,8 @@ def check_connector_match(candidates: dict[str, Product], req: Requirements, der
 
 def check_bar_length(candidates: dict[str, Product], req: Requirements, derived: dict) -> RuleResult:
     """LED006: Light bar must fit inside the cabinet."""
-    bar = LightBar.model_validate(candidates["light_bar"].model_dump())
-    r = LightingRequirements.model_validate(req.model_dump())
+    bar: LightBar = candidates["light_bar"]  # type: ignore[assignment]
+    r: LightingRequirements = req  # type: ignore[assignment]
     passed = bar.length_mm <= r.cabinet_length_mm
     return RuleResult(
         rule_id="LED006",
@@ -97,8 +96,8 @@ def check_bar_length(candidates: dict[str, Product], req: Requirements, derived:
 
 def check_brightness(candidates: dict[str, Product], req: Requirements, derived: dict) -> RuleResult:
     """LED007: Light bar meets minimum lumen output."""
-    bar = LightBar.model_validate(candidates["light_bar"].model_dump())
-    r = LightingRequirements.model_validate(req.model_dump())
+    bar: LightBar = candidates["light_bar"]  # type: ignore[assignment]
+    r: LightingRequirements = req  # type: ignore[assignment]
     if r.min_lumen_output == 0:
         return RuleResult(
             rule_id="LED007",
@@ -121,8 +120,8 @@ def check_brightness(candidates: dict[str, Product], req: Requirements, derived:
 
 def check_driver_supports_dimming(candidates: dict[str, Product], req: Requirements, derived: dict) -> RuleResult:
     """LED008: If dimming is required, driver must support it."""
-    drv = Driver.model_validate(candidates["driver"].model_dump())
-    r = LightingRequirements.model_validate(req.model_dump())
+    drv: Driver = candidates["driver"]  # type: ignore[assignment]
+    r: LightingRequirements = req  # type: ignore[assignment]
     if not r.dimming_required:
         return RuleResult(
             rule_id="LED008",
@@ -147,8 +146,8 @@ def check_driver_supports_dimming(candidates: dict[str, Product], req: Requireme
 
 def check_dimming_protocol(candidates: dict[str, Product], req: Requirements, derived: dict) -> RuleResult:
     """LED004: Dimmer protocol must match driver protocol."""
-    drv = Driver.model_validate(candidates["driver"].model_dump())
-    dim = Dimmer.model_validate(candidates["dimmer"].model_dump())
+    drv: Driver = candidates["driver"]  # type: ignore[assignment]
+    dim: Dimmer = candidates["dimmer"]  # type: ignore[assignment]
     passed = drv.dimming_protocol == dim.dimming_protocol
     return RuleResult(
         rule_id="LED004",
@@ -163,9 +162,9 @@ def check_dimming_protocol(candidates: dict[str, Product], req: Requirements, de
 
 def check_dimmer_wattage(candidates: dict[str, Product], req: Requirements, derived: dict) -> RuleResult:
     """LED005: Total system wattage must be within dimmer's rated range."""
-    bar = LightBar.model_validate(candidates["light_bar"].model_dump())
-    dim = Dimmer.model_validate(candidates["dimmer"].model_dump())
-    r = LightingRequirements.model_validate(req.model_dump())
+    bar: LightBar = candidates["light_bar"]  # type: ignore[assignment]
+    dim: Dimmer = candidates["dimmer"]  # type: ignore[assignment]
+    r: LightingRequirements = req  # type: ignore[assignment]
     total_wattage = bar.wattage * r.num_light_bars
 
     under_max = total_wattage <= dim.max_wattage
@@ -195,8 +194,8 @@ def check_dimmer_wattage(candidates: dict[str, Product], req: Requirements, deri
 
 def check_dimmer_voltage(candidates: dict[str, Product], req: Requirements, derived: dict) -> RuleResult:
     """LED009: Dimmer must be compatible with the system voltage."""
-    drv = Driver.model_validate(candidates["driver"].model_dump())
-    dim = Dimmer.model_validate(candidates["dimmer"].model_dump())
+    drv: Driver = candidates["driver"]  # type: ignore[assignment]
+    dim: Dimmer = candidates["dimmer"]  # type: ignore[assignment]
     passed = drv.output_voltage in dim.voltage_compatible
     return RuleResult(
         rule_id="LED009",

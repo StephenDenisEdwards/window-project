@@ -358,3 +358,41 @@ All three:              Total system wattage under dimmer limit
 This is why staged works well here: light bar × driver constraints are independent of the dimmer, so Stage 1 can prune aggressively before dimmer evaluation.
 
 See `engine_v2/core/solver_n.py` for the flat N-candidate prototype and `engine_v2/core/solver_staged.py` for the staged pipeline prototype. Both are tested with LED lighting in `engine_v2/tests/test_n_candidate.py` and `engine_v2/tests/test_staged.py`.
+
+### Stage decomposition: what it requires and what can go wrong
+
+Stage decomposition means manually deciding which products to evaluate together at each step and which rules belong to each step. For LED lighting, this looks like:
+
+- **Stage 1:** Cross light bars × drivers, evaluate voltage/wattage/connector rules. Discard invalid pairs.
+- **Stage 2:** Cross surviving pairs × dimmers, evaluate dimming protocol/wattage/voltage rules.
+
+This split is hand-curated in `engine_v2/families/led_lighting/rules.py`:
+
+```python
+STAGE_1_RULES = [LED001, LED002, LED003, LED006, LED007, LED008]  # bar ↔ driver
+STAGE_2_RULES = [LED004, LED005, LED009]                          # driver ↔ dimmer
+```
+
+The decisions a family author must make:
+
+1. **Which roles go in which stage.** Light bar and driver go together in Stage 1 because most rules involve those two. If you put light bar and dimmer in Stage 1 instead, there is only one bar-dimmer rule (LED005), so Stage 1 barely prunes anything and you gain nothing.
+
+2. **Which rules go in which stage.** A rule can only reference roles available at its stage or earlier. LED004 (driver-dimmer protocol match) cannot run in Stage 1 because the dimmer has not been introduced yet. Assign it to the wrong stage and you get a runtime KeyError.
+
+3. **Stage ordering matters for performance.** The whole point is that Stage 1 prunes heavily so Stage 2 has fewer combinations. If Stage 1 rules are weak filters, the pipeline adds complexity with no benefit.
+
+**What can go wrong:**
+
+- **Correctness is harder to verify.** The flat solver evaluates every combination against every rule — nothing can slip through a pruning crack. The staged solver only evaluates later-stage rules against combinations that survived earlier stages. If a stage incorrectly prunes a valid combination (e.g., a rule is assigned to the wrong stage), the solver silently drops correct results.
+
+- **Adding a rule requires a decomposition decision.** With the flat solver, new rules are appended to `ALL_RULES`. With the staged solver, the author must decide which stage the rule belongs to, verify that all referenced roles are available at that stage, and consider whether the new rule changes the optimal stage ordering.
+
+- **`_best_failing` negates the performance gain on failure.** When no valid configuration exists, `solve_with_explanation` calls `_best_failing`, which evaluates the full Cartesian product with no pruning and no early termination to find the closest match. The no-solution case — often the most important for user experience — is actually slower than the flat solver because the staged work was wasted.
+
+- **Loss of the full evaluation matrix.** The staged solver prunes invalid partials between stages, so downstream stages never see combinations that failed upstream. Analytics like "which rule fails most often across all combinations" require a separate exhaustive pass, which is what `_best_failing` already does internally.
+
+### Recommendation for N-candidate families
+
+**Default to the flat N-candidate solver** for correctness, simplicity, and easy configuration. If latency becomes a problem at catalog scale, optimize the flat solver first (pre-filtering, indexing) before introducing stage decomposition. This matches the pattern in `engine/solver.py`, which uses flat evaluation with brand/cabinet-type/application indexes to reduce the candidate space before the Cartesian product.
+
+Reserve the staged pipeline for families where: (a) catalogs are large enough that the Cartesian product is measurably slow, (b) constraints are clearly layered across roles, and (c) the performance gain justifies the configuration and correctness burden.
