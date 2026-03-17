@@ -82,6 +82,46 @@ pip install -r requirements.txt
 pytest engine/tests/
 ```
 
+## Demo Notebook
+
+`demo/constraint_engine_demo.ipynb` is an interactive walkthrough of the constraint engine. It covers:
+
+1. **Catalog overview** — all hinges and mounting plates across Blum, Grass, and Hafele with product images
+2. **Constraint rules** — the 14 rules the engine enforces and their categories
+3. **Customer scenarios** — five real-world selection problems (standard kitchen, corner cabinet, tall pantry, adjacent doors, and a deliberate constraint violation)
+4. **Constraint trace deep dive** — full rule-by-rule pass/fail trace showing exactly why a configuration was recommended
+5. **Compatibility matrix** — exhaustive evaluation of all 2,915 hinge × plate pairs
+6. **Price vs capacity analysis** — trade-offs across valid configurations
+7. **Failure analysis** — how the engine explains why no solution exists and identifies the closest match
+8. **Interactive explorer** — modify `CustomerRequirements` values and re-run to test your own scenarios
+
+### Running the notebook
+
+**VS Code (easiest option):**
+
+1. Install [Python](https://www.python.org/downloads/) and ensure it's on your PATH
+2. Open this project folder in VS Code
+3. Install the [Jupyter extension](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter) (Extensions panel, search "Jupyter")
+4. Install dependencies: `pip install -r requirements.txt`
+5. Open `demo/constraint_engine_demo.ipynb` — VS Code will prompt you to select a Python kernel
+6. Click **Run All** or step through cells individually
+
+**Command line (Jupyter):**
+
+```bash
+pip install -r requirements.txt
+jupyter notebook demo/constraint_engine_demo.ipynb
+```
+
+### Dependencies
+
+The notebook requires the packages listed in `requirements.txt`:
+
+- `pydantic` (>=2.0) — domain models and validation
+- `ipykernel` / `jupyter` — notebook runtime
+
+No additional packages beyond the standard library are needed. The engine itself only depends on Pydantic.
+
 ## Key Design Decisions
 
 - **Products are facts, compatibility is derived** — no hand-maintained compatibility lists. Whether a hinge + plate pair works is computed by rules at query time.
