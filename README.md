@@ -53,7 +53,7 @@ sample-data/                # Product catalog JSON
 catalogs/                   # Source PDF catalogs (Wurth Baer, Grass)
 demo/                       # Demo notebook
 └── constraint_engine_demo.ipynb
-doccuments/                 # Design docs, roadmap, research
+documents/                 # Design docs, roadmap, research
 ├── constraint-engine-design.md
 ├── production-roadmap.md
 ├── production-tooling-research.md
@@ -73,7 +73,7 @@ doccuments/                 # Design docs, roadmap, research
 
 **Preferences** — soft-close (non-blocking).
 
-Every rule returns structured results with rule ID, category, detail, compared values, and remediation suggestions. See `doccuments/constraint-engine-design.md` for full rule reference.
+Every rule returns structured results with rule ID, category, detail, compared values, and remediation suggestions. See `documents/constraint-engine-design.md` for full rule reference.
 
 ## Setup
 
@@ -85,7 +85,7 @@ pytest engine/tests/
 ## Key Design Decisions
 
 - **Products are facts, compatibility is derived** — no hand-maintained compatibility lists. Whether a hinge + plate pair works is computed by rules at query time.
-- **No implicit derating** — manufacturer's published weight ratings are used directly. The engine does not silently reduce ratings for wide opening angles or other factors. If derating is needed, it must be added as an explicit rule. See [constraint-engine-design.md](doccuments/constraint-engine-design.md#design-principles) for rationale.
+- **No implicit derating** — manufacturer's published weight ratings are used directly. The engine does not silently reduce ratings for wide opening angles or other factors. If derating is needed, it must be added as an explicit rule. See [constraint-engine-design.md](documents/constraint-engine-design.md#design-principles) for rationale.
 - **Full enum typing** — every constrained string field is an enum. No silent failures from typos.
 - **Full rule tracing** — every evaluation records rule ID, category, detail, and remediation. Supports the "always correct and explainable" value proposition.
 - **Separate identity from pricing** — canonical manufacturer part numbers with per-distributor SKU and pricing overlays.
@@ -104,4 +104,4 @@ The engine is functional but not production-ready. Key remaining work:
 - **Multi-brand deployment** — per-brand catalogs, pricing feeds, and rule parameters
 - **13 product families** — engine currently covers concealed hinges only; drawer slides, lift systems, handles, locks, lighting to follow
 
-See `doccuments/production-roadmap.md` for the full phased plan and `doccuments/production-tooling-research.md` for technology evaluation.
+See `documents/production-roadmap.md` for the full phased plan and `documents/production-tooling-research.md` for technology evaluation.
