@@ -128,3 +128,62 @@ solver.search() -> valid assignments
 The engine is **constraint-based in design** (property-level predicates, no product-specific rules, data/logic separation) but uses **exhaustive evaluation as its solver strategy**. This is the right choice at current scale — it's simpler, provides complete explainability traces, and runs fast enough.
 
 If the v2 multi-family architecture eventually produces search spaces where exhaustive evaluation becomes impractical, migrating to a CSP solver (Google OR-Tools CP-SAT is already being researched — see `documents/cpsat-research.md`) would preserve all existing constraint logic while replacing only the solver strategy.
+
+---
+
+## Limitations of the Staged Pipeline
+
+The current staged pipeline (pre-filter → exhaustive evaluate all pairs → filter valid → rank) is the right choice at current scale. These are the known limitations that would drive a future migration to CSP propagation:
+
+### 1. Combinatorial Explosion
+
+53 hinges x 55 plates = 2,915 pairs — trivial. But the roadmap calls for 13+ product families with thousands of products each. Cross-family configurations (hinge + plate + mounting screw + bumper) could produce millions of combinations. Exhaustive evaluation of every candidate against every rule does not scale to that.
+
+| Scenario | Combinations | Rule Checks (14 rules) | Feasibility |
+|----------|-------------|----------------------|-------------|
+| Current (hinges only) | 2,915 | ~40,000 | Milliseconds |
+| 3 families, 200 products each | 8,000,000 | ~112,000,000 | Seconds — borderline |
+| 13 families, cross-family pairing | 100,000,000+ | 1,000,000,000+ | Impractical |
+
+### 2. No Constraint Propagation
+
+A CSP solver can narrow the solution space incrementally: *"Given what you've told me so far, only Blum and Grass are still possible."* The staged pipeline cannot — it requires all inputs before it runs, then evaluates everything from scratch. This means the conversational layer cannot progressively narrow options as the customer provides information mid-conversation. Every interaction is a full re-solve.
+
+### 3. Redundant Computation
+
+The v1 engine evaluates all 14 rules on every pair, even if it fails brand lock on rule 1 — that's 13 wasted rule checks per obviously-invalid pair. The v2 engine adds early termination (stop after first hard constraint failure), which helps but doesn't eliminate the root problem: a CSP solver with propagation would never generate the invalid pair in the first place.
+
+**Example at current scale:**
+- 53 hinges x 55 plates = 2,915 pairs
+- Only ~200 pass brand lock (R001) — the remaining ~2,700 pairs are cross-brand and guaranteed to fail
+- Without early termination: 2,700 x 14 = 37,800 wasted rule checks
+- With early termination: 2,700 x 1 = 2,700 wasted rule checks (better, but still evaluated)
+- With propagation: 0 — cross-brand pairs are never constructed
+
+### 4. No Native Optimization
+
+The pipeline finds all valid solutions, then sorts by price/capacity. It cannot express *"find the cheapest valid configuration"* as an optimization objective that guides the search. A CSP solver can minimize/maximize objectives natively, potentially finding the optimum without evaluating every candidate.
+
+This matters for scenarios like: *"Find the cheapest configuration across all brands that supports a 25kg door with soft-close"* — the exhaustive pipeline must find all valid solutions first, then pick the cheapest. A CSP solver can prune entire branches of the search space that are provably more expensive than the current best.
+
+### 5. No Incremental Solving
+
+Every query is independent — no state is preserved between solves. If a customer asks *"What about 19mm doors instead of 18mm?"*, the engine re-evaluates everything from scratch rather than incrementally updating the previous result. At current scale this is instant, but it is architecturally wasteful and becomes a bottleneck in interactive sessions with large catalogs.
+
+### 6. Cross-Family Constraints Are Hard
+
+The pipeline handles one family at a time. Constraints that span families are difficult to express:
+
+- *"The drawer slides must support the weight of a drawer whose front is hung on these hinges"*
+- *"The lift system and the hinge system cannot both be installed on the same door"*
+- *"The handle length must not interfere with the hinge cup boring position"*
+
+These cross-family constraints require orchestrating multiple independent pipeline runs and correlating results manually. A CSP solver handles this naturally — all variables from all families exist in the same constraint model.
+
+### When to Migrate
+
+These limitations do not affect the current system. The pragmatic path:
+
+1. **Now:** Keep exhaustive evaluation. It runs in milliseconds, provides complete explainability traces (including for failures), and is trivially simple to debug and extend.
+2. **Trigger:** When either (a) catalog size makes exhaustive evaluation measurably slow, or (b) cross-family constraints require unified solving across product families.
+3. **Migration:** Swap in CP-SAT as the solver behind the same constraint interface. The constraint definitions (property-level predicates in `rules.py`) remain unchanged — only the evaluation strategy changes. See `documents/cpsat-research.md` for the CP-SAT evaluation.
