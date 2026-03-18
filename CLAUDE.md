@@ -24,7 +24,7 @@ python -m pytest engine/tests/ -k "prefilter"     # pre-filter verification
 pytest engine_v2/tests/ -v
 
 # Launch demo notebook
-jupyter notebook demo/constraint_engine_demo.ipynb
+jupyter notebook demo/v1_hinge_constraint_demo.ipynb
 ```
 
 ## Architecture

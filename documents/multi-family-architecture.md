@@ -396,3 +396,75 @@ The decisions a family author must make:
 **Default to the flat N-candidate solver** for correctness, simplicity, and easy configuration. If latency becomes a problem at catalog scale, optimize the flat solver first (pre-filtering, indexing) before introducing stage decomposition. This matches the pattern in `engine/solver.py`, which uses flat evaluation with brand/cabinet-type/application indexes to reduce the candidate space before the Cartesian product.
 
 Reserve the staged pipeline for families where: (a) catalogs are large enough that the Cartesian product is measurably slow, (b) constraints are clearly layered across roles, and (c) the performance gain justifies the configuration and correctness burden.
+
+---
+
+## Appendix: Plain-English Guide — Paired vs N-Candidate Solvers
+
+### Why concealed hinges are a paired solver (not a triple)
+
+At first glance, the hinge constraint engine seems to involve three things: a hinge, a mounting plate, and a cabinet door. But the cabinet/door is not a product the engine selects — it's the problem definition. The contractor is standing in front of a specific cabinet. They know the door thickness, height, weight, and what overlay they need. They need the engine to tell them which hinge and plate to buy.
+
+This distinction — **products you search over** vs **the situation you're given** — is what determines the solver shape:
+
+| Thing | What it is | Searched over? |
+|---|---|---|
+| Hinge | Product from the catalog | Yes — the engine picks this |
+| Mounting plate | Product from the catalog | Yes — the engine picks this |
+| Cabinet/door | The contractor's job site | No — this is fixed input |
+
+The 14 constraint rules reflect this. Some check the hinge against the cabinet (`R006: is the door thick enough for this hinge?`). Some check the plate against the cabinet (`R004: does this plate achieve the desired overlay?`). Some check the hinge against the plate (`R002: are they from compatible series?`). But none of them *search* for the right cabinet — the cabinet is always a constant.
+
+That's why it's a paired solver: **two product axes** (hinge × plate) evaluated against **one fixed input** (customer requirements).
+
+This also explains why pre-filtering works so well on the hinge side. Rules like R006 (door thickness) and R009 (boring pattern) depend only on the hinge and the customer's requirements — the plate is irrelevant. These rules could be evaluated once per hinge and cached, rather than re-evaluated for every plate pairing. The plate doesn't change the answer.
+
+### Why LED lighting needs a 3-candidate solver
+
+LED lighting is fundamentally different. A contractor fitting under-cabinet lighting doesn't pick their own driver and dimmer — they need the engine to find all three:
+
+| Thing | What it is | Searched over? |
+|---|---|---|
+| Light bar | Product from the catalog | Yes — the engine picks this |
+| Driver (transformer) | Product from the catalog | Yes — the engine picks this |
+| Dimmer switch | Product from the catalog | Yes — the engine picks this |
+| Cabinet | The contractor's job site | No — this is fixed input |
+
+The driver can't be collapsed into "requirements" because the contractor doesn't know which driver they need. They know their cabinet is 600mm long and they want dimming — the engine has to figure out which bar, which driver, and which dimmer work together.
+
+The constraint relationships show why this can't be reduced to a paired problem:
+
+```
+Bar ↔ Driver:    Voltage must match, wattage within capacity, connector compatible
+Driver ↔ Dimmer: Dimming protocol must match, voltage compatible
+Bar ↔ Dimmer:    Total wattage within dimmer's range
+Bar ↔ Cabinet:   Bar length must fit (fixed input, like hinges)
+```
+
+There are **three cross-product axes** between catalog products (bar×driver, driver×dimmer, bar×dimmer), not just one. A rule like LED005 (dimmer wattage) needs to see the light bar and the dimmer but doesn't care about the driver. There's no way to express this in a paired `(primary, secondary)` model — which product is primary?
+
+This is the problem the N-candidate solver was built for. Instead of `(hinge, plate)`, it uses `candidates: dict[str, Product]` so any rule can reach any product by role name:
+
+```python
+# Hinge rule — knows exactly what it's looking at
+def check_series_compat(hinge, plate, req, num_hinges):
+    return plate.series in hinge.compatible_series
+
+# LED rule — reaches across roles freely
+def check_dimmer_wattage(candidates, req, derived):
+    bar = candidates["light_bar"]     # skips the driver entirely
+    dimmer = candidates["dimmer"]
+    return bar.wattage <= dimmer.max_wattage
+```
+
+### The general principle
+
+The number of candidate products determines the solver shape. The customer's situation (cabinet dimensions, preferences, job site constraints) is always fixed input, regardless of how many fields it has:
+
+| Candidates to search | Solver shape | Example families |
+|---|---|---|
+| 1 product | Filter against requirements | Drawer slides, handles, shelf supports |
+| 2 products | A × B pairs | Concealed hinges, locks |
+| 3+ products | A × B × C Cartesian product | LED lighting, closet systems |
+
+A single-product family is just N=1 (no Cartesian product). A paired family is N=2. A triple is N=3. The algorithm is the same — the N-candidate solver handles all three shapes uniformly.

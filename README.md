@@ -52,7 +52,7 @@ sample-data/                # Product catalog JSON
 └── mounting_plates.json
 catalogs/                   # Source PDF catalogs (Wurth Baer, Grass)
 demo/                       # Demo notebook
-└── constraint_engine_demo.ipynb
+└── v1_hinge_constraint_demo.ipynb
 documents/                 # Design docs, roadmap, research
 ├── constraint-engine-design.md
 ├── production-roadmap.md
@@ -84,7 +84,7 @@ pytest engine/tests/
 
 ## Demo Notebook
 
-`demo/constraint_engine_demo.ipynb` is an interactive walkthrough of the constraint engine. It covers:
+`demo/v1_hinge_constraint_demo.ipynb` is an interactive walkthrough of the constraint engine. It covers:
 
 1. **Catalog overview** — all hinges and mounting plates across Blum, Grass, and Hafele with product images
 2. **Constraint rules** — the 14 rules the engine enforces and their categories
@@ -103,14 +103,14 @@ pytest engine/tests/
 2. Open this project folder in VS Code
 3. Install the [Jupyter extension](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter) (Extensions panel, search "Jupyter")
 4. Install dependencies: `pip install -r requirements.txt`
-5. Open `demo/constraint_engine_demo.ipynb` — VS Code will prompt you to select a Python kernel
+5. Open `demo/v1_hinge_constraint_demo.ipynb` — VS Code will prompt you to select a Python kernel
 6. Click **Run All** or step through cells individually
 
 **Command line (Jupyter):**
 
 ```bash
 pip install -r requirements.txt
-jupyter notebook demo/constraint_engine_demo.ipynb
+jupyter notebook demo/v1_hinge_constraint_demo.ipynb
 ```
 
 ### Dependencies
