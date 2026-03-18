@@ -1,6 +1,6 @@
 # Window — Cabinet Hardware Constraint Engine
 
-A deterministic constraint reasoning engine for cabinet hinge-to-mounting-plate compatibility. Given customer requirements (cabinet type, door dimensions, application, brand preference), the engine evaluates all valid hinge + plate combinations and returns ranked configurations with full explainability traces.
+A deterministic constraint reasoning engine for cabinet hardware compatibility. Given customer requirements (cabinet type, door dimensions, application, brand preference), the engine evaluates all valid product combinations and returns ranked configurations with full explainability traces.
 
 This is the reasoning layer of a three-tier architecture designed for multi-brand cabinet hardware distribution:
 
@@ -12,7 +12,25 @@ The recommended integration pattern is deterministic-first: preprocess inputs wi
 
 ## Architecture
 
-The engine does an exhaustive search over pre-filtered hinge x plate pairs, evaluating 14 constraint rules per pair. Every evaluation produces a full rule trace (pass/fail, values compared, remediation suggestions) so the conversational layer can explain *why* a configuration was recommended or *why* it failed.
+The project contains two engine implementations:
+
+**`engine/`** — The production constraint engine for concealed hinges (the first and most complete product family). Exhaustive search over pre-filtered hinge × plate pairs, evaluating 14 constraint rules per pair. Every evaluation produces a full rule trace (pass/fail, values compared, remediation suggestions) so the conversational layer can explain *why* a configuration was recommended or *why* it failed.
+
+**`engine_v2/`** — Experimental multi-family prototype. A generic constraint solver framework with pluggable rules and product families. Supports single-product, paired-product, and N-candidate families through a unified solver architecture. Three product families prototyped (concealed hinges, drawer slides, LED lighting).
+
+### Solver approaches
+
+Three solver approaches have been prototyped and evaluated:
+
+| Approach | Implementation | Best for |
+|---|---|---|
+| **V1 Paired** | `engine/solver.py` | 2-product families (hinge + plate) with indexed pre-filtering |
+| **V2 Flat N-Candidate** | `engine_v2/core/solver_n.py` | Any number of product roles — the recommended default |
+| **V2 Staged Pipeline** | `engine_v2/core/solver_staged.py` | Large catalogs with clearly layered constraints (optimisation path) |
+
+**Decision:** The flat N-candidate solver is the recommended production approach. It handles single-product (N=1), paired (N=2), and multi-product (N=3+) families with a single algorithm. The staged pipeline is retained as a documented optimisation path for when catalog sizes exceed performance requirements. See `documents/solver-approach-recommendation.md` for the full rationale and `documents/solver-architecture-diagrams.md` for visual flowcharts.
+
+### V1 hinge engine flow
 
 ```
 CustomerRequirements
@@ -39,28 +57,59 @@ Current catalog: 53 hinges and 55 mounting plates across Blum, Grass, and Hafele
 ## Project Structure
 
 ```
-engine/                     # Production constraint engine
-├── models.py               # Domain models (Pydantic v2)
-├── enums.py                # Enumeration types
-├── rules.py                # Constraint rules (single source of truth)
-├── solver.py               # Engine: solve / evaluate
-├── loader.py               # JSON data adapter
+engine/                         # Production constraint engine (Python 3.13, Pydantic v2)
+├── models.py                   # Domain models: ConcealedHinge, MountingPlate, Configuration
+├── enums.py                    # 10 enumeration types (no raw strings)
+├── rules.py                    # 14 constraint rules (single source of truth)
+├── solver.py                   # HingeConstraintEngine: pre-filter, evaluate, rank
+├── loader.py                   # JSON data adapter
 └── tests/
-    └── test_engine.py      # 70+ tests including 7 customer scenarios
-sample-data/                # Product catalog JSON
-├── hinges.json
-└── mounting_plates.json
-catalogs/                   # Source PDF catalogs (Wurth Baer, Grass)
-demo/                       # Demo notebook
-└── v1_hinge_constraint_demo.ipynb
-documents/                 # Design docs, roadmap, research
-├── constraint-engine-design.md
-├── production-roadmap.md
-├── production-tooling-research.md
-├── domain-model.md
-├── evaluation.md
-├── data-extraction-evaluation.md
-└── window-tech-brief-research-report.md
+    └── test_engine.py          # 70+ tests including 7 customer scenarios
+
+engine_v2/                      # Experimental multi-family prototype
+├── core/
+│   ├── models.py               # Base classes: Product, Requirements, NConfiguration
+│   ├── solver.py               # Generic paired ConstraintSolver
+│   ├── solver_n.py             # Flat N-candidate solver (recommended)
+│   ├── solver_staged.py        # Staged pipeline solver (optimisation path)
+│   ├── registry.py             # ProductFamilyRegistry
+│   └── types.py                # Type aliases: NRuleFn, PreFilterFn, RankKeyFn
+├── families/
+│   ├── concealed_hinge/        # Hinge family on generic framework
+│   ├── drawer_slide/           # Drawer slide prototype (single-product)
+│   └── led_lighting/           # LED lighting prototype (3-candidate: bar + driver + dimmer)
+└── tests/
+    ├── test_generic_solver.py  # Generic solver tests
+    ├── test_n_candidate.py     # 26 N-candidate tests
+    └── test_staged.py          # 25 staged tests + 5 cross-solver consistency
+
+sample-data/                    # Product catalog JSON
+├── hinges.json                 # 53 concealed hinges
+└── mounting_plates.json        # 55 mounting plates
+
+catalogs/                       # Source PDF catalogs (Wurth Baer, Grass)
+
+demo/                           # Interactive Jupyter notebooks
+├── v1_hinge_constraint_demo.ipynb      # V1 paired engine walkthrough
+├── v2_n_candidate_demo.ipynb           # Flat N-candidate benchmarks
+└── v2_staged_pipeline_demo.ipynb       # Staged pipeline benchmarks
+
+documents/                      # Design docs, research, decisions
+├── solver-approach-recommendation.md   # Decision: flat N-candidate as default
+├── solver-architecture-diagrams.md     # Mermaid flowcharts for all three approaches
+├── multi-family-architecture.md        # Generic vs independent engines, N-candidate vs staged
+├── constraint-engine-design.md         # Core rules reference and architecture
+├── production-roadmap.md               # Phased plan (PostgreSQL, FastAPI, rules-as-data)
+├── catalog-integration.md              # Data tiers, ingestion pipeline, known gaps
+├── competitive-landscape.md            # Market research for cabinet hardware configuration
+├── constraint-based-vs-rules-based.md  # Approach comparison with Tacton deep dive
+├── cpsat-research.md                   # OR-Tools CP-SAT evaluation
+├── knowledge-graph-research.md         # Knowledge graph approach evaluation
+├── production-tooling-research.md      # Technology stack evaluation
+├── data-extraction-evaluation.md       # PDF extraction approach comparison
+├── domain-model.md                     # Domain model design
+├── evaluation.md                       # Engine evaluation criteria
+└── window-tech-brief-research-report.md # Technical brief analysis
 ```
 
 ## Constraint Rules
@@ -79,12 +128,21 @@ Every rule returns structured results with rule ID, category, detail, compared v
 
 ```bash
 pip install -r requirements.txt
-pytest engine/tests/
+
+# Run V1 engine tests (70+ tests)
+pytest engine/tests/ -v
+
+# Run V2 engine tests (experimental)
+pytest engine_v2/tests/ -v
 ```
 
-## Demo Notebook
+## Demo Notebooks
 
-`demo/v1_hinge_constraint_demo.ipynb` is an interactive walkthrough of the constraint engine. It covers:
+Three interactive Jupyter notebooks demonstrate the constraint engine approaches:
+
+### V1 Hinge Constraint Demo
+
+`demo/v1_hinge_constraint_demo.ipynb` — walkthrough of the production hinge engine:
 
 1. **Catalog overview** — all hinges and mounting plates across Blum, Grass, and Hafele with product images
 2. **Constraint rules** — the 14 rules the engine enforces and their categories
@@ -95,7 +153,26 @@ pytest engine/tests/
 7. **Failure analysis** — how the engine explains why no solution exists and identifies the closest match
 8. **Interactive explorer** — modify `CustomerRequirements` values and re-run to test your own scenarios
 
-### Running the notebook
+### V2 N-Candidate Demo
+
+`demo/v2_n_candidate_demo.ipynb` — flat N-candidate solver with LED lighting (bar + driver + dimmer):
+
+- Cartesian product evaluation of all triples
+- Solving scenarios, failure analysis, and closest-match identification
+- Exhaustive evaluation matrix and failure breakdown by rule
+- Scaling projections and benchmarks at increasing catalog sizes
+- Redundancy analysis showing wasted work from unpruned invalid pairs
+
+### V2 Staged Pipeline Demo
+
+`demo/v2_staged_pipeline_demo.ipynb` — staged pipeline solver with the same LED lighting data:
+
+- Stage-by-stage visualisation with pruning rates
+- Head-to-head benchmark against the flat solver
+- Pruning rate analysis at different catalog sizes
+- Discussion of stage ordering, cross-cutting constraints, and when staging is worth it
+
+### Running the notebooks
 
 **VS Code (easiest option):**
 
@@ -103,7 +180,7 @@ pytest engine/tests/
 2. Open this project folder in VS Code
 3. Install the [Jupyter extension](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter) (Extensions panel, search "Jupyter")
 4. Install dependencies: `pip install -r requirements.txt`
-5. Open `demo/v1_hinge_constraint_demo.ipynb` — VS Code will prompt you to select a Python kernel
+5. Open any notebook in `demo/` — VS Code will prompt you to select a Python kernel
 6. Click **Run All** or step through cells individually
 
 **Command line (Jupyter):**
@@ -115,7 +192,7 @@ jupyter notebook demo/v1_hinge_constraint_demo.ipynb
 
 ### Dependencies
 
-The notebook requires the packages listed in `requirements.txt`:
+The notebooks require the packages listed in `requirements.txt`:
 
 - `pydantic` (>=2.0) — domain models and validation
 - `ipykernel` / `jupyter` — notebook runtime
@@ -125,6 +202,7 @@ No additional packages beyond the standard library are needed. The engine itself
 ## Key Design Decisions
 
 - **Products are facts, compatibility is derived** — no hand-maintained compatibility lists. Whether a hinge + plate pair works is computed by rules at query time.
+- **Flat N-candidate as default solver** — one algorithm handles single-product (N=1), paired (N=2), and multi-product (N=3+) families. Staged pipeline reserved as an optimisation path. See `documents/solver-approach-recommendation.md`.
 - **No implicit derating** — manufacturer's published weight ratings are used directly. The engine does not silently reduce ratings for wide opening angles or other factors. If derating is needed, it must be added as an explicit rule. See [constraint-engine-design.md](documents/constraint-engine-design.md#design-principles) for rationale.
 - **Full enum typing** — every constrained string field is an enum. No silent failures from typos.
 - **Full rule tracing** — every evaluation records rule ID, category, detail, and remediation. Supports the "always correct and explainable" value proposition.
@@ -145,4 +223,21 @@ The engine is functional but not production-ready. Key remaining work:
 - **Multi-brand deployment** — per-brand catalogs, pricing feeds, and rule parameters
 - **13 product families** — engine currently covers concealed hinges only; drawer slides, lift systems, handles, locks, lighting to follow
 
-See `documents/production-roadmap.md` for the full phased plan and `documents/production-tooling-research.md` for technology evaluation.
+See `documents/production-roadmap.md` for the full phased plan, `documents/production-tooling-research.md` for technology evaluation, and `documents/catalog-integration.md` for data ingestion strategy.
+
+## Documentation
+
+| Document | Purpose |
+|---|---|
+| [Solver Approach Recommendation](documents/solver-approach-recommendation.md) | Decision record: flat N-candidate as default, staged as optimisation path |
+| [Solver Architecture Diagrams](documents/solver-architecture-diagrams.md) | Mermaid flowcharts comparing all three solver approaches |
+| [Multi-Family Architecture](documents/multi-family-architecture.md) | Generic vs independent engines, N-candidate vs staged, plain-English appendices |
+| [Constraint Engine Design](documents/constraint-engine-design.md) | Core rules reference, architecture, design principles |
+| [Production Roadmap](documents/production-roadmap.md) | Phased plan from PoC to production |
+| [Catalog Integration](documents/catalog-integration.md) | Three data tiers, ingestion pipeline, known gaps and blockers |
+| [Competitive Landscape](documents/competitive-landscape.md) | Market research for cabinet hardware configuration tools |
+| [Constraint-Based vs Rules-Based](documents/constraint-based-vs-rules-based.md) | Approach comparison with Tacton deep dive |
+| [CP-SAT Research](documents/cpsat-research.md) | OR-Tools CP-SAT solver evaluation |
+| [Knowledge Graph Research](documents/knowledge-graph-research.md) | Knowledge graph approach evaluation |
+| [Production Tooling](documents/production-tooling-research.md) | Technology stack evaluation |
+| [Data Extraction](documents/data-extraction-evaluation.md) | PDF extraction approach comparison |
