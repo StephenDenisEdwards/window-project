@@ -468,3 +468,35 @@ The number of candidate products determines the solver shape. The customer's sit
 | 3+ products | A × B × C Cartesian product | LED lighting, closet systems |
 
 A single-product family is just N=1 (no Cartesian product). A paired family is N=2. A triple is N=3. The algorithm is the same — the N-candidate solver handles all three shapes uniformly.
+
+### Why staged decomposition is tempting but usually not worth it
+
+The staged pipeline solver splits a 3-product problem into sequential stages. Instead of evaluating every bar × driver × dimmer triple, it evaluates bar × driver pairs first, throws away the failures, and only then brings in dimmers. This means less work — but it comes with real costs.
+
+**The benefit is straightforward.** At full catalog scale (100 bars × 40 drivers × 50 dimmers = 200,000 triples), the flat solver evaluates all 200,000. The staged solver evaluates 4,000 bar-driver pairs first. If 80% fail (voltage mismatches, connector incompatibilities), only 800 pairs survive. Stage 2 evaluates 800 × 50 = 40,000 triples. Total: 44,000 evaluations instead of 200,000. That's a real saving.
+
+**But someone has to decide how to split it.** With the flat solver, you write rules and add them to a list. With the staged solver, the family author must decide:
+
+- Which products go in which stage? (Bar + driver in Stage 1, dimmer in Stage 2)
+- Which rules go in which stage? (Voltage rules in Stage 1, dimming protocol rules in Stage 2)
+- What order should stages run in? (The most restrictive stage should come first for maximum pruning)
+
+These are optimisation decisions that have nothing to do with the domain. A domain expert thinks "voltage must match" — they don't think "and this check should happen in Stage 1 before dimmers are introduced." Staging leaks solver implementation concerns into domain modelling.
+
+**Getting it wrong is silent.** If a rule is assigned to the wrong stage — say a rule that needs the dimmer is put in Stage 1, where no dimmer exists yet — that's a runtime error, and you'll catch it immediately. The dangerous case is subtler: if Stage 1 prunes a bar-driver pair that *looks* invalid at Stage 1 but *would have been* valid once paired with a specific dimmer in Stage 2, that valid configuration is silently lost. The solver doesn't report it as missing because it never evaluates it.
+
+The flat solver can't have this problem. It evaluates every combination against every rule. If a valid configuration exists, the flat solver will find it. No pruning cracks for results to fall through.
+
+**Adding a rule gets harder.** Flat solver: append to the rule list. Staged solver: decide which stage it belongs to, verify all the products it references are available at that stage, consider whether it changes which stage should come first. Every new rule is a decomposition decision, not just a domain decision.
+
+**Failure analysis throws away the benefit.** When no valid configuration exists, the engine needs to find the *closest* match — the combination that fails the fewest rules — so the conversational layer can explain why. To find it, the solver must evaluate the full Cartesian product with no pruning (because the closest match might have been pruned). So the no-solution case — often the most important for user experience — does the same work as the flat solver, plus the wasted work from the initial staged attempt.
+
+**Not all families decompose cleanly.** LED lighting works well for staging because bar ↔ dimmer has almost no direct constraints — most constraints are bar ↔ driver or driver ↔ dimmer. But imagine a family where every product constrains every other product equally. There's no clean split. Every stage ordering leaves substantial cross-cutting constraints for later stages, and the pruning benefit shrinks toward zero while the configuration complexity remains.
+
+**The bottom line:** staged decomposition is a performance optimisation, not an architectural improvement. It makes the solver faster at the cost of making it harder to configure, harder to verify, and harder to extend. It should only be adopted when all three conditions are met:
+
+1. The flat solver is *measurably* too slow (not theoretically — actually measured against latency requirements)
+2. Constraints are clearly layered across product roles (some pairs have many rules, others have few)
+3. The pruning rate is high enough (>50%) that the staged solver is meaningfully faster, even accounting for the failure analysis path that gets no benefit
+
+In this project, the flat solver handles 200,000 triples in under 500ms. No product family currently justifies staging.
