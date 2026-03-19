@@ -1,0 +1,58 @@
+[
+  {
+    "sku": "563H5330B",
+    "brand": "Blum",
+    "price_usd": 45.00,
+    "series": "TANDEM plus BLUMOTION",
+    "slide_length_mm": 533,
+    "max_load_kg": 30,
+    "extension_type": "full",
+    "mount_type": "undermount",
+    "close_type": "soft_close",
+    "requires_rear_bracket": true,
+    "min_cabinet_depth_mm": 10,
+    "disconnect_feature": true
+  },
+  {
+    "sku": "DWD-XP-533",
+    "brand": "Grass",
+    "price_usd": 35.00,
+    "series": "Dynapro",
+    "slide_length_mm": 500,
+    "max_load_kg": 40,
+    "extension_type": "full",
+    "mount_type": "undermount",
+    "close_type": "soft_close",
+    "requires_rear_bracket": false,
+    "min_cabinet_depth_mm": 0,
+    "disconnect_feature": true
+  },
+  {
+    "sku": "KV-8400-18",
+    "brand": "KV",
+    "price_usd": 8.00,
+    "series": "8400",
+    "slide_length_mm": 450,
+    "max_load_kg": 45,
+    "extension_type": "three_quarter",
+    "mount_type": "side_mount",
+    "close_type": "standard",
+    "requires_rear_bracket": false,
+    "min_cabinet_depth_mm": 0,
+    "disconnect_feature": false
+  },
+  {
+    "sku": "KV-CM-450",
+    "brand": "KV",
+    "price_usd": 6.00,
+    "series": "Center Mount",
+    "slide_length_mm": 450,
+    "max_load_kg": 15,
+    "extension_type": "three_quarter",
+    "mount_type": "center_mount",
+    "close_type": "self_close",
+    "requires_rear_bracket": false,
+    "min_cabinet_depth_mm": 0,
+    "disconnect_feature": false
+  }
+]

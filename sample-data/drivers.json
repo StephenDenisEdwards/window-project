@@ -1,0 +1,46 @@
+[
+  {
+    "sku": "DRV-12V-30W",
+    "brand": "Loox",
+    "price_usd": 30.00,
+    "output_voltage": "12V",
+    "max_wattage": 30.0,
+    "output_channels": 4,
+    "dimmable": true,
+    "dimming_protocol": "trailing_edge",
+    "connector": "barrel_jack"
+  },
+  {
+    "sku": "DRV-12V-15W-ND",
+    "brand": "Loox",
+    "price_usd": 15.00,
+    "output_voltage": "12V",
+    "max_wattage": 15.0,
+    "output_channels": 2,
+    "dimmable": false,
+    "dimming_protocol": "none",
+    "connector": "barrel_jack"
+  },
+  {
+    "sku": "DRV-24V-60W",
+    "brand": "Hafele",
+    "price_usd": 50.00,
+    "output_voltage": "24V",
+    "max_wattage": 60.0,
+    "output_channels": 6,
+    "dimmable": true,
+    "dimming_protocol": "0-10V",
+    "connector": "terminal_block"
+  },
+  {
+    "sku": "DRV-24V-20W",
+    "brand": "Hafele",
+    "price_usd": 28.00,
+    "output_voltage": "24V",
+    "max_wattage": 20.0,
+    "output_channels": 2,
+    "dimmable": true,
+    "dimming_protocol": "trailing_edge",
+    "connector": "terminal_block"
+  }
+]

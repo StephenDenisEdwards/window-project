@@ -1,0 +1,38 @@
+[
+  {
+    "sku": "DIM-TE-150W",
+    "brand": "Loox",
+    "price_usd": 45.00,
+    "dimming_protocol": "trailing_edge",
+    "max_wattage": 150.0,
+    "voltage_compatible": ["12V", "24V"],
+    "min_load_wattage": 5.0
+  },
+  {
+    "sku": "DIM-010V-200W",
+    "brand": "Hafele",
+    "price_usd": 60.00,
+    "dimming_protocol": "0-10V",
+    "max_wattage": 200.0,
+    "voltage_compatible": ["24V"],
+    "min_load_wattage": 10.0
+  },
+  {
+    "sku": "DIM-TE-25W",
+    "brand": "Loox",
+    "price_usd": 20.00,
+    "dimming_protocol": "trailing_edge",
+    "max_wattage": 25.0,
+    "voltage_compatible": ["12V"],
+    "min_load_wattage": 2.0
+  },
+  {
+    "sku": "DIM-LE-100W",
+    "brand": "Generic",
+    "price_usd": 15.00,
+    "dimming_protocol": "leading_edge",
+    "max_wattage": 100.0,
+    "voltage_compatible": ["12V", "24V"],
+    "min_load_wattage": 10.0
+  }
+]

@@ -1,0 +1,57 @@
+[
+  {
+    "sku": "LED-BAR-12V-5W",
+    "brand": "Loox",
+    "price_usd": 25.00,
+    "wattage": 5.0,
+    "voltage": "12V",
+    "length_mm": 300,
+    "lumen_output": 400,
+    "dimmable": true,
+    "connector": "barrel_jack"
+  },
+  {
+    "sku": "LED-BAR-12V-10W",
+    "brand": "Loox",
+    "price_usd": 40.00,
+    "wattage": 10.0,
+    "voltage": "12V",
+    "length_mm": 600,
+    "lumen_output": 800,
+    "dimmable": true,
+    "connector": "barrel_jack"
+  },
+  {
+    "sku": "LED-BAR-24V-15W",
+    "brand": "Loox",
+    "price_usd": 55.00,
+    "wattage": 15.0,
+    "voltage": "24V",
+    "length_mm": 900,
+    "lumen_output": 1200,
+    "dimmable": true,
+    "connector": "terminal_block"
+  },
+  {
+    "sku": "LED-BAR-24V-8W",
+    "brand": "Hafele",
+    "price_usd": 35.00,
+    "wattage": 8.0,
+    "voltage": "24V",
+    "length_mm": 450,
+    "lumen_output": 600,
+    "dimmable": true,
+    "connector": "terminal_block"
+  },
+  {
+    "sku": "LED-BAR-12V-LONG",
+    "brand": "Loox",
+    "price_usd": 65.00,
+    "wattage": 20.0,
+    "voltage": "12V",
+    "length_mm": 1200,
+    "lumen_output": 1600,
+    "dimmable": false,
+    "connector": "barrel_jack"
+  }
+]
