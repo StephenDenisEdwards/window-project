@@ -90,9 +90,14 @@ sample-data/                    # Product catalog JSON
 catalogs/                       # Source PDF catalogs (Wurth Baer, Grass)
 
 demo/                           # Interactive Jupyter notebooks
-├── v1_hinge_constraint_demo.ipynb      # V1 paired engine walkthrough
-├── v2_n_candidate_demo.ipynb           # Flat N-candidate benchmarks
-└── v2_staged_pipeline_demo.ipynb       # Staged pipeline benchmarks
+├── v1/
+│   └── v1_hinge_constraint_demo.ipynb          # V1 paired engine walkthrough
+├── v2-n-candidate/
+│   ├── v2_drawer_slide_demo.ipynb              # N=1 drawer slides
+│   ├── v2_hinge_n_candidate_demo.ipynb         # N=2 hinges on N-candidate solver
+│   └── v2_n_candidate_demo.ipynb               # N=3 LED lighting
+└── v2-staged-pipeline/
+    └── v2_staged_pipeline_demo.ipynb           # Staged pipeline benchmarks
 
 documentation/docs/             # Structured documentation
 ├── index.md                    # Central navigation hub
@@ -147,7 +152,7 @@ Three interactive Jupyter notebooks demonstrate the constraint engine approaches
 
 ### V1 Hinge Constraint Demo
 
-`demo/v1_hinge_constraint_demo.ipynb` — walkthrough of the production hinge engine:
+`demo/v1/v1_hinge_constraint_demo.ipynb` — walkthrough of the production hinge engine:
 
 1. **Catalog overview** — all hinges and mounting plates across Blum, Grass, and Hafele with product images
 2. **Constraint rules** — the 14 rules the engine enforces and their categories
@@ -160,7 +165,7 @@ Three interactive Jupyter notebooks demonstrate the constraint engine approaches
 
 ### V2 N-Candidate Demo
 
-`demo/v2_n_candidate_demo.ipynb` — flat N-candidate solver with LED lighting (bar + driver + dimmer):
+`demo/v2-n-candidate/v2_n_candidate_demo.ipynb` — flat N-candidate solver with LED lighting (bar + driver + dimmer):
 
 - Cartesian product evaluation of all triples
 - Solving scenarios, failure analysis, and closest-match identification
@@ -170,7 +175,7 @@ Three interactive Jupyter notebooks demonstrate the constraint engine approaches
 
 ### V2 Staged Pipeline Demo
 
-`demo/v2_staged_pipeline_demo.ipynb` — staged pipeline solver with the same LED lighting data:
+`demo/v2-staged-pipeline/v2_staged_pipeline_demo.ipynb` — staged pipeline solver with the same LED lighting data:
 
 - Stage-by-stage visualisation with pruning rates
 - Head-to-head benchmark against the flat solver
@@ -192,7 +197,7 @@ Three interactive Jupyter notebooks demonstrate the constraint engine approaches
 
 ```bash
 pip install -r requirements.txt
-jupyter notebook demo/v1_hinge_constraint_demo.ipynb
+jupyter notebook demo/v1/v1_hinge_constraint_demo.ipynb
 ```
 
 ### Dependencies

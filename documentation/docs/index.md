@@ -28,9 +28,9 @@ Central navigation hub for all project documentation.
 
 ## Demo Notebooks
 
-- `demo/v1_hinge_constraint_demo.ipynb` — V1 paired engine walkthrough (concealed hinges)
-- `demo/v2_n_candidate_demo.ipynb` — Flat N-candidate benchmarks (LED lighting)
-- `demo/v2_staged_pipeline_demo.ipynb` — Staged pipeline benchmarks and pruning analysis
+- `demo/v1/v1_hinge_constraint_demo.ipynb` — V1 paired engine walkthrough (concealed hinges)
+- `demo/v2-n-candidate/v2_n_candidate_demo.ipynb` — Flat N-candidate benchmarks (LED lighting)
+- `demo/v2-staged-pipeline/v2_staged_pipeline_demo.ipynb` — Staged pipeline benchmarks and pruning analysis
 
 ## Document Map
 

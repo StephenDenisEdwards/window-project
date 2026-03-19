@@ -10,9 +10,9 @@ Three solver approaches have been prototyped and benchmarked:
 
 | Approach | Implementation | Demo |
 |---|---|---|
-| V1 Paired Solver | `engine_v1/solver.py` | `demo/v1_hinge_constraint_demo.ipynb` |
-| V2 Flat N-Candidate | `engine_v2/core/solver_n.py` | `demo/v2_n_candidate_demo.ipynb` |
-| V2 Staged Pipeline | `engine_v2/core/solver_staged.py` | `demo/v2_staged_pipeline_demo.ipynb` |
+| V1 Paired Solver | `engine_v1/solver.py` | `demo/v1/v1_hinge_constraint_demo.ipynb` |
+| V2 Flat N-Candidate | `engine_v2/core/solver_n.py` | `demo/v2-n-candidate/v2_n_candidate_demo.ipynb` |
+| V2 Staged Pipeline | `engine_v2/core/solver_staged.py` | `demo/v2-staged-pipeline/v2_staged_pipeline_demo.ipynb` |
 
 See [Solver Architecture Diagrams](../solver-architecture-diagrams.md) for visual flowcharts of each approach and [Multi-Family Architecture](../multi-family-architecture.md) for the full architectural evaluation.
 
@@ -65,7 +65,7 @@ Current and projected catalog sizes from `documentation/docs/planning/PLAN-catal
 | Drawer slides | Not yet built | ~50-100 products | ~100 (single, no pairing) |
 | Handles/knobs | Not yet built | ~200-500 products | ~500 (single, no pairing) |
 
-The V1 hinge engine solves 2,915 pairs x 14 rules in milliseconds. The flat N-candidate benchmark in `demo/v2_n_candidate_demo.ipynb` shows 200,000 triples completing in under 500ms with early termination. These are well within acceptable API latency even without pruning.
+The V1 hinge engine solves 2,915 pairs x 14 rules in milliseconds. The flat N-candidate benchmark in `demo/v2-n-candidate/v2_n_candidate_demo.ipynb` shows 200,000 triples completing in under 500ms with early termination. These are well within acceptable API latency even without pruning.
 
 The staged pipeline's performance advantage becomes meaningful at ~1M+ combinations. No product family in the Würth catalog is projected to reach that scale.
 
@@ -223,6 +223,6 @@ This is why we don't need a different solver architecture for different families
 - `documentation/docs/architecture/solver-architecture-diagrams.md` — Mermaid flowcharts comparing all three approaches
 - `documentation/docs/planning/PLAN-production-roadmap.md` — Phased plan from PoC to production
 - `documentation/docs/planning/PLAN-catalog-integration.md` — Data completeness, ingestion pipeline, known gaps
-- `demo/v1_hinge_constraint_demo.ipynb` — V1 paired solver demonstration
-- `demo/v2_n_candidate_demo.ipynb` — Flat N-candidate benchmarks and scaling analysis
-- `demo/v2_staged_pipeline_demo.ipynb` — Staged pipeline benchmarks and pruning analysis
+- `demo/v1/v1_hinge_constraint_demo.ipynb` — V1 paired solver demonstration
+- `demo/v2-n-candidate/v2_n_candidate_demo.ipynb` — Flat N-candidate benchmarks and scaling analysis
+- `demo/v2-staged-pipeline/v2_staged_pipeline_demo.ipynb` — Staged pipeline benchmarks and pruning analysis
