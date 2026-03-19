@@ -77,26 +77,98 @@ FAMILY_META = {
 }
 
 EXAMPLES = {
-    "concealed_hinge": {
-        "cabinet_type": "frameless",
-        "door_thickness_mm": 19,
-        "door_height_mm": 720,
-        "door_weight_kg": 5.2,
-        "application": "full_overlay",
-        "desired_overlay_mm": 16,
-        "boring_pattern_mm": 45,
-        "soft_close": True,
-        "preferred_brand": "Blum",
-    },
-    "drawer_slide": {
-        "cabinet_depth_mm": 550,
-        "drawer_weight_kg": 15.0,
-    },
-    "led_lighting": {
-        "cabinet_length_mm": 600,
-        "dimming_required": True,
-        "min_lumen_output": 300,
-    },
+    "concealed_hinge": [
+        {
+            "name": "Standard kitchen — Blum, full overlay",
+            "data": {
+                "cabinet_type": "frameless", "door_thickness_mm": 19, "door_height_mm": 720,
+                "door_weight_kg": 5.2, "application": "full_overlay", "desired_overlay_mm": 16,
+                "boring_pattern_mm": 45, "soft_close": True, "preferred_brand": "Blum",
+            },
+        },
+        {
+            "name": "Corner cabinet — wide-angle hinge needed",
+            "data": {
+                "cabinet_type": "frameless", "door_thickness_mm": 19, "door_height_mm": 800,
+                "door_weight_kg": 4.0, "application": "full_overlay", "desired_overlay_mm": 16,
+                "boring_pattern_mm": 45, "soft_close": True, "cabinet_position": "corner",
+            },
+        },
+        {
+            "name": "Tall pantry — 1600mm, heavy, Grass",
+            "data": {
+                "cabinet_type": "frameless", "door_thickness_mm": 22, "door_height_mm": 1600,
+                "door_weight_kg": 14.0, "application": "full_overlay", "desired_overlay_mm": 16,
+                "boring_pattern_mm": 45, "soft_close": True, "preferred_brand": "Grass",
+            },
+        },
+        {
+            "name": "Adjacent doors — half overlay, shared partition",
+            "data": {
+                "cabinet_type": "frameless", "door_thickness_mm": 19, "door_height_mm": 720,
+                "door_weight_kg": 4.0, "application": "half_overlay", "desired_overlay_mm": 6,
+                "boring_pattern_mm": 45, "soft_close": True, "preferred_brand": "Blum",
+                "has_adjacent_door": True, "adjacent_door_overlay_mm": 6, "partition_thickness_mm": 19,
+            },
+        },
+        {
+            "name": "IMPOSSIBLE — heavy corner door (Blum, 12kg)",
+            "data": {
+                "cabinet_type": "frameless", "door_thickness_mm": 22, "door_height_mm": 800,
+                "door_weight_kg": 12.0, "application": "full_overlay", "desired_overlay_mm": 16,
+                "boring_pattern_mm": 45, "soft_close": True, "cabinet_position": "corner",
+                "preferred_brand": "Blum",
+            },
+        },
+        {
+            "name": "All brands — no preference, no soft-close",
+            "data": {
+                "cabinet_type": "frameless", "door_thickness_mm": 19, "door_height_mm": 720,
+                "door_weight_kg": 5.0, "application": "full_overlay", "desired_overlay_mm": 16,
+                "boring_pattern_mm": 45, "soft_close": False,
+            },
+        },
+    ],
+    "drawer_slide": [
+        {
+            "name": "Standard kitchen drawer",
+            "data": {"cabinet_depth_mm": 550, "drawer_weight_kg": 15.0},
+        },
+        {
+            "name": "Heavy-duty — 42kg load",
+            "data": {"cabinet_depth_mm": 550, "drawer_weight_kg": 42.0},
+        },
+        {
+            "name": "Blum undermount, soft-close, full extension",
+            "data": {
+                "cabinet_depth_mm": 550, "drawer_weight_kg": 20.0,
+                "extension_type": "full", "mount_type": "undermount",
+                "soft_close": True, "preferred_brand": "Blum",
+            },
+        },
+        {
+            "name": "IMPOSSIBLE — cabinet too shallow",
+            "data": {"cabinet_depth_mm": 300, "drawer_weight_kg": 5.0},
+        },
+    ],
+    "led_lighting": [
+        {
+            "name": "600mm cabinet with dimming",
+            "data": {"cabinet_length_mm": 600, "dimming_required": True, "min_lumen_output": 300},
+        },
+        {
+            "name": "Large cabinet, no dimming",
+            "data": {"cabinet_length_mm": 900, "dimming_required": False},
+        },
+        {
+            "name": "High brightness, dimming required",
+            "data": {"cabinet_length_mm": 800, "dimming_required": True, "min_lumen_output": 1000},
+        },
+        {
+            "name": "IMPOSSIBLE — cabinet too small (200mm)",
+            "data": {"cabinet_length_mm": 200, "dimming_required": True, "min_lumen_output": 300},
+        },
+    ],
 }
 
 # --- FastAPI app ---
@@ -115,8 +187,8 @@ def get_families():
     return list(FAMILY_META.values())
 
 
-@app.get("/api/example/{family}")
-def get_example(family: str):
+@app.get("/api/examples/{family}")
+def get_examples(family: str):
     if family not in EXAMPLES:
         raise HTTPException(404, f"Unknown family: {family}")
     return EXAMPLES[family]

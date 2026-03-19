@@ -83,8 +83,10 @@
   <div class="form-area hidden" id="form-area">
     <div class="form-header">
       <h2 id="form-title"></h2>
-      <div>
-        <button class="btn btn-secondary" onclick="loadExample()">Load Example</button>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <select id="example-select" class="btn btn-secondary" style="padding:8px 12px;font-size:0.85rem;border-radius:6px;border:1px solid #ddd;cursor:pointer;">
+          <option value="">Load example...</option>
+        </select>
       </div>
     </div>
     <div class="form-grid" id="form-fields"></div>
@@ -99,6 +101,7 @@
 <script>
 let families = [];
 let activeFamily = null;
+let examplesCache = {};
 
 async function init() {
   const resp = await fetch('/api/families');
@@ -119,15 +122,15 @@ function resolveRef(schema, ref) {
   return schema.$defs?.[path] || {};
 }
 
-function selectFamily(name) {
+async function selectFamily(name) {
   activeFamily = families.find(f => f.name === name);
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
   document.getElementById('form-area').classList.remove('hidden');
   document.getElementById('results-area').classList.add('hidden');
-  document.getElementById('form-title', activeFamily.title);
   document.getElementById('form-title').textContent = activeFamily.title;
   buildForm(activeFamily.schema);
+  await loadExamples(name);
 }
 
 function buildForm(schema) {
@@ -201,11 +204,39 @@ function buildForm(schema) {
   }
 }
 
-async function loadExample() {
-  if (!activeFamily) return;
-  const resp = await fetch('/api/example/' + activeFamily.name);
-  const example = await resp.json();
-  for (const [key, val] of Object.entries(example)) {
+async function loadExamples(familyName) {
+  const select = document.getElementById('example-select');
+  select.innerHTML = '<option value="">Load example...</option>';
+
+  if (!examplesCache[familyName]) {
+    const resp = await fetch('/api/examples/' + familyName);
+    examplesCache[familyName] = await resp.json();
+  }
+
+  examplesCache[familyName].forEach((ex, i) => {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = ex.name;
+    select.appendChild(opt);
+  });
+
+  select.onchange = () => {
+    const idx = select.value;
+    if (idx === '') return;
+    const example = examplesCache[familyName][parseInt(idx)];
+    applyExample(example.data);
+  };
+}
+
+function applyExample(data) {
+  // Reset all fields to defaults first
+  document.querySelectorAll('#form-fields input, #form-fields select').forEach(el => {
+    if (el.type === 'checkbox') el.checked = false;
+    else if (el.tagName === 'SELECT') el.selectedIndex = 0;
+    else el.value = '';
+  });
+  // Apply example values
+  for (const [key, val] of Object.entries(data)) {
     const input = document.getElementById('f-' + key);
     if (input) input.value = val?.toString() ?? '';
   }
