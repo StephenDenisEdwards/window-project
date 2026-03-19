@@ -71,6 +71,11 @@
 
   .hidden { display: none; }
   .loading { text-align: center; padding: 40px; color: #999; }
+
+  /* Copy button */
+  .btn-copy { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+  .btn-copy:hover { background: #dcfce7; }
+  .btn-copy.copied { background: #166534; color: #fff; }
 </style>
 </head>
 <body>
@@ -106,6 +111,8 @@
 let families = [];
 let activeFamily = null;
 let examplesCache = {};
+let lastSolveInput = null;
+let lastSolveResult = null;
 
 async function init() {
   const resp = await fetch('/api/families');
@@ -326,6 +333,8 @@ async function solve() {
       throw new Error(err.detail || resp.statusText);
     }
     const result = await resp.json();
+    lastSolveInput = body;
+    lastSolveResult = result;
     renderResults(result);
   } catch (e) {
     renderError(e.message);
@@ -341,8 +350,11 @@ function renderResults(data) {
 
   const status = data.status;
   let html = `<div class="results">`;
-  html += `<span class="status ${status}">${status === 'solved' ? 'SOLVED' : 'NO SOLUTION'}</span>`;
-  html += `<p class="message">${data.message}</p>`;
+  html += `<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">`;
+  html += `<div><span class="status ${status}">${status === 'solved' ? 'SOLVED' : 'NO SOLUTION'}</span>`;
+  html += `<p class="message">${data.message}</p></div>`;
+  html += `<button class="btn btn-copy" onclick="copyResults(this)">Copy for analysis</button>`;
+  html += `</div>`;
 
   if (status === 'solved' && data.recommended) {
     html += renderConfig('Recommended', data.recommended);
@@ -420,6 +432,119 @@ function renderError(msg) {
   const area = document.getElementById('results-area');
   area.classList.remove('hidden');
   area.innerHTML = `<div class="results"><span class="status no_solution">ERROR</span><p class="message">${msg}</p></div>`;
+}
+
+function formatForClipboard() {
+  const lines = [];
+  const family = activeFamily;
+
+  lines.push(`## Constraint Engine Results — ${family.title}`);
+  lines.push('');
+
+  // Input requirements
+  lines.push('### Customer Requirements');
+  lines.push('```json');
+  lines.push(JSON.stringify(lastSolveInput, null, 2));
+  lines.push('```');
+  lines.push('');
+
+  const data = lastSolveResult;
+  lines.push(`### Result: ${data.status.toUpperCase()}`);
+  lines.push(data.message);
+  lines.push('');
+
+  function formatConfig(label, config) {
+    lines.push(`#### ${label}`);
+    lines.push('');
+    if (config.candidates) {
+      lines.push('**Products:**');
+      for (const [role, prod] of Object.entries(config.candidates)) {
+        const price = prod.price_usd != null ? ` — $${prod.price_usd.toFixed(2)}` : '';
+        lines.push(`- ${role}: ${prod.sku} (${prod.brand})${price}`);
+      }
+      lines.push('');
+    }
+    if (config.derived) {
+      lines.push('**Derived values:**');
+      for (const [k, v] of Object.entries(config.derived)) {
+        lines.push(`- ${k}: ${v}`);
+      }
+      lines.push('');
+    }
+    if (config.total_price_usd != null) {
+      lines.push(`**Total price:** $${config.total_price_usd.toFixed(2)}`);
+      lines.push('');
+    }
+    if (config.constraint_trace?.length) {
+      lines.push('**Constraint trace:**');
+      lines.push('| Rule | Name | Result | Detail |');
+      lines.push('|------|------|--------|--------|');
+      config.constraint_trace.forEach(r => {
+        const result = r.passed ? 'PASS' : 'FAIL';
+        let detail = r.detail;
+        if (r.remediation) detail += ` (Fix: ${r.remediation})`;
+        lines.push(`| ${r.rule} | ${r.name} | ${result} | ${detail} |`);
+      });
+      lines.push('');
+    }
+  }
+
+  if (data.status === 'solved' && data.recommended) {
+    formatConfig('Recommended Configuration', data.recommended);
+    if (data.alternatives?.length) {
+      lines.push(`### ${data.alternatives.length} Alternative(s)`);
+      lines.push('');
+      data.alternatives.forEach((alt, i) => {
+        formatConfig(`Alternative ${i + 1}`, alt);
+      });
+    }
+  }
+
+  if (data.status === 'no_solution') {
+    if (data.closest_match) {
+      formatConfig('Closest Match (not valid)', data.closest_match);
+    }
+    if (data.failed_rules?.length) {
+      lines.push('### Failed Constraints');
+      lines.push('| Rule | Name | Detail | Fix |');
+      lines.push('|------|------|--------|-----|');
+      data.failed_rules.forEach(r => {
+        lines.push(`| ${r.rule} | ${r.name} | ${r.detail} | ${r.remediation || ''} |`);
+      });
+      lines.push('');
+    }
+  }
+
+  return lines.join('\n');
+}
+
+async function copyResults(btn) {
+  const text = formatForClipboard();
+  try {
+    await navigator.clipboard.writeText(text);
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy for analysis';
+      btn.classList.remove('copied');
+    }, 2000);
+  } catch (e) {
+    // Fallback for non-HTTPS contexts
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy for analysis';
+      btn.classList.remove('copied');
+    }, 2000);
+  }
 }
 
 init();
