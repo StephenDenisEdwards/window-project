@@ -30,8 +30,9 @@ python -m pytest engine_v1/tests/ -k "prefilter"     # pre-filter verification
 # Run V2 engine tests (experimental multi-family prototype)
 pytest engine_v2/tests/ -v
 
-# Launch demo notebook
-jupyter notebook demo/v1/v1_hinge_constraint_demo.ipynb
+# Launch web demo (all three families)
+python -m uvicorn demo.app:app --reload
+# Open http://localhost:8000
 ```
 
 ## Architecture Overview

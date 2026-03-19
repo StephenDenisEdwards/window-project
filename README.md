@@ -146,68 +146,43 @@ pytest engine_v1/tests/ -v
 pytest engine_v2/tests/ -v
 ```
 
-## Demo Notebooks
+## Web Demo
 
-Three interactive Jupyter notebooks demonstrate the constraint engine approaches:
-
-### V1 Hinge Constraint Demo
-
-`demo/v1/v1_hinge_constraint_demo.ipynb` — walkthrough of the production hinge engine:
-
-1. **Catalog overview** — all hinges and mounting plates across Blum, Grass, and Hafele with product images
-2. **Constraint rules** — the 14 rules the engine enforces and their categories
-3. **Customer scenarios** — five real-world selection problems (standard kitchen, corner cabinet, tall pantry, adjacent doors, and a deliberate constraint violation)
-4. **Constraint trace deep dive** — full rule-by-rule pass/fail trace showing exactly why a configuration was recommended
-5. **Compatibility matrix** — exhaustive evaluation of all 2,915 hinge × plate pairs
-6. **Price vs capacity analysis** — trade-offs across valid configurations
-7. **Failure analysis** — how the engine explains why no solution exists and identifies the closest match
-8. **Interactive explorer** — modify `CustomerRequirements` values and re-run to test your own scenarios
-
-### V2 N-Candidate Demo
-
-`demo/v2-n-candidate/v2_n_candidate_demo.ipynb` — flat N-candidate solver with LED lighting (bar + driver + dimmer):
-
-- Cartesian product evaluation of all triples
-- Solving scenarios, failure analysis, and closest-match identification
-- Exhaustive evaluation matrix and failure breakdown by rule
-- Scaling projections and benchmarks at increasing catalog sizes
-- Redundancy analysis showing wasted work from unpruned invalid pairs
-
-### V2 Staged Pipeline Demo
-
-`demo/v2-staged-pipeline/v2_staged_pipeline_demo.ipynb` — staged pipeline solver with the same LED lighting data:
-
-- Stage-by-stage visualisation with pruning rates
-- Head-to-head benchmark against the flat solver
-- Pruning rate analysis at different catalog sizes
-- Discussion of stage ordering, cross-cutting constraints, and when staging is worth it
-
-### Running the notebooks
-
-**VS Code (easiest option):**
-
-1. Install [Python](https://www.python.org/downloads/) and ensure it's on your PATH
-2. Open this project folder in VS Code
-3. Install the [Jupyter extension](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter) (Extensions panel, search "Jupyter")
-4. Install dependencies: `pip install -r requirements.txt`
-5. Open any notebook in `demo/` — VS Code will prompt you to select a Python kernel
-6. Click **Run All** or step through cells individually
-
-**Command line (Jupyter):**
+The fastest way to see the engine in action. All three product families in a browser UI — no notebooks, no kernel setup.
 
 ```bash
 pip install -r requirements.txt
-jupyter notebook demo/v1/v1_hinge_constraint_demo.ipynb
+python -m uvicorn demo.app:app --reload
 ```
 
-### Dependencies
+Open **http://localhost:8000**. Three tabs:
 
-The notebooks require the packages listed in `requirements.txt`:
+- **Concealed Hinges** (N=2) — 53 hinges × 55 plates, 14 rules, real catalog data
+- **Drawer Slides** (N=1) — 4 slides, 8 rules, synthetic data
+- **LED Lighting** (N=3) — 5 bars × 4 drivers × 4 dimmers, 9 rules, synthetic data
 
-- `pydantic` (>=2.0) — domain models and validation
-- `ipykernel` / `jupyter` — notebook runtime
+Click **Load Example** to pre-fill a scenario, then **Solve**. Results show ranked configurations with expandable constraint traces (pass/fail per rule, remediation suggestions).
 
-No additional packages beyond the standard library are needed. The engine itself only depends on Pydantic.
+Works in GitHub Codespaces — click **Code → Codespaces → Create codespace**, then run the same commands in the terminal.
+
+### API Endpoints
+
+| Endpoint | Method | Description |
+|---|---|---|
+| `/` | GET | Web UI |
+| `/api/families` | GET | List all families with schemas |
+| `/api/example/{family}` | GET | Pre-filled example requirements |
+| `/api/solve/{family}` | POST | Solve and return ranked configurations with traces |
+
+### Jupyter Notebooks
+
+Notebooks are available in `demo/` for development exploration but are not the recommended demo format (kernel reliability issues on Windows and Codespaces).
+
+```
+demo/v1/                        — V1 dedicated hinge engine
+demo/v2-n-candidate/            — N-candidate solver (N=1, N=2, N=3)
+demo/v2-staged-pipeline/        — Staged pipeline solver
+```
 
 ## Key Design Decisions
 
