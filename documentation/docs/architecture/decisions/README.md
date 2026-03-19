@@ -25,3 +25,4 @@ What becomes easier or more difficult to do because of this change?
 | ADR | Title | Status |
 |-----|-------|--------|
 | [ADR-001](ADR-001-flat-n-candidate-solver.md) | Flat N-candidate solver as default production solver | Accepted |
+| [ADR-002](ADR-002-llm-agent-family-generation.md) | LLM agent code generation for product family onboarding | Accepted |
