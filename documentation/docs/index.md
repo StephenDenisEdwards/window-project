@@ -11,6 +11,7 @@ Central navigation hub for all project documentation.
 ## Design
 
 - [Constraint Engine Design](design/DESIGN-constraint-engine.md) — Core rules reference, architecture, design principles
+- [N-Candidate Families](design/DESIGN-n-candidate-families.md) — Comprehensive data and rules reference for all three product families
 - [Domain Model](design/DESIGN-domain-model.md) — Product and configuration domain model
 
 ## Planning
