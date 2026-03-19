@@ -247,6 +247,94 @@ Before building this, validate with:
 
 ---
 
+## Alternative: LLM-Generated Code Instead of Declarative Rules
+
+The schema-driven approach solves for a world where adding a product family means filing a ticket and waiting for a developer to write Python. But LLM code generation changes the equation fundamentally: a domain expert describes the family in plain English and gets working, testable Python in minutes.
+
+### Why this may eliminate the need for declarative rules
+
+The entire premise of moving rules out of code is "non-developers can't write Python." With an LLM agent, they don't need to. The process:
+
+1. **Domain expert describes the products** — "A drawer slide has a length, load rating, extension type, mount type, close type"
+2. **Domain expert describes the rules** — "Load must not exceed rating. Slide must fit cabinet depth. Extension type must match if specified"
+3. **Domain expert provides sample data** — a few example products
+4. **LLM agent generates** `models.py`, `rules.py`, `config.py`, `loader.py`, and test data
+
+This was proven in this project. The drawer slide and LED lighting families were generated in a single conversation — models, rules, config, loader, tests, all working on the first pass. The concealed hinge rules were ported from v1 to v2 (14 rules, different signature) in one step with no manual coding.
+
+### Advantages of generated code over declarative rules
+
+| Concern | Declarative (JSON) | Generated code (Python) |
+|---|---|---|
+| **Expression language** | Must build and maintain a mini-language in JSON | Python *is* the expression language — already better than anything custom |
+| **Debugging** | Can't set breakpoints in JSON rule definitions | Standard Python debugging, breakpoints, stack traces |
+| **Type safety** | JSON Schema paths fail at runtime on typos | Pydantic catches field errors at import time |
+| **Testing** | Needs custom test harness for declarative rules | Standard pytest — same framework as everything else |
+| **Complex rules** | Need an escape hatch to Python for ~10% of rules | No escape hatch needed — you never left code |
+| **Readability** | JSON rule definitions can be harder to follow than Python | Rule functions are self-documenting with docstrings |
+| **Tooling** | Need a custom editor, validator, test runner | VS Code, pytest, git — standard developer tools |
+
+### The key insight
+
+The schema-driven approach optimises for **runtime flexibility** — changing rules without redeploying code. But for a constraint engine where correctness is the core promise ("no recommendation reaches the user without passing all constraint validation"), you probably *want* a deploy gate with tests before rule changes go live. Generated code with a CI pipeline gives you that safety net. Declarative rules that can be changed at runtime bypass it.
+
+### A specialised agent for robust family generation
+
+The LLM generation process can be made highly robust with a **specialised family-builder agent** that includes built-in validation steps:
+
+**Step 1 — Requirements gathering.** The agent interviews the domain expert: "What products are in this family? What fields does each product have? What constraints must be satisfied? What does the customer specify?" Structured questions, not freeform.
+
+**Step 2 — Model generation.** The agent generates Pydantic models from the gathered requirements. Validates that:
+- All fields have types and constraints
+- Enums are defined for constrained string fields
+- Requirements model captures all customer inputs
+- Models follow the existing patterns (extend `Product`/`Requirements` base classes)
+
+**Step 3 — Rule generation.** The agent generates rule functions from the constraint descriptions. For each rule, validates that:
+- All referenced fields exist on the models (cross-referencing models.py)
+- The rule function signature matches the N-candidate interface
+- The rule returns a `RuleResult` with rule_id, rule_name, category, detail, and remediation
+- The rule handles skip conditions (conditional rules return early with `passed=True`)
+
+**Step 4 — Sample data and golden tests.** The agent generates:
+- JSON data files with realistic sample products
+- A loader that reads the JSON and produces typed model instances
+- Golden scenario tests — known inputs with expected outcomes (solved/no_solution, expected SKUs)
+- Edge case tests — boundary values, impossible scenarios, empty catalogs
+
+**Step 5 — Cross-validation.** The agent runs the full test suite and verifies:
+- All tests pass
+- Every rule is exercised by at least one test scenario
+- The solver produces results for the golden scenarios
+- No rule is unreachable (every rule can both pass and fail across the test data)
+- The family integrates with the web demo (solver loads, examples work, API returns valid JSON)
+
+**Step 6 — Human review.** The agent presents a summary: models, rules, test coverage, sample results. The domain expert reviews the constraint traces for the golden scenarios and confirms the rules match their domain knowledge. Only then is the code committed.
+
+This pipeline is more robust than hand-coding because:
+- The validation steps are **automated and consistent** — a developer might forget to test edge cases, the agent always checks
+- The cross-referencing between models and rules is **exhaustive** — every field reference is verified
+- The test generation is **systematic** — the agent generates scenarios specifically to exercise each rule in both pass and fail states
+- The review step is **structured** — the domain expert sees constraint traces, not code
+
+### When declarative rules still win
+
+There are scenarios where the schema-driven approach is still preferable:
+
+1. **Runtime rule tuning by non-technical users.** If a sales manager needs to adjust a weight threshold or add a brand to a compatibility list without any deployment, declarative rules in a database are the right answer. But this is a narrow use case and could be addressed with parameterised rules (rules as code, parameters as data) rather than full declarative rules.
+
+2. **Hundreds of families with identical patterns.** If 50+ families all use the exact same 6 rule types with different field names, the declarative approach avoids code duplication. But the LLM approach handles this too — generating 50 families from templates is trivial for an LLM.
+
+3. **The conversational layer needs to modify rules.** If the LLM-powered conversational interface needs to dynamically add or adjust constraints based on user conversation, declarative rules are easier to manipulate programmatically. But this blurs the line between recommendation and constraint enforcement in ways that may undermine the "provably correct" guarantee.
+
+### Recommendation
+
+**Keep rules as Python code. Use LLM agents to generate families.** The schema-driven approach is an interesting architectural idea, but LLM code generation solves the same problem (non-developers adding families) without the costs (expression language, custom tooling, debugging complexity, two-system maintenance). The validation pipeline described above makes the generated code as robust as — or more robust than — hand-written code.
+
+Reserve the declarative approach for a specific future need: runtime rule parameterisation where thresholds and lookup tables are data, but the rule logic stays as code. This is a smaller, more focused version of "rules as data" that avoids the expression language problem.
+
+---
+
 ## Open Questions
 
 1. **Who is the user?** If only developers add families, Python is simpler and more debuggable. If domain experts or the conversational layer need to define families, declarative is essential. The answer depends on the internal sales process document and who will encode the remaining 10 families.
