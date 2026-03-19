@@ -590,10 +590,10 @@ status = solver.Solve(model, collector)
 | Step | Task | Effort |
 |------|------|--------|
 | 1 | Add `ortools` to `requirements.txt` | Minutes |
-| 2 | Create `engine/cpsat_solver.py` with `CpSatHingeEngine` class | 2–3 hours |
+| 2 | Create `engine_v1/cpsat_solver.py` with `CpSatHingeEngine` class | 2–3 hours |
 | 3 | Implement model construction with all 14 rules encoded | Core of step 2 |
 | 4 | Implement `SolutionCollector` callback | Included in step 2 |
-| 5 | Create `engine/tests/test_cpsat.py` — run same 7 customer scenarios, assert identical results to current engine | 1–2 hours |
+| 5 | Create `engine_v1/tests/test_cpsat.py` — run same 7 customer scenarios, assert identical results to current engine | 1–2 hours |
 | 6 | Add benchmark comparing solve times | 1 hour |
 | 7 | Document findings in results section of this document | 1 hour |
 

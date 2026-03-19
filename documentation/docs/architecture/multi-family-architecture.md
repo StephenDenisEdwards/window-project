@@ -393,7 +393,7 @@ The decisions a family author must make:
 
 ### Recommendation for N-candidate families
 
-**Default to the flat N-candidate solver** for correctness, simplicity, and easy configuration. If latency becomes a problem at catalog scale, optimize the flat solver first (pre-filtering, indexing) before introducing stage decomposition. This matches the pattern in `engine/solver.py`, which uses flat evaluation with brand/cabinet-type/application indexes to reduce the candidate space before the Cartesian product.
+**Default to the flat N-candidate solver** for correctness, simplicity, and easy configuration. If latency becomes a problem at catalog scale, optimize the flat solver first (pre-filtering, indexing) before introducing stage decomposition. This matches the pattern in `engine_v1/solver.py`, which uses flat evaluation with brand/cabinet-type/application indexes to reduce the candidate space before the Cartesian product.
 
 Reserve the staged pipeline for families where: (a) catalogs are large enough that the Cartesian product is measurably slow, (b) constraints are clearly layered across roles, and (c) the performance gain justifies the configuration and correctness burden.
 

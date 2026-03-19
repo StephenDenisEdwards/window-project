@@ -19,7 +19,7 @@ All changes must pass these checks before committing:
 
 ```bash
 # Tests — V1 engine (70+ tests)
-python -m pytest engine/tests/ -v
+python -m pytest engine_v1/tests/ -v
 
 # Tests — V2 engine (experimental)
 python -m pytest engine_v2/tests/ -v
@@ -55,7 +55,7 @@ Use conventional prefix style:
 ## Project Structure
 
 ```
-engine/                         # Production constraint engine
+engine_v1/                         # Production constraint engine
   models.py                     # Domain models (Pydantic v2)
   enums.py                      # Enumeration types
   rules.py                      # Constraint rules (single source of truth)

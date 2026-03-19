@@ -45,7 +45,7 @@ All notable changes to the Window constraint engine are documented here, grouped
 ## 2026-03-07
 
 ### Features
-- **Production constraint engine** — Modular `engine/` package with Pydantic v2 models, 14 constraint rules, indexed pre-filtering, and full rule tracing
+- **Production constraint engine** — Modular `engine_v1/` package with Pydantic v2 models, 14 constraint rules, indexed pre-filtering, and full rule tracing
 - **70+ tests** — Including 7 customer scenarios (standard kitchen, corner cabinet, tall pantry, adjacent doors, constraint violations)
 - **Demo notebook** — Interactive walkthrough covering catalog overview, constraint traces, compatibility matrix, failure analysis, and interactive explorer
 

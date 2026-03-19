@@ -89,7 +89,7 @@ sample-data/hinges.json          sample-data/mounting_plates.json
          │                                    │
          └────────────┬───────────────────────┘
                       │
-              engine/loader.py
+              engine_v1/loader.py
               load_from_json()
                       │
           ┌───────────┼───────────┐
@@ -147,7 +147,7 @@ sample-data/hinges.json          sample-data/mounting_plates.json
 │                                                           │
 │  • Imperial → metric (inches → mm, lbs → kg)             │
 │  • Field mapping to canonical names                       │
-│  • Enum validation against engine/enums.py               │
+│  • Enum validation against engine_v1/enums.py               │
 │  • manufacturer_part as canonical identity                │
 │  • DistributorSKU per brand (Würth Baer, Louis, Wood)    │
 │  • OverlayTable population from full BPH × DD tables     │

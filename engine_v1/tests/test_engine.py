@@ -12,7 +12,7 @@ import json
 import pytest
 from pathlib import Path
 
-from engine import (
+from engine_v1 import (
     ApplicationType,
     CabinetPosition,
     CabinetType,
@@ -34,7 +34,7 @@ from engine import (
     RuleResult,
     load_from_json,
 )
-from engine.rules import hinges_per_door
+from engine_v1.rules import hinges_per_door
 
 
 # ---------------------------------------------------------------------------

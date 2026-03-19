@@ -2,7 +2,7 @@
 
 ## Current State
 
-The engine has moved beyond the original single-file PoC into a modular production codebase (`engine/`). Completed work:
+The engine has moved beyond the original single-file PoC into a modular production codebase (`engine_v1/`). Completed work:
 
 - Pydantic v2 domain models with full enum typing (no raw strings)
 - Rules extracted to standalone functions in `rules.py` with a `RULES` list
@@ -24,12 +24,12 @@ This document evaluates what remains to meet the work brief requirements: a prod
 
 ### 1.1 Separate rules from code
 
-**Problem:** Every rule is a Python function in `engine/rules.py`. Adding a rule means writing code, deploying a new version, and hoping you didn't break something. The brief says Würth has 13 product families — each will have its own constraint rules. Hardcoded methods won't scale.
+**Problem:** Every rule is a Python function in `engine_v1/rules.py`. Adding a rule means writing code, deploying a new version, and hoping you didn't break something. The brief says Würth has 13 product families — each will have its own constraint rules. Hardcoded methods won't scale.
 
 **Target:** Rules defined as data, evaluated by a generic engine.
 
 ```
-# Instead of this (current — engine/rules.py):
+# Instead of this (current — engine_v1/rules.py):
 def check_door_thickness(h, p, req, num_hinges):
     ok = h.door_thickness_range_mm.contains(req.door_thickness_mm)
     ...
@@ -164,7 +164,7 @@ This also makes the engine self-consistent: if a rule changes, compatibility cha
 **Production testing needs three layers:**
 
 1. **Unit tests** (current) — rule logic works correctly given inputs
-2. **Integration tests against known-good configurations** — the 7 customer scenarios in `engine/tests/test_engine.py` verify the engine recommends correct configurations. These are the "golden tests" that prove domain correctness.
+2. **Integration tests against known-good configurations** — the 7 customer scenarios in `engine_v1/tests/test_engine.py` verify the engine recommends correct configurations. These are the "golden tests" that prove domain correctness.
 3. **Regression tests on catalog changes** — when a product is added, updated, or discontinued, verify that existing valid configurations aren't broken and new products are reachable.
 4. **SME validation suite** — a set of real-world configurations validated by a domain expert (Würth sales rep or experienced installer). This is the ultimate correctness check and should be built during Week 1–2 discovery.
 

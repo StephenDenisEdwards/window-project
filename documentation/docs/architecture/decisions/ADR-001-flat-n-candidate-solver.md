@@ -10,7 +10,7 @@ Three solver approaches have been prototyped and benchmarked:
 
 | Approach | Implementation | Demo |
 |---|---|---|
-| V1 Paired Solver | `engine/solver.py` | `demo/v1_hinge_constraint_demo.ipynb` |
+| V1 Paired Solver | `engine_v1/solver.py` | `demo/v1_hinge_constraint_demo.ipynb` |
 | V2 Flat N-Candidate | `engine_v2/core/solver_n.py` | `demo/v2_n_candidate_demo.ipynb` |
 | V2 Staged Pipeline | `engine_v2/core/solver_staged.py` | `demo/v2_staged_pipeline_demo.ipynb` |
 
@@ -126,7 +126,7 @@ No stage decomposition decisions. No rule-to-stage assignment. No ordering analy
 
 ### For the V1 hinge engine
 
-The V1 hinge engine (`engine/solver.py`) remains the production implementation for concealed hinges. It is a specialised N=2 solver with indexed pre-filtering that has been validated with 70+ tests and 7 customer scenarios. There is no reason to rewrite it.
+The V1 hinge engine (`engine_v1/solver.py`) remains the production implementation for concealed hinges. It is a specialised N=2 solver with indexed pre-filtering that has been validated with 70+ tests and 7 customer scenarios. There is no reason to rewrite it.
 
 When the generic `NCandidateSolver` is promoted to production, the hinge family can be migrated to it (the V2 prototype already demonstrates this), but this is not urgent and should be driven by operational simplification, not solver architecture concerns.
 

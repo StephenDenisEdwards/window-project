@@ -4,7 +4,7 @@ Visual comparison of the three constraint solver approaches used in this project
 
 ---
 
-## 1. V1 Paired Solver (`engine/solver.py`)
+## 1. V1 Paired Solver (`engine_v1/solver.py`)
 
 The original hinge constraint engine. Handles two-product families (hinge + mounting plate) with indexed pre-filtering on hinges before brute-force plate evaluation.
 

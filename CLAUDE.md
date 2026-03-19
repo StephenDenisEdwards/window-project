@@ -7,7 +7,7 @@
 ## Language & Layout
 
 - **Python 3.13**, Pydantic v2
-- Production engine: `engine/`
+- Production engine: `engine_v1/`
 - Experimental multi-family prototype: `engine_v2/`
 - Product catalog: `sample-data/`
 - Demo notebooks: `demo/`
@@ -20,12 +20,12 @@
 pip install -r requirements.txt
 
 # Run V1 engine tests (70+ tests)
-pytest engine/tests/test_engine.py -v
+pytest engine_v1/tests/test_engine.py -v
 
 # Run specific test categories
-python -m pytest engine/tests/ -k scenario       # 7 customer scenarios
-python -m pytest engine/tests/ -k "enum"          # enum validation
-python -m pytest engine/tests/ -k "prefilter"     # pre-filter verification
+python -m pytest engine_v1/tests/ -k scenario       # 7 customer scenarios
+python -m pytest engine_v1/tests/ -k "enum"          # enum validation
+python -m pytest engine_v1/tests/ -k "prefilter"     # pre-filter verification
 
 # Run V2 engine tests (experimental multi-family prototype)
 pytest engine_v2/tests/ -v
@@ -36,7 +36,7 @@ jupyter notebook demo/v1_hinge_constraint_demo.ipynb
 
 ## Architecture Overview
 
-**engine/** — Production constraint engine for concealed hinges:
+**engine_v1/** — Production constraint engine for concealed hinges:
 - `enums.py` — 10 enumeration types. Every constrained string field is an enum; no typos silently fail.
 - `models.py` — Domain models: `ConcealedHinge`, `MountingPlate`, `CustomerRequirements`, `Configuration`, `RuleResult`. Products use canonical manufacturer part numbers with per-distributor SKU overlays (`DistributorSKU`).
 - `rules.py` — 14 constraint rules (single source of truth). Each rule returns a `RuleResult` with pass/fail, detail, values compared, and remediation.
@@ -53,9 +53,9 @@ jupyter notebook demo/v1_hinge_constraint_demo.ipynb
 
 | File | Purpose |
 |------|---------|
-| `engine/solver.py` | Production hinge constraint engine |
-| `engine/rules.py` | 14 constraint rules (single source of truth) |
-| `engine/models.py` | Domain models (Pydantic v2) |
+| `engine_v1/solver.py` | Production hinge constraint engine |
+| `engine_v1/rules.py` | 14 constraint rules (single source of truth) |
+| `engine_v1/models.py` | Domain models (Pydantic v2) |
 | `engine_v2/core/solver_n.py` | Flat N-candidate solver (recommended) |
 | `engine_v2/core/solver_staged.py` | Staged pipeline solver (optimisation path) |
 | `engine_v2/families/led_lighting/` | 3-candidate LED lighting prototype |
@@ -75,7 +75,7 @@ Use prefix style: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`, `test:`
 
 ### Testing
 
-- V1 tests in `engine/tests/` using pytest
+- V1 tests in `engine_v1/tests/` using pytest
 - V2 tests in `engine_v2/tests/` using pytest
 - Name test files `test_<module>.py`
 

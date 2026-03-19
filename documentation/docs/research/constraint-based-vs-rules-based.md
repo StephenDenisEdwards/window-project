@@ -58,7 +58,7 @@ Add a new product? Just add its data — the constraints derive compatibility au
 
 ## Which One Is This Project?
 
-**This project is constraint-based.** None of the 14 rules in `engine/rules.py` mention a specific SKU, part number, or product. They are all property-level predicates:
+**This project is constraint-based.** None of the 14 rules in `engine_v1/rules.py` mention a specific SKU, part number, or product. They are all property-level predicates:
 
 | Rule | What it checks | Products referenced |
 |------|---------------|-------------------|

@@ -2,7 +2,7 @@
 
 ## Problem Statement
 
-This document defines the canonical domain model for the constraint engine, implemented in `engine/models.py` and `engine/enums.py`.
+This document defines the canonical domain model for the constraint engine, implemented in `engine_v1/models.py` and `engine_v1/enums.py`.
 
 ## Design Principles
 
@@ -264,10 +264,10 @@ class DoorMaterial(Enum):
 
 ## Migration Status
 
-The PoC dataclass-based engine has been removed. The production Pydantic models are the sole implementation in `engine/`. The migration steps below are complete:
+The PoC dataclass-based engine has been removed. The production Pydantic models are the sole implementation in `engine_v1/`. The migration steps below are complete:
 
-1. ~~Define enums and value objects~~ — `engine/enums.py`
-2. ~~Define production entity classes using Pydantic~~ — `engine/models.py`
-3. ~~Write adapters: PoC JSON → production model~~ — `engine/loader.py`
+1. ~~Define enums and value objects~~ — `engine_v1/enums.py`
+2. ~~Define production entity classes using Pydantic~~ — `engine_v1/models.py`
+3. ~~Write adapters: PoC JSON → production model~~ — `engine_v1/loader.py`
 4. ~~Run both engines in parallel against golden test scenarios~~ — 70+ tests passing
 5. ~~Retire the PoC loader~~ — PoC demo deleted, production engine is sole implementation

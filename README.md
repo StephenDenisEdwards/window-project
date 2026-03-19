@@ -14,7 +14,7 @@ The recommended integration pattern is deterministic-first: preprocess inputs wi
 
 The project contains two engine implementations:
 
-**`engine/`** — The production constraint engine for concealed hinges (the first and most complete product family). Exhaustive search over pre-filtered hinge × plate pairs, evaluating 14 constraint rules per pair. Every evaluation produces a full rule trace (pass/fail, values compared, remediation suggestions) so the conversational layer can explain *why* a configuration was recommended or *why* it failed.
+**`engine_v1/`** — The production constraint engine for concealed hinges (the first and most complete product family). Exhaustive search over pre-filtered hinge × plate pairs, evaluating 14 constraint rules per pair. Every evaluation produces a full rule trace (pass/fail, values compared, remediation suggestions) so the conversational layer can explain *why* a configuration was recommended or *why* it failed.
 
 **`engine_v2/`** — Experimental multi-family prototype. A generic constraint solver framework with pluggable rules and product families. Supports single-product, paired-product, and N-candidate families through a unified solver architecture. Three product families prototyped (concealed hinges, drawer slides, LED lighting).
 
@@ -24,7 +24,7 @@ Three solver approaches have been prototyped and evaluated:
 
 | Approach | Implementation | Best for |
 |---|---|---|
-| **V1 Paired** | `engine/solver.py` | 2-product families (hinge + plate) with indexed pre-filtering |
+| **V1 Paired** | `engine_v1/solver.py` | 2-product families (hinge + plate) with indexed pre-filtering |
 | **V2 Flat N-Candidate** | `engine_v2/core/solver_n.py` | Any number of product roles — the recommended default |
 | **V2 Staged Pipeline** | `engine_v2/core/solver_staged.py` | Large catalogs with clearly layered constraints (optimisation path) |
 
@@ -57,7 +57,7 @@ Current catalog: 53 hinges and 55 mounting plates across Blum, Grass, and Hafele
 ## Project Structure
 
 ```
-engine/                         # Production constraint engine (Python 3.13, Pydantic v2)
+engine_v1/                         # Production constraint engine (Python 3.13, Pydantic v2)
 ├── models.py                   # Domain models: ConcealedHinge, MountingPlate, Configuration
 ├── enums.py                    # 10 enumeration types (no raw strings)
 ├── rules.py                    # 14 constraint rules (single source of truth)
@@ -119,7 +119,7 @@ documentation/docs/             # Structured documentation
 
 ## Constraint Rules
 
-14 rules across 3 categories, defined in `engine/rules.py`:
+14 rules across 3 categories, defined in `engine_v1/rules.py`:
 
 **Hard constraints** — brand lock (conditional, controlled by `brand_lock` flag), series compatibility, cabinet type match, overlay range, inset support, door thickness, door weight capacity, boring pattern, face frame overlay, adjacent door clearance, corner cabinet angle, mounting method compatibility, cup depth.
 
@@ -135,7 +135,7 @@ Every rule returns structured results with rule ID, category, detail, compared v
 pip install -r requirements.txt
 
 # Run V1 engine tests (70+ tests)
-pytest engine/tests/ -v
+pytest engine_v1/tests/ -v
 
 # Run V2 engine tests (experimental)
 pytest engine_v2/tests/ -v

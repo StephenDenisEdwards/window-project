@@ -18,7 +18,7 @@ Realistic example data modelling the constraint satisfaction problem for cabinet
 - Corner cabinets require minimum 155 opening (R013)
 - Adjacent doors sharing a partition have a combined overlay constraint (R012)
 
-Constraint rules are defined in `engine/rules.py` — the single source of truth.
+Constraint rules are defined in `engine_v1/rules.py` — the single source of truth.
 
 ## Notes
 
