@@ -1,9 +1,11 @@
 """Concealed hinge models for the v2 engine.
 
-These are thin wrappers that extend the core Product/Requirements base classes
-with hinge-specific fields. In production, these would replace the current
-engine.models — but for this prototype they're standalone.
+These extend the core Product/Requirements base classes with hinge-specific
+fields. The models mirror engine_v1's domain but use v2's base classes so
+they work with NCandidateSolver.
 """
+
+from __future__ import annotations
 
 from enum import Enum
 from typing import Optional
@@ -13,7 +15,7 @@ from pydantic import BaseModel
 from engine_v2.core.models import Product, Requirements
 
 
-# --- Enums (subset needed for the prototype) ---
+# --- Enums ---
 
 class ApplicationType(str, Enum):
     FULL_OVERLAY = "full_overlay"
@@ -52,7 +54,20 @@ class HingeSeries(str, Enum):
     DUOMATIC = "Duomatic"
 
 
-# --- Products ---
+class PlateType(str, Enum):
+    CRUCIFORM = "cruciform"
+    WING = "wing"
+    WING_CAM = "wing_cam"
+    THICK_WING = "thick_wing"
+    FACE_FRAME = "face_frame"
+    FACE_FRAME_ADAPTER = "face_frame_adapter"
+    FACE_FRAME_INSET = "face_frame_inset"
+    INLINE = "inline"
+    CAM_BASEPLATE = "cam_baseplate"
+    TWO_PIECE = "two_piece"
+
+
+# --- Value objects ---
 
 class Range(BaseModel):
     min: float
@@ -61,6 +76,8 @@ class Range(BaseModel):
     def contains(self, value: float) -> bool:
         return self.min <= value <= self.max
 
+
+# --- Products ---
 
 class Hinge(Product):
     """Concealed European hinge."""
@@ -84,8 +101,10 @@ class Plate(Product):
     compatible_hinge_series: list[HingeSeries]
     mounting_method: MountingMethod
     cabinet_type: CabinetType
-    overlay_min_mm: float = 0
-    overlay_max_mm: float = 25
+    plate_type: PlateType = PlateType.CRUCIFORM
+    # Overlay stored as the same dict format as v1 JSON:
+    # {"full": [min, max], "half": [min, max], "inset": true/false}
+    overlay_range_mm: dict = {}
 
 
 # --- Requirements ---
