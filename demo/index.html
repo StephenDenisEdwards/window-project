@@ -89,6 +89,10 @@
         </select>
       </div>
     </div>
+    <details id="rules-panel" style="margin-bottom:16px;">
+      <summary style="font-size:0.85rem;cursor:pointer;font-weight:600;color:#2563eb;">Show constraint rules</summary>
+      <table class="trace" style="margin-top:8px;" id="rules-table"></table>
+    </details>
     <div class="form-grid" id="form-fields"></div>
     <div class="buttons">
       <button class="btn btn-primary" id="solve-btn" onclick="solve()">Solve</button>
@@ -129,8 +133,23 @@ async function selectFamily(name) {
   document.getElementById('form-area').classList.remove('hidden');
   document.getElementById('results-area').classList.add('hidden');
   document.getElementById('form-title').textContent = activeFamily.title;
+  buildRulesTable(activeFamily.rules);
   buildForm(activeFamily.schema);
   await loadExamples(name);
+}
+
+function buildRulesTable(rules) {
+  const table = document.getElementById('rules-table');
+  let html = '<tr><th>Rule</th><th>Name</th><th>Category</th></tr>';
+  rules.forEach(r => {
+    const cat = r.category === 'hard_constraint' ? 'Hard constraint'
+      : r.category === 'preference' ? 'Preference'
+      : r.category === 'derived' ? 'Derived'
+      : r.category;
+    html += `<tr><td><strong>${r.rule_id}</strong></td><td>${r.rule_name.replace(/_/g, ' ')}</td><td>${cat}</td></tr>`;
+  });
+  table.innerHTML = html;
+  document.getElementById('rules-panel').open = false;
 }
 
 function buildForm(schema) {

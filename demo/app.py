@@ -46,35 +46,28 @@ SOLVERS: dict[str, NCandidateSolver] = {
     ),
 }
 
-FAMILY_META = {
-    "concealed_hinge": {
-        "name": "concealed_hinge",
-        "title": "Concealed Hinges",
-        "description": "Hinge + mounting plate pairs (N=2). 53 hinges, 55 plates, 14 rules.",
-        "roles": ["hinge", "plate"],
-        "catalog_size": f"{len(hinges)} hinges x {len(plates)} plates",
-        "rules": len(HINGE_N_CONFIG.rules),
-        "schema": HINGE_N_CONFIG.requirements_type.model_json_schema(),
-    },
-    "drawer_slide": {
-        "name": "drawer_slide",
-        "title": "Drawer Slides",
-        "description": "Single-product family (N=1). 4 slides, 8 rules.",
-        "roles": ["slide"],
-        "catalog_size": f"{len(slides)} slides",
-        "rules": len(SLIDE_N_CONFIG.rules),
-        "schema": SLIDE_N_CONFIG.requirements_type.model_json_schema(),
-    },
-    "led_lighting": {
-        "name": "led_lighting",
-        "title": "LED Lighting",
-        "description": "Light bar + driver + dimmer triples (N=3). 5 bars, 4 drivers, 4 dimmers, 9 rules.",
-        "roles": ["light_bar", "driver", "dimmer"],
-        "catalog_size": f"{len(bars)} bars x {len(drivers)} drivers x {len(dimmers)} dimmers",
-        "rules": len(LED_N_CONFIG.rules),
-        "schema": LED_N_CONFIG.requirements_type.model_json_schema(),
-    },
-}
+def _extract_rule_info(config, product_lists, example_data):
+    """Call each rule with example data to extract rule ID, name, and category."""
+    dummy_candidates = {role: products[0] for role, products in product_lists.items()}
+    dummy_req = config.requirements_type.model_validate(example_data)
+    derived = config.derived_values(dummy_req) if config.derived_values else {}
+
+    rules_info = []
+    for rule_fn in config.rules:
+        try:
+            result = rule_fn(dummy_candidates, dummy_req, derived)
+            rules_info.append({
+                "rule_id": result.rule_id,
+                "rule_name": result.rule_name,
+                "category": result.category.value,
+            })
+        except Exception:
+            rules_info.append({
+                "rule_id": "?",
+                "rule_name": rule_fn.__name__,
+                "category": "unknown",
+            })
+    return rules_info
 
 EXAMPLES = {
     "concealed_hinge": [
@@ -169,6 +162,39 @@ EXAMPLES = {
             "data": {"cabinet_length_mm": 200, "dimming_required": True, "min_lumen_output": 300},
         },
     ],
+}
+
+FAMILY_META = {
+    "concealed_hinge": {
+        "name": "concealed_hinge",
+        "title": "Concealed Hinges",
+        "description": "Hinge + mounting plate pairs (N=2). 53 hinges, 55 plates, 14 rules.",
+        "roles": ["hinge", "plate"],
+        "catalog_size": f"{len(hinges)} hinges x {len(plates)} plates",
+        "rules_count": len(HINGE_N_CONFIG.rules),
+        "rules": _extract_rule_info(HINGE_N_CONFIG, {"hinge": hinges, "plate": plates}, EXAMPLES["concealed_hinge"][0]["data"]),
+        "schema": HINGE_N_CONFIG.requirements_type.model_json_schema(),
+    },
+    "drawer_slide": {
+        "name": "drawer_slide",
+        "title": "Drawer Slides",
+        "description": "Single-product family (N=1). 4 slides, 8 rules.",
+        "roles": ["slide"],
+        "catalog_size": f"{len(slides)} slides",
+        "rules_count": len(SLIDE_N_CONFIG.rules),
+        "rules": _extract_rule_info(SLIDE_N_CONFIG, {"slide": slides}, EXAMPLES["drawer_slide"][0]["data"]),
+        "schema": SLIDE_N_CONFIG.requirements_type.model_json_schema(),
+    },
+    "led_lighting": {
+        "name": "led_lighting",
+        "title": "LED Lighting",
+        "description": "Light bar + driver + dimmer triples (N=3). 5 bars, 4 drivers, 4 dimmers, 9 rules.",
+        "roles": ["light_bar", "driver", "dimmer"],
+        "catalog_size": f"{len(bars)} bars x {len(drivers)} drivers x {len(dimmers)} dimmers",
+        "rules_count": len(LED_N_CONFIG.rules),
+        "rules": _extract_rule_info(LED_N_CONFIG, {"light_bar": bars, "driver": drivers, "dimmer": dimmers}, EXAMPLES["led_lighting"][0]["data"]),
+        "schema": LED_N_CONFIG.requirements_type.model_json_schema(),
+    },
 }
 
 # --- FastAPI app ---
