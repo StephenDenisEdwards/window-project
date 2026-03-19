@@ -5,7 +5,7 @@ A deterministic rule-based solver for hinge-to-mounting-plate compatibility in c
 ## File Layout
 
 ```
-poc/engine/
+engine_v1/
 ├── __init__.py      # Package exports
 ├── enums.py         # All enumeration types
 ├── models.py        # Domain models (Pydantic v2)

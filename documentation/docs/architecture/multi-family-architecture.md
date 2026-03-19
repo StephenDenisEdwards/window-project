@@ -49,7 +49,7 @@ engine_v2/
 ├── core/
 │   ├── solver.py           # Generic ConstraintSolver — works on any product family
 │   ├── models.py           # Base classes: Product, Requirements, RuleResult, Configuration
-│   ├── registry.py         # ProductFamilyRegistry — registers families and their components
+│   ├── registry.py         # FamilyRegistry — registers families and their components
 │   └── types.py            # Type aliases: RuleFn, PreFilterFn, RankKeyFn
 ├── families/
 │   ├── concealed_hinge/

@@ -38,14 +38,14 @@ python -m uvicorn demo.app:app --reload
 ## Architecture Overview
 
 **engine_v1/** — Production constraint engine for concealed hinges:
-- `enums.py` — 10 enumeration types. Every constrained string field is an enum; no typos silently fail.
+- `enums.py` — 11 enumeration types. Every constrained string field is an enum; no typos silently fail.
 - `models.py` — Domain models: `ConcealedHinge`, `MountingPlate`, `CustomerRequirements`, `Configuration`, `RuleResult`. Products use canonical manufacturer part numbers with per-distributor SKU overlays (`DistributorSKU`).
 - `rules.py` — 14 constraint rules (single source of truth). Each rule returns a `RuleResult` with pass/fail, detail, values compared, and remediation.
 - `solver.py` — `HingeConstraintEngine`: pre-filters hinges via brand/cabinet-type/application indexes, evaluates all hinge×plate pairs against rules, returns valid configurations ranked by price ASC then capacity DESC.
 - `loader.py` — Converts PoC JSON format from `sample-data/` into production Pydantic models.
 
 **engine_v2/** — Experimental multi-family prototype (not production-ready):
-- Generic `ConstraintSolver` with pluggable rules and `ProductFamilyRegistry`
+- Generic `ConstraintSolver` with pluggable rules and `FamilyRegistry`
 - `NCandidateSolver` — flat N-candidate solver (recommended default, ADR-001)
 - `StagedPipelineSolver` — staged pipeline solver (optimisation path)
 - Three prototype families: `concealed_hinge`, `drawer_slide`, `led_lighting`

@@ -74,7 +74,7 @@ MountingPlate (extends ManufacturerProduct)
 ├── height_adjustment_mm: float     # typically 2
 ├── depth_adjustment_mm: float      # 0, 2, 2.5
 ├── setback_mm: float               # 37 (frameless), 9.5 (face frame)
-├── material: PlateMaterial         # STAMPED_STEEL, ZINC_DIECAST, STEEL_NICKEL_PLATED
+├── material: PlateMaterial         # STAMPED_STEEL, ZINC_DIECAST, STEEL_NICKEL_PLATED, ZINC_DIECAST_STEEL, STEEL_DIECAST_NICKEL_PLATED
 ├── fixing_points: int              # 2, 3, 4
 └── notes: str | None
 ```
@@ -216,6 +216,12 @@ class HingeSeries(Enum):
     NEXIS = "Nexis"
     DUOMATIC = "Duomatic"
 
+class PlateSeries(Enum):
+    CLIP = "CLIP"
+    TIOMOS = "Tiomos"
+    NEXIS = "Nexis"
+    DUOMATIC = "Duomatic"
+
 class PlateType(Enum):
     CRUCIFORM = "cruciform"
     WING = "wing"
@@ -232,6 +238,8 @@ class PlateMaterial(Enum):
     STAMPED_STEEL = "stamped_steel"
     ZINC_DIECAST = "zinc_diecast"
     STEEL_NICKEL_PLATED = "steel_nickel_plated"
+    ZINC_DIECAST_STEEL = "zinc_diecast_steel"
+    STEEL_DIECAST_NICKEL_PLATED = "steel_diecast_nickel_plated"
 
 class RuleCategory(Enum):
     HARD_CONSTRAINT = "hard_constraint"     # must pass or config is invalid

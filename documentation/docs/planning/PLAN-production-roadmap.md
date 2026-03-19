@@ -159,7 +159,7 @@ This also makes the engine self-consistent: if a rule changes, compatibility cha
 
 ### 3.3 Testing strategy
 
-**Problem:** The PoC has 61 unit tests that verify internal consistency. They don't verify domain correctness — they test that the code does what the code says, not that the code says the right thing.
+**Problem:** The engine has 70 unit tests that verify internal consistency. They don't verify domain correctness — they test that the code does what the code says, not that the code says the right thing.
 
 **Production testing needs three layers:**
 

@@ -59,7 +59,7 @@ Current catalog: 53 hinges and 55 mounting plates across Blum, Grass, and Hafele
 ```
 engine_v1/                         # Production constraint engine (Python 3.13, Pydantic v2)
 ├── models.py                   # Domain models: ConcealedHinge, MountingPlate, Configuration
-├── enums.py                    # 10 enumeration types (no raw strings)
+├── enums.py                    # 11 enumeration types (no raw strings)
 ├── rules.py                    # 14 constraint rules (single source of truth)
 ├── solver.py                   # HingeConstraintEngine: pre-filter, evaluate, rank
 ├── loader.py                   # JSON data adapter
@@ -72,7 +72,7 @@ engine_v2/                      # Multi-family N-candidate solver
 │   ├── solver_n.py             # Flat N-candidate solver (recommended)
 │   ├── solver_staged.py        # Staged pipeline solver (optimisation path)
 │   ├── solver.py               # Legacy paired solver
-│   ├── registry.py             # ProductFamilyRegistry
+│   ├── registry.py             # FamilyRegistry
 │   └── types.py                # Type aliases: NRuleFn, PreFilterFn, RankKeyFn
 ├── families/
 │   ├── concealed_hinge/        # N=2: hinge + plate (real catalog, 14 rules)
