@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cabinet Hardware Constraint Engine</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f5; color: #333; }
+  .container { max-width: 960px; margin: 0 auto; padding: 20px; }
+  h1 { font-size: 1.5rem; margin-bottom: 4px; }
+  .subtitle { color: #666; margin-bottom: 20px; font-size: 0.9rem; }
+
+  /* Family tabs */
+  .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+  .tab { padding: 10px 20px; border: 1px solid #ddd; border-radius: 6px; background: #fff; cursor: pointer; font-size: 0.85rem; transition: all 0.15s; }
+  .tab:hover { border-color: #999; }
+  .tab.active { background: #2563eb; color: #fff; border-color: #2563eb; }
+  .tab-info { font-size: 0.7rem; display: block; opacity: 0.7; margin-top: 2px; }
+
+  /* Form */
+  .form-area { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+  .form-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .form-header h2 { font-size: 1.1rem; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field { display: flex; flex-direction: column; }
+  .field label { font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; color: #555; }
+  .field input, .field select { padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem; }
+  .field input:focus, .field select:focus { outline: none; border-color: #2563eb; }
+  .field.optional label::after { content: " (optional)"; font-weight: 400; color: #999; }
+  .buttons { display: flex; gap: 8px; margin-top: 16px; }
+  .btn { padding: 10px 24px; border: none; border-radius: 6px; font-size: 0.9rem; cursor: pointer; }
+  .btn-primary { background: #2563eb; color: #fff; }
+  .btn-primary:hover { background: #1d4ed8; }
+  .btn-secondary { background: #e5e7eb; color: #333; }
+  .btn-secondary:hover { background: #d1d5db; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* Results */
+  .results { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; }
+  .status { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; margin-bottom: 8px; }
+  .status.solved { background: #dcfce7; color: #166534; }
+  .status.no_solution { background: #fee2e2; color: #991b1b; }
+  .message { color: #666; margin-bottom: 16px; font-size: 0.9rem; }
+
+  .config-card { border: 1px solid #e5e7eb; border-radius: 6px; padding: 16px; margin-bottom: 12px; }
+  .config-card h3 { font-size: 0.95rem; margin-bottom: 8px; }
+  .config-card .products { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
+  .product { background: #f9fafb; padding: 8px 12px; border-radius: 4px; font-size: 0.8rem; }
+  .product .sku { font-weight: 600; }
+  .product .brand { color: #666; }
+  .product .price { color: #2563eb; }
+  .derived { font-size: 0.8rem; color: #666; margin-bottom: 12px; }
+
+  /* Trace table */
+  .trace { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+  .trace th { text-align: left; padding: 6px 8px; background: #f9fafb; border-bottom: 2px solid #e5e7eb; font-weight: 600; }
+  .trace td { padding: 6px 8px; border-bottom: 1px solid #f0f0f0; }
+  .trace tr.pass td:first-child { border-left: 3px solid #22c55e; }
+  .trace tr.fail td:first-child { border-left: 3px solid #ef4444; }
+  .trace .result { font-weight: 600; }
+  .trace .result.pass { color: #22c55e; }
+  .trace .result.fail { color: #ef4444; }
+  .trace .remediation { color: #b45309; font-style: italic; }
+
+  /* Alternatives */
+  .alternatives { margin-top: 16px; }
+  .alternatives summary { cursor: pointer; font-size: 0.85rem; font-weight: 600; color: #2563eb; }
+  .alt-list { margin-top: 8px; }
+  .alt-item { font-size: 0.8rem; padding: 6px 0; border-bottom: 1px solid #f0f0f0; }
+
+  .hidden { display: none; }
+  .loading { text-align: center; padding: 40px; color: #999; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Cabinet Hardware Constraint Engine</h1>
+  <p class="subtitle">Deterministic solver — every recommendation is provably correct</p>
+
+  <div class="tabs" id="tabs"></div>
+
+  <div class="form-area hidden" id="form-area">
+    <div class="form-header">
+      <h2 id="form-title"></h2>
+      <div>
+        <button class="btn btn-secondary" onclick="loadExample()">Load Example</button>
+      </div>
+    </div>
+    <div class="form-grid" id="form-fields"></div>
+    <div class="buttons">
+      <button class="btn btn-primary" id="solve-btn" onclick="solve()">Solve</button>
+    </div>
+  </div>
+
+  <div class="hidden" id="results-area"></div>
+</div>
+
+<script>
+let families = [];
+let activeFamily = null;
+
+async function init() {
+  const resp = await fetch('/api/families');
+  families = await resp.json();
+  const tabs = document.getElementById('tabs');
+  families.forEach(f => {
+    const tab = document.createElement('div');
+    tab.className = 'tab';
+    tab.innerHTML = `${f.title}<span class="tab-info">${f.catalog_size} &bull; ${f.rules} rules</span>`;
+    tab.onclick = () => selectFamily(f.name);
+    tab.id = 'tab-' + f.name;
+    tabs.appendChild(tab);
+  });
+}
+
+function resolveRef(schema, ref) {
+  const path = ref.replace('#/$defs/', '');
+  return schema.$defs?.[path] || {};
+}
+
+function selectFamily(name) {
+  activeFamily = families.find(f => f.name === name);
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.getElementById('form-area').classList.remove('hidden');
+  document.getElementById('results-area').classList.add('hidden');
+  document.getElementById('form-title', activeFamily.title);
+  document.getElementById('form-title').textContent = activeFamily.title;
+  buildForm(activeFamily.schema);
+}
+
+function buildForm(schema) {
+  const grid = document.getElementById('form-fields');
+  grid.innerHTML = '';
+  const props = schema.properties || {};
+  const required = schema.required || [];
+
+  for (const [name, prop] of Object.entries(props)) {
+    // Skip internal fields
+    if (name === 'brand_lock') continue;
+
+    const field = document.createElement('div');
+    field.className = 'field' + (required.includes(name) ? '' : ' optional');
+
+    const label = document.createElement('label');
+    label.textContent = name.replace(/_/g, ' ');
+    label.setAttribute('for', 'f-' + name);
+    field.appendChild(label);
+
+    let input;
+    const resolved = prop.$ref ? resolveRef(schema, prop.$ref) : prop;
+    // Handle anyOf (Optional types)
+    const actualType = prop.anyOf
+      ? prop.anyOf.find(a => a.type !== 'null' || a.$ref)
+      : resolved;
+    const enumRef = actualType?.$ref ? resolveRef(schema, actualType.$ref) : actualType;
+
+    if (enumRef?.enum) {
+      input = document.createElement('select');
+      if (!required.includes(name)) {
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = '— any —';
+        input.appendChild(opt);
+      }
+      enumRef.enum.forEach(v => {
+        const opt = document.createElement('option');
+        opt.value = v;
+        opt.textContent = v.replace(/_/g, ' ');
+        input.appendChild(opt);
+      });
+    } else if (resolved.type === 'boolean' || actualType?.type === 'boolean') {
+      input = document.createElement('select');
+      ['false', 'true'].forEach(v => {
+        const opt = document.createElement('option');
+        opt.value = v;
+        opt.textContent = v;
+        input.appendChild(opt);
+      });
+    } else if (resolved.type === 'integer' || actualType?.type === 'integer') {
+      input = document.createElement('input');
+      input.type = 'number';
+      input.step = '1';
+    } else if (resolved.type === 'number' || actualType?.type === 'number') {
+      input = document.createElement('input');
+      input.type = 'number';
+      input.step = '0.1';
+    } else {
+      input = document.createElement('input');
+      input.type = 'text';
+    }
+
+    input.id = 'f-' + name;
+    input.name = name;
+    if ('default' in prop) {
+      input.value = prop.default ?? '';
+    }
+    field.appendChild(input);
+    grid.appendChild(field);
+  }
+}
+
+async function loadExample() {
+  if (!activeFamily) return;
+  const resp = await fetch('/api/example/' + activeFamily.name);
+  const example = await resp.json();
+  for (const [key, val] of Object.entries(example)) {
+    const input = document.getElementById('f-' + key);
+    if (input) input.value = val?.toString() ?? '';
+  }
+}
+
+async function solve() {
+  if (!activeFamily) return;
+  const btn = document.getElementById('solve-btn');
+  btn.disabled = true;
+  btn.textContent = 'Solving...';
+
+  const body = {};
+  const schema = activeFamily.schema;
+  const props = schema.properties || {};
+
+  for (const [name, prop] of Object.entries(props)) {
+    const input = document.getElementById('f-' + name);
+    if (!input) continue;
+    const val = input.value;
+    if (val === '' || val === null) continue;
+
+    const resolved = prop.$ref ? resolveRef(schema, prop.$ref) : prop;
+    const actualType = prop.anyOf
+      ? prop.anyOf.find(a => a.type !== 'null' || a.$ref)
+      : resolved;
+    const enumRef = actualType?.$ref ? resolveRef(schema, actualType.$ref) : actualType;
+
+    if (enumRef?.enum) {
+      body[name] = val;
+    } else if (resolved.type === 'boolean' || actualType?.type === 'boolean') {
+      body[name] = val === 'true';
+    } else if (resolved.type === 'integer' || actualType?.type === 'integer') {
+      body[name] = parseInt(val);
+    } else if (resolved.type === 'number' || actualType?.type === 'number') {
+      body[name] = parseFloat(val);
+    } else {
+      body[name] = val;
+    }
+  }
+
+  try {
+    const resp = await fetch('/api/solve/' + activeFamily.name, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!resp.ok) {
+      const err = await resp.json();
+      throw new Error(err.detail || resp.statusText);
+    }
+    const result = await resp.json();
+    renderResults(result);
+  } catch (e) {
+    renderError(e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Solve';
+  }
+}
+
+function renderResults(data) {
+  const area = document.getElementById('results-area');
+  area.classList.remove('hidden');
+
+  const status = data.status;
+  let html = `<div class="results">`;
+  html += `<span class="status ${status}">${status === 'solved' ? 'SOLVED' : 'NO SOLUTION'}</span>`;
+  html += `<p class="message">${data.message}</p>`;
+
+  if (status === 'solved' && data.recommended) {
+    html += renderConfig('Recommended', data.recommended);
+
+    if (data.alternatives?.length) {
+      html += `<details class="alternatives"><summary>${data.alternatives.length} alternative(s)</summary><div class="alt-list">`;
+      data.alternatives.slice(0, 10).forEach((alt, i) => {
+        html += renderConfig(`Alternative ${i + 1}`, alt);
+      });
+      html += `</div></details>`;
+    }
+  }
+
+  if (status === 'no_solution') {
+    if (data.closest_match) {
+      html += renderConfig('Closest Match (not valid)', data.closest_match);
+    }
+    if (data.failed_rules?.length) {
+      html += `<h3 style="margin: 16px 0 8px; font-size: 0.95rem;">Failed Constraints</h3>`;
+      html += `<table class="trace">`;
+      html += `<tr><th>Rule</th><th>Name</th><th>Detail</th><th>Fix</th></tr>`;
+      data.failed_rules.forEach(r => {
+        html += `<tr class="fail"><td>${r.rule}</td><td>${r.name}</td><td>${r.detail}</td><td class="remediation">${r.remediation || ''}</td></tr>`;
+      });
+      html += `</table>`;
+    }
+  }
+
+  html += `</div>`;
+  area.innerHTML = html;
+}
+
+function renderConfig(title, config) {
+  let html = `<div class="config-card"><h3>${title}</h3>`;
+
+  // Products
+  html += `<div class="products">`;
+  if (config.candidates) {
+    for (const [role, prod] of Object.entries(config.candidates)) {
+      const price = prod.price_usd ? `$${prod.price_usd.toFixed(2)}` : '';
+      html += `<div class="product"><span class="sku">${prod.sku}</span> <span class="brand">${prod.brand}</span> <span class="price">${price}</span></div>`;
+    }
+  }
+  html += `</div>`;
+
+  // Derived + total price
+  const parts = [];
+  if (config.total_price_usd != null) parts.push(`Total: $${config.total_price_usd.toFixed(2)}`);
+  if (config.derived) {
+    for (const [k, v] of Object.entries(config.derived)) {
+      if (k !== 'quantity') parts.push(`${k.replace(/_/g, ' ')}: ${v}`);
+    }
+  }
+  if (parts.length) html += `<div class="derived">${parts.join(' &bull; ')}</div>`;
+
+  // Trace
+  if (config.constraint_trace?.length) {
+    html += `<details><summary style="font-size:0.8rem;cursor:pointer;color:#2563eb;">Constraint trace (${config.constraint_trace.length} rules)</summary>`;
+    html += `<table class="trace" style="margin-top:8px;">`;
+    html += `<tr><th>Rule</th><th>Name</th><th>Result</th><th>Detail</th></tr>`;
+    config.constraint_trace.forEach(r => {
+      const cls = r.passed ? 'pass' : 'fail';
+      html += `<tr class="${cls}"><td>${r.rule}</td><td>${r.name}</td><td class="result ${cls}">${r.passed ? 'PASS' : 'FAIL'}</td><td>${r.detail}`;
+      if (r.remediation) html += `<br><span class="remediation">${r.remediation}</span>`;
+      html += `</td></tr>`;
+    });
+    html += `</table></details>`;
+  }
+
+  html += `</div>`;
+  return html;
+}
+
+function renderError(msg) {
+  const area = document.getElementById('results-area');
+  area.classList.remove('hidden');
+  area.innerHTML = `<div class="results"><span class="status no_solution">ERROR</span><p class="message">${msg}</p></div>`;
+}
+
+init();
+</script>
+</body>
+</html>

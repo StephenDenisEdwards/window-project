@@ -2,3 +2,5 @@ pydantic>=2.0
 pytest
 ipykernel
 jupyter
+fastapi>=0.100
+uvicorn[standard]
