@@ -114,7 +114,7 @@ async function init() {
   families.forEach(f => {
     const tab = document.createElement('div');
     tab.className = 'tab';
-    tab.innerHTML = `${f.title}<span class="tab-info">${f.catalog_size} &bull; ${f.rules} rules</span>`;
+    tab.innerHTML = `${f.title}<span class="tab-info">${f.catalog_size} &bull; ${f.rules_count} rules</span>`;
     tab.onclick = () => selectFamily(f.name);
     tab.id = 'tab-' + f.name;
     tabs.appendChild(tab);
