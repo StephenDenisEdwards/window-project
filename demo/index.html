@@ -140,16 +140,35 @@ async function selectFamily(name) {
 
 function buildRulesTable(rules) {
   const table = document.getElementById('rules-table');
-  let html = '<tr><th>Rule</th><th>Name</th><th>Category</th></tr>';
-  rules.forEach(r => {
-    const cat = r.category === 'hard_constraint' ? 'Hard constraint'
-      : r.category === 'preference' ? 'Preference'
+  let html = '<tr><th>Rule</th><th>Name</th><th>Category</th><th>Description</th><th></th></tr>';
+  rules.forEach((r, i) => {
+    const cat = r.category === 'hard_constraint' ? 'Hard'
+      : r.category === 'preference' ? 'Pref'
       : r.category === 'derived' ? 'Derived'
       : r.category;
-    html += `<tr><td><strong>${r.rule_id}</strong></td><td>${r.rule_name.replace(/_/g, ' ')}</td><td>${cat}</td></tr>`;
+    const desc = r.description || '';
+    html += `<tr>`;
+    html += `<td><strong>${r.rule_id}</strong></td>`;
+    html += `<td>${r.rule_name.replace(/_/g, ' ')}</td>`;
+    html += `<td>${cat}</td>`;
+    html += `<td style="font-size:0.75rem;">${desc}</td>`;
+    html += `<td><button class="btn btn-secondary" style="padding:2px 8px;font-size:0.7rem;" onclick="toggleSource(${i})">source</button></td>`;
+    html += `</tr>`;
+    html += `<tr id="rule-src-${i}" class="hidden"><td colspan="5"><pre style="background:#f9fafb;padding:12px;border-radius:4px;font-size:0.75rem;overflow-x:auto;margin:4px 0;">${escapeHtml(r.source || 'Source not available')}</pre></td></tr>`;
   });
   table.innerHTML = html;
   document.getElementById('rules-panel').open = false;
+}
+
+function toggleSource(idx) {
+  const row = document.getElementById('rule-src-' + idx);
+  row.classList.toggle('hidden');
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
 }
 
 function buildForm(schema) {

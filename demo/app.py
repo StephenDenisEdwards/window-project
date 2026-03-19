@@ -47,25 +47,35 @@ SOLVERS: dict[str, NCandidateSolver] = {
 }
 
 def _extract_rule_info(config, product_lists, example_data):
-    """Call each rule with example data to extract rule ID, name, and category."""
+    """Call each rule with example data to extract rule ID, name, category, docstring, and source."""
+    import inspect
     dummy_candidates = {role: products[0] for role, products in product_lists.items()}
     dummy_req = config.requirements_type.model_validate(example_data)
     derived = config.derived_values(dummy_req) if config.derived_values else {}
 
     rules_info = []
     for rule_fn in config.rules:
+        doc = (rule_fn.__doc__ or "").strip()
+        try:
+            source = inspect.getsource(rule_fn)
+        except (OSError, TypeError):
+            source = ""
         try:
             result = rule_fn(dummy_candidates, dummy_req, derived)
             rules_info.append({
                 "rule_id": result.rule_id,
                 "rule_name": result.rule_name,
                 "category": result.category.value,
+                "description": doc,
+                "source": source,
             })
         except Exception:
             rules_info.append({
                 "rule_id": "?",
                 "rule_name": rule_fn.__name__,
                 "category": "unknown",
+                "description": doc,
+                "source": source,
             })
     return rules_info
 
