@@ -28,7 +28,7 @@ Three solver approaches have been prototyped and evaluated:
 | **V2 Flat N-Candidate** | `engine_v2/core/solver_n.py` | Any number of product roles — the recommended default |
 | **V2 Staged Pipeline** | `engine_v2/core/solver_staged.py` | Large catalogs with clearly layered constraints (optimisation path) |
 
-**Decision:** The flat N-candidate solver is the recommended production approach. It handles single-product (N=1), paired (N=2), and multi-product (N=3+) families with a single algorithm. The staged pipeline is retained as a documented optimisation path for when catalog sizes exceed performance requirements. See `documents/solver-approach-recommendation.md` for the full rationale and `documents/solver-architecture-diagrams.md` for visual flowcharts.
+**Decision:** The flat N-candidate solver is the recommended production approach. It handles single-product (N=1), paired (N=2), and multi-product (N=3+) families with a single algorithm. The staged pipeline is retained as a documented optimisation path for when catalog sizes exceed performance requirements. See [ADR-001](documentation/docs/architecture/decisions/ADR-001-flat-n-candidate-solver.md) for the full rationale and [Solver Architecture Diagrams](documentation/docs/architecture/solver-architecture-diagrams.md) for visual flowcharts.
 
 ### V1 hinge engine flow
 
@@ -94,22 +94,27 @@ demo/                           # Interactive Jupyter notebooks
 ├── v2_n_candidate_demo.ipynb           # Flat N-candidate benchmarks
 └── v2_staged_pipeline_demo.ipynb       # Staged pipeline benchmarks
 
-documents/                      # Design docs, research, decisions
-├── solver-approach-recommendation.md   # Decision: flat N-candidate as default
-├── solver-architecture-diagrams.md     # Mermaid flowcharts for all three approaches
-├── multi-family-architecture.md        # Generic vs independent engines, N-candidate vs staged
-├── constraint-engine-design.md         # Core rules reference and architecture
-├── production-roadmap.md               # Phased plan (PostgreSQL, FastAPI, rules-as-data)
-├── catalog-integration.md              # Data tiers, ingestion pipeline, known gaps
-├── competitive-landscape.md            # Market research for cabinet hardware configuration
-├── constraint-based-vs-rules-based.md  # Approach comparison with Tacton deep dive
-├── cpsat-research.md                   # OR-Tools CP-SAT evaluation
-├── knowledge-graph-research.md         # Knowledge graph approach evaluation
-├── production-tooling-research.md      # Technology stack evaluation
-├── data-extraction-evaluation.md       # PDF extraction approach comparison
-├── domain-model.md                     # Domain model design
-├── evaluation.md                       # Engine evaluation criteria
-└── window-tech-brief-research-report.md # Technical brief analysis
+documentation/docs/             # Structured documentation
+├── index.md                    # Central navigation hub
+├── architecture/
+│   ├── multi-family-architecture.md    # Generic vs independent engines, N-candidate vs staged
+│   ├── solver-architecture-diagrams.md # Mermaid flowcharts for all three approaches
+│   └── decisions/
+│       ├── README.md                   # ADR index
+│       └── ADR-001-flat-n-candidate-solver.md  # Solver approach decision
+├── design/
+│   ├── DESIGN-constraint-engine.md     # Core rules reference and architecture
+│   └── DESIGN-domain-model.md          # Domain model design
+├── planning/
+│   ├── INDEX.md                        # Priority queue and status
+│   ├── PLAN-production-roadmap.md      # Phased plan (PostgreSQL, FastAPI, rules-as-data)
+│   └── PLAN-catalog-integration.md     # Data tiers, ingestion pipeline, known gaps
+├── research/                           # Technology evaluations, market research
+│   ├── README.md                       # Research index
+│   └── *.md                            # 8 research documents
+├── operations/                         # User-facing: setup, configuration
+└── guides/
+    └── documentation-guide.md          # Naming conventions, templates, indexes
 ```
 
 ## Constraint Rules
@@ -122,7 +127,7 @@ documents/                      # Design docs, research, decisions
 
 **Preferences** — soft-close (non-blocking).
 
-Every rule returns structured results with rule ID, category, detail, compared values, and remediation suggestions. See `documents/constraint-engine-design.md` for full rule reference.
+Every rule returns structured results with rule ID, category, detail, compared values, and remediation suggestions. See [Constraint Engine Design](documentation/docs/design/DESIGN-constraint-engine.md) for full rule reference.
 
 ## Setup
 
@@ -202,8 +207,8 @@ No additional packages beyond the standard library are needed. The engine itself
 ## Key Design Decisions
 
 - **Products are facts, compatibility is derived** — no hand-maintained compatibility lists. Whether a hinge + plate pair works is computed by rules at query time.
-- **Flat N-candidate as default solver** — one algorithm handles single-product (N=1), paired (N=2), and multi-product (N=3+) families. Staged pipeline reserved as an optimisation path. See `documents/solver-approach-recommendation.md`.
-- **No implicit derating** — manufacturer's published weight ratings are used directly. The engine does not silently reduce ratings for wide opening angles or other factors. If derating is needed, it must be added as an explicit rule. See [constraint-engine-design.md](documents/constraint-engine-design.md#design-principles) for rationale.
+- **Flat N-candidate as default solver** — one algorithm handles single-product (N=1), paired (N=2), and multi-product (N=3+) families. Staged pipeline reserved as an optimisation path. See [ADR-001](documentation/docs/architecture/decisions/ADR-001-flat-n-candidate-solver.md).
+- **No implicit derating** — manufacturer's published weight ratings are used directly. The engine does not silently reduce ratings for wide opening angles or other factors. If derating is needed, it must be added as an explicit rule. See [Constraint Engine Design](documentation/docs/design/DESIGN-constraint-engine.md#design-principles) for rationale.
 - **Full enum typing** — every constrained string field is an enum. No silent failures from typos.
 - **Full rule tracing** — every evaluation records rule ID, category, detail, and remediation. Supports the "always correct and explainable" value proposition.
 - **Separate identity from pricing** — canonical manufacturer part numbers with per-distributor SKU and pricing overlays.
@@ -223,21 +228,16 @@ The engine is functional but not production-ready. Key remaining work:
 - **Multi-brand deployment** — per-brand catalogs, pricing feeds, and rule parameters
 - **13 product families** — engine currently covers concealed hinges only; drawer slides, lift systems, handles, locks, lighting to follow
 
-See `documents/production-roadmap.md` for the full phased plan, `documents/production-tooling-research.md` for technology evaluation, and `documents/catalog-integration.md` for data ingestion strategy.
+See [Production Roadmap](documentation/docs/planning/PLAN-production-roadmap.md) for the full phased plan, [Production Tooling](documentation/docs/research/production-tooling-research.md) for technology evaluation, and [Catalog Integration](documentation/docs/planning/PLAN-catalog-integration.md) for data ingestion strategy.
 
 ## Documentation
 
-| Document | Purpose |
+Full documentation lives in `documentation/docs/` — see [index.md](documentation/docs/index.md) for the navigation hub.
+
+| Category | Contents |
 |---|---|
-| [Solver Approach Recommendation](documents/solver-approach-recommendation.md) | Decision record: flat N-candidate as default, staged as optimisation path |
-| [Solver Architecture Diagrams](documents/solver-architecture-diagrams.md) | Mermaid flowcharts comparing all three solver approaches |
-| [Multi-Family Architecture](documents/multi-family-architecture.md) | Generic vs independent engines, N-candidate vs staged, plain-English appendices |
-| [Constraint Engine Design](documents/constraint-engine-design.md) | Core rules reference, architecture, design principles |
-| [Production Roadmap](documents/production-roadmap.md) | Phased plan from PoC to production |
-| [Catalog Integration](documents/catalog-integration.md) | Three data tiers, ingestion pipeline, known gaps and blockers |
-| [Competitive Landscape](documents/competitive-landscape.md) | Market research for cabinet hardware configuration tools |
-| [Constraint-Based vs Rules-Based](documents/constraint-based-vs-rules-based.md) | Approach comparison with Tacton deep dive |
-| [CP-SAT Research](documents/cpsat-research.md) | OR-Tools CP-SAT solver evaluation |
-| [Knowledge Graph Research](documents/knowledge-graph-research.md) | Knowledge graph approach evaluation |
-| [Production Tooling](documents/production-tooling-research.md) | Technology stack evaluation |
-| [Data Extraction](documents/data-extraction-evaluation.md) | PDF extraction approach comparison |
+| [Architecture](documentation/docs/architecture/) | Multi-family architecture, solver diagrams, ADRs |
+| [Design](documentation/docs/design/) | Constraint engine design, domain model |
+| [Planning](documentation/docs/planning/INDEX.md) | Production roadmap, catalog integration |
+| [Research](documentation/docs/research/README.md) | Technology evaluations, market research (8 documents) |
+| [Guides](documentation/docs/guides/) | Documentation guide, naming conventions |

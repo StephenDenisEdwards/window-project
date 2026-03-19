@@ -300,7 +300,7 @@ From Tacton's [August 2025 blog post](https://www.tacton.com/cpq-blog/constraint
 
 2. **The constraint-based approach is well-validated** — Siemens Energy (thousands of rules → hundreds of constraints), Husky (75% time reduction, 100% accuracy), FLSmidth (3-day training to self-sufficiency) all demonstrate the pattern works at scale.
 
-3. **The closest open equivalent** to build on: **[Google OR-Tools CP-SAT](https://developers.google.com/optimization/cp/cp_solver)** + a custom product modeling layer. There is no off-the-shelf open-source equivalent to TCstudio's modeling environment. See also `documents/cpsat-research.md`.
+3. **The closest open equivalent** to build on: **[Google OR-Tools CP-SAT](https://developers.google.com/optimization/cp/cp_solver)** + a custom product modeling layer. There is no off-the-shelf open-source equivalent to TCstudio's modeling environment. See also `cpsat-research.md`.
 
 4. **Data/logic separation is central** to Tacton's architecture — product data is managed separately from constraint logic, so new products can be added without rewriting rules. This maps directly to this project's design principle: "products are facts, compatibility is derived."
 

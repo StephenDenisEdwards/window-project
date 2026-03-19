@@ -1,10 +1,8 @@
-# Solver Approach Recommendation
+# ADR-001: Flat N-Candidate Solver as Default Production Solver
 
-**Decision: Adopt the flat N-candidate solver as the single production solver. Keep the staged pipeline as a documented optimisation path, not the default.**
+## Status
 
-This document records the rationale for choosing a solver architecture based on the evidence from our product family analysis, catalog data, prototype benchmarks, and production roadmap.
-
----
+Accepted
 
 ## Context
 
@@ -16,7 +14,11 @@ Three solver approaches have been prototyped and benchmarked:
 | V2 Flat N-Candidate | `engine_v2/core/solver_n.py` | `demo/v2_n_candidate_demo.ipynb` |
 | V2 Staged Pipeline | `engine_v2/core/solver_staged.py` | `demo/v2_staged_pipeline_demo.ipynb` |
 
-See `documents/solver-architecture-diagrams.md` for visual flowcharts of each approach and `documents/multi-family-architecture.md` for the full architectural evaluation.
+See [Solver Architecture Diagrams](../solver-architecture-diagrams.md) for visual flowcharts of each approach and [Multi-Family Architecture](../multi-family-architecture.md) for the full architectural evaluation.
+
+## Decision
+
+Adopt the flat N-candidate solver as the single production solver. Keep the staged pipeline as a documented optimisation path, not the default.
 
 ---
 
@@ -44,7 +46,7 @@ The staged pipeline solver is well-built, tested (25 tests + 5 cross-solver cons
 
 ### 1. Most product families are simple
 
-The Würth catalog covers 13 product families. Their constraint shapes are documented in `documents/multi-family-architecture.md`:
+The Würth catalog covers 13 product families. Their constraint shapes are documented in `documentation/docs/architecture/multi-family-architecture.md`:
 
 - **8 of 13 are single-product families** — drawer slides, handles/knobs, shelf supports, door dampers, catches/latches, flap stays, connecting fittings, lift systems. These are filtered against requirements with no pairing at all.
 - **3-4 are paired** — concealed hinges, locks, drawer systems, closet systems. These use A x B evaluation, identical to what the V1 engine does today.
@@ -54,7 +56,7 @@ The staged pipeline's pruning advantage only applies to the 3+ product families,
 
 ### 2. Catalog sizes do not justify staged evaluation
 
-Current and projected catalog sizes from `documents/catalog-integration.md` and the benchmark notebooks:
+Current and projected catalog sizes from `documentation/docs/planning/PLAN-catalog-integration.md` and the benchmark notebooks:
 
 | Family | Current catalog | Projected full catalog | Combinations |
 |---|---|---|---|
@@ -73,7 +75,7 @@ From `CLAUDE.md`:
 
 > *"Deterministic-first: no recommendation reaches the user without passing all constraint validation."*
 
-The flat solver evaluates every combination against every rule. Nothing can slip through a pruning crack. The staged solver requires hand-curating which rules belong to which stage, and incorrect assignment silently drops valid results. From `documents/multi-family-architecture.md`:
+The flat solver evaluates every combination against every rule. Nothing can slip through a pruning crack. The staged solver requires hand-curating which rules belong to which stage, and incorrect assignment silently drops valid results. From `documentation/docs/architecture/multi-family-architecture.md`:
 
 > *"If a stage incorrectly prunes a valid combination (e.g., a rule is assigned to the wrong stage), the solver silently drops correct results."*
 
@@ -81,7 +83,7 @@ For a system whose core promise is provable correctness, exhaustive evaluation i
 
 ### 4. The existing documentation already recommends this
 
-From `documents/multi-family-architecture.md` (line 396):
+From `documentation/docs/architecture/multi-family-architecture.md` (line 396):
 
 > *"Default to the flat N-candidate solver for correctness, simplicity, and easy configuration. If latency becomes a problem at catalog scale, optimize the flat solver first (pre-filtering, indexing) before introducing stage decomposition."*
 
@@ -91,7 +93,7 @@ This recommendation is consistent with the V1 engine's design, which uses flat e
 
 ### 5. Failure analysis negates the staged advantage
 
-When no valid configuration exists, both solvers must evaluate the full Cartesian product to find the closest match. From `documents/multi-family-architecture.md`:
+When no valid configuration exists, both solvers must evaluate the full Cartesian product to find the closest match. From `documentation/docs/architecture/multi-family-architecture.md`:
 
 > *"`_best_failing` negates the performance gain on failure. When no valid configuration exists, `solve_with_explanation` calls `_best_failing`, which evaluates the full Cartesian product with no pruning and no early termination to find the closest match."*
 
@@ -99,7 +101,7 @@ The no-solution case — often the most important for user experience, since it'
 
 ### 6. The real bottlenecks are not the solver algorithm
 
-The production roadmap (`documents/production-roadmap.md`) and catalog integration plan (`documents/catalog-integration.md`) identify the actual gates to scaling:
+The production roadmap (`documentation/docs/planning/PLAN-production-roadmap.md`) and catalog integration plan (`documentation/docs/planning/PLAN-catalog-integration.md`) identify the actual gates to scaling:
 
 1. **The internal sales process document** — covers all 13 product families, not yet available. Without it, each new family requires from-scratch SME discovery.
 2. **Data completeness** — overlay lookup tables, authoritative weight capacities, and Würth ERP pricing are all incomplete or missing.
@@ -146,7 +148,7 @@ If the flat solver becomes too slow for a specific family at production catalog 
 
 1. **Pre-filtering** — indexed lookups to narrow candidates before the Cartesian product (already proven in V1 hinge engine)
 2. **Early termination** — stop evaluating rules on first hard constraint failure (already implemented in `NCandidateSolver`)
-3. **Hinge-only rule caching** — rules that depend only on one product + requirements (not the pairing) can be evaluated once and cached. Identified as remaining work in `documents/production-roadmap.md` Phase 1.5.
+3. **Hinge-only rule caching** — rules that depend only on one product + requirements (not the pairing) can be evaluated once and cached. Identified as remaining work in `documentation/docs/planning/PLAN-production-roadmap.md` Phase 1.5.
 4. **Staged pipeline** — decompose into stages with inter-stage pruning. Only after steps 1-3 are insufficient.
 
 This sequence is ordered by increasing complexity and decreasing certainty of benefit. Each step should be measured before proceeding to the next.
@@ -217,10 +219,10 @@ This is why we don't need a different solver architecture for different families
 
 ## References
 
-- `documents/multi-family-architecture.md` — Full evaluation of generic vs independent engines, flat vs staged solvers
-- `documents/solver-architecture-diagrams.md` — Mermaid flowcharts comparing all three approaches
-- `documents/production-roadmap.md` — Phased plan from PoC to production
-- `documents/catalog-integration.md` — Data completeness, ingestion pipeline, known gaps
+- `documentation/docs/architecture/multi-family-architecture.md` — Full evaluation of generic vs independent engines, flat vs staged solvers
+- `documentation/docs/architecture/solver-architecture-diagrams.md` — Mermaid flowcharts comparing all three approaches
+- `documentation/docs/planning/PLAN-production-roadmap.md` — Phased plan from PoC to production
+- `documentation/docs/planning/PLAN-catalog-integration.md` — Data completeness, ingestion pipeline, known gaps
 - `demo/v1_hinge_constraint_demo.ipynb` — V1 paired solver demonstration
 - `demo/v2_n_candidate_demo.ipynb` — Flat N-candidate benchmarks and scaling analysis
 - `demo/v2_staged_pipeline_demo.ipynb` — Staged pipeline benchmarks and pruning analysis

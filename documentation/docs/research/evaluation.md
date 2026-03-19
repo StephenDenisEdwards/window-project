@@ -73,8 +73,8 @@ The sample data in `sample-data/` (53 hinges, 55 mounting plates across Blum, Gr
 
 ### Constraint Engine Design Decisions
 
-- The engine uses indexed pre-filtering on hinges (by brand, cabinet type, application) followed by brute-force evaluation against all plates. This handles the current catalog (53 hinges, 55 plates) easily. Tooling research (`documents/production-tooling-research.md`) concluded that CSP solvers (OR-Tools, Z3) are not warranted at foreseeable scale — indexed brute force works up to ~10K products per type. Solvers only become necessary for simultaneous multi-family configuration (3+ product types at once).
-- Rules are Python functions in `engine/rules.py` — the single source of truth. Adding or modifying a rule currently requires a code change and deploy. Moving simple predicate rules to a data-driven format (JSON definitions interpreted by a generic evaluator, with Python callables for complex logic) is the next step for maintainability. See `documents/constraint-engine-design.md` for rule maintenance risks.
+- The engine uses indexed pre-filtering on hinges (by brand, cabinet type, application) followed by brute-force evaluation against all plates. This handles the current catalog (53 hinges, 55 plates) easily. Tooling research (`production-tooling-research.md`) concluded that CSP solvers (OR-Tools, Z3) are not warranted at foreseeable scale — indexed brute force works up to ~10K products per type. Solvers only become necessary for simultaneous multi-family configuration (3+ product types at once).
+- Rules are Python functions in `engine/rules.py` — the single source of truth. Adding or modifying a rule currently requires a code change and deploy. Moving simple predicate rules to a data-driven format (JSON definitions interpreted by a generic evaluator, with Python callables for complex logic) is the next step for maintainability. See `../design/DESIGN-constraint-engine.md` for rule maintenance risks.
 
 ### Multi-Brand Catalog Architecture
 

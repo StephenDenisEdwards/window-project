@@ -73,7 +73,7 @@ Add a new product? Just add its data — the constraints derive compatibility au
 | `check_mounting_method` (R014) | `p.mounting_method in COMPAT[h.mounting_method]` | None |
 | `check_cup_depth` (R015) | `req.door_thickness_mm >= h.cup_depth_mm + 2` | None |
 
-You could add 500 new hinges from a new manufacturer tomorrow and **not change a single rule**. The solver evaluates every candidate against the same constraints and derives compatibility from product attributes. This is the same architectural insight that let Siemens Energy replace thousands of if-then rules with a few hundred constraints (see `documents/competitive-landscape.md`, Appendix A.2).
+You could add 500 new hinges from a new manufacturer tomorrow and **not change a single rule**. The solver evaluates every candidate against the same constraints and derives compatibility from product attributes. This is the same architectural insight that let Siemens Energy replace thousands of if-then rules with a few hundred constraints (see `competitive-landscape.md`, Appendix A.2).
 
 The engine currently has 14 rules covering 2,915 hinge x plate pairs (53 hinges x 55 plates). Those same 14 rules will work unchanged as the catalog grows to thousands of products across multiple manufacturers.
 
@@ -127,7 +127,7 @@ solver.search() -> valid assignments
 
 The engine is **constraint-based in design** (property-level predicates, no product-specific rules, data/logic separation) but uses **exhaustive evaluation as its solver strategy**. This is the right choice at current scale — it's simpler, provides complete explainability traces, and runs fast enough.
 
-If the v2 multi-family architecture eventually produces search spaces where exhaustive evaluation becomes impractical, migrating to a CSP solver (Google OR-Tools CP-SAT is already being researched — see `documents/cpsat-research.md`) would preserve all existing constraint logic while replacing only the solver strategy.
+If the v2 multi-family architecture eventually produces search spaces where exhaustive evaluation becomes impractical, migrating to a CSP solver (Google OR-Tools CP-SAT is already being researched — see `cpsat-research.md`) would preserve all existing constraint logic while replacing only the solver strategy.
 
 ---
 
@@ -186,4 +186,4 @@ These limitations do not affect the current system. The pragmatic path:
 
 1. **Now:** Keep exhaustive evaluation. It runs in milliseconds, provides complete explainability traces (including for failures), and is trivially simple to debug and extend.
 2. **Trigger:** When either (a) catalog size makes exhaustive evaluation measurably slow, or (b) cross-family constraints require unified solving across product families.
-3. **Migration:** Swap in CP-SAT as the solver behind the same constraint interface. The constraint definitions (property-level predicates in `rules.py`) remain unchanged — only the evaluation strategy changes. See `documents/cpsat-research.md` for the CP-SAT evaluation.
+3. **Migration:** Swap in CP-SAT as the solver behind the same constraint interface. The constraint definitions (property-level predicates in `rules.py`) remain unchanged — only the evaluation strategy changes. See `cpsat-research.md` for the CP-SAT evaluation.
