@@ -1,13 +1,17 @@
 {
   "name": "Window Constraint Engine",
-  "image": "mcr.microsoft.com/devcontainers/python:3.13",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
   "postCreateCommand": "pip install -r requirements.txt && python -m pytest engine_v1/tests/ engine_v2/tests/ -q",
   "customizations": {
     "vscode": {
       "extensions": [
         "ms-python.python",
         "ms-toolsai.jupyter",
-        "ms-toolsai.vscode-jupyter-cell-tags"
+        "ms-toolsai.vscode-jupyter-cell-tags",
+        "charliermarsh.ruff",
+        "ms-python.black-formatter"
       ],
       "settings": {
         "python.defaultInterpreterPath": "/usr/local/bin/python",
