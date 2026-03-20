@@ -6,7 +6,7 @@
 
 ## Language & Layout
 
-- **Python 3.13**, Pydantic v2
+- **Python 3.14**, Pydantic v2
 - Production engine: `engine_v1/`
 - Experimental multi-family prototype: `engine_v2/`
 - Product catalog: `sample-data/`
