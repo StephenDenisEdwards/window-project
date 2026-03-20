@@ -143,7 +143,7 @@ Every rule returns structured results with rule ID, category, detail, compared v
 
 ### Prerequisites
 
-- **Python 3.12+** (developed on 3.13; tested on 3.12)
+- **Python 3.14+**
 
 ### Install dependencies
 
