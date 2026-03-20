@@ -141,22 +141,40 @@ Every rule returns structured results with rule ID, category, detail, compared v
 
 ## Setup
 
+### Prerequisites
+
+- **Python 3.12+** (developed on 3.13; tested on 3.12)
+
+### Install dependencies
+
 ```bash
 pip install -r requirements.txt
-
-# Run V1 engine tests (70+ tests)
-pytest engine_v1/tests/ -v
-
-# Run V2 engine tests (experimental)
-pytest engine_v2/tests/ -v
 ```
 
-## Web Demo
+This installs: `pydantic` (v2), `pytest`, `ipykernel`, `jupyter`, `fastapi`, `uvicorn`.
+
+### Run tests
+
+```bash
+# V1 engine tests (70+ tests)
+pytest engine_v1/tests/ -v
+
+# V2 engine tests (experimental)
+pytest engine_v2/tests/ -v
+
+# Specific test categories
+pytest engine_v1/tests/ -k scenario       # 7 customer scenarios
+pytest engine_v1/tests/ -k "enum"          # enum validation
+pytest engine_v1/tests/ -k "prefilter"     # pre-filter verification
+```
+
+## Demos
+
+### Web Demo
 
 The fastest way to see the engine in action. All three product families in a browser UI — no notebooks, no kernel setup.
 
 ```bash
-pip install -r requirements.txt
 python -m uvicorn demo.app:app --reload
 ```
 
@@ -170,7 +188,7 @@ Select a scenario from the **examples dropdown** (4-6 per family, including impo
 
 Works in GitHub Codespaces — click **Code → Codespaces → Create codespace**, then run the same commands in the terminal.
 
-### API Endpoints
+#### API Endpoints
 
 | Endpoint | Method | Description |
 |---|---|---|
@@ -181,13 +199,42 @@ Works in GitHub Codespaces — click **Code → Codespaces → Create codespace*
 
 ### Jupyter Notebooks
 
-Notebooks are available in `demo/` for development exploration but are not the recommended demo format (kernel reliability issues on Windows and Codespaces).
+Interactive notebooks for exploring each engine and solver in depth. Each notebook is self-contained — it locates the project root automatically, loads the catalog data, and runs the solver.
 
+#### Running the notebooks
+
+```bash
+pip install -r requirements.txt
+jupyter notebook
 ```
-demo/v1/                        — V1 dedicated hinge engine
-demo/v2-n-candidate/            — N-candidate solver (N=1, N=2, N=3)
-demo/v2-staged-pipeline/        — Staged pipeline solver
-```
+
+Then open any notebook from the `demo/` folder in the Jupyter file browser.
+
+> **VS Code / Codespaces**: open any `.ipynb` file directly — VS Code's built-in notebook editor will prompt you to select a Python kernel. Choose the environment where you ran `pip install`.
+
+#### V1 — Production Hinge Engine
+
+| Notebook | Description |
+|---|---|
+| [`demo/v1/v1_hinge_constraint_demo.ipynb`](demo/v1/v1_hinge_constraint_demo.ipynb) | Full walkthrough of the V1 concealed hinge engine. Loads 53 hinges × 55 plates from the real catalog. Covers: catalog overview with product images, all 14 constraint rules, 5 customer scenarios (standard kitchen, corner cabinet, tall pantry, adjacent doors, deliberate constraint violation), full constraint trace deep dive, exhaustive compatibility matrix, price vs capacity analysis, failure analysis with closest-match identification and remediation suggestions, and an interactive explorer cell for testing custom requirements. |
+
+#### V2 — N-Candidate Solver (Flat)
+
+The recommended solver approach. One algorithm handles any number of product roles.
+
+| Notebook | N | Description |
+|---|---|---|
+| [`demo/v2-n-candidate/v2_drawer_slide_demo.ipynb`](demo/v2-n-candidate/v2_drawer_slide_demo.ipynb) | 1 | **Single-product family (drawer slides).** The simplest case — no Cartesian product, each slide evaluated individually against requirements. Shows catalog listing, three scenarios (standard kitchen drawer, heavy-duty 42kg, impossible shallow cabinet), and exhaustive evaluation of all slides against all 8 rules. |
+| [`demo/v2-n-candidate/v2_hinge_n_candidate_demo.ipynb`](demo/v2-n-candidate/v2_hinge_n_candidate_demo.ipynb) | 2 | **Paired-product family (concealed hinges).** Same real catalog as V1 (53 hinges × 55 plates = 2,915 pairs, 14 rules) but solved through the generic N-candidate solver. 5 customer scenarios, full constraint traces, all valid configurations for open requirements, pre-filter impact analysis, and performance benchmarks. |
+| [`demo/v2-n-candidate/v2_n_candidate_demo.ipynb`](demo/v2-n-candidate/v2_n_candidate_demo.ipynb) | 3 | **Triple-product family (LED lighting).** 5 light bars × 4 drivers × 4 dimmers, 9 rules. Covers: product catalog, solving with dimming requirements, failure analysis for impossible scenarios, exhaustive evaluation matrix with failure breakdown by rule, scaling projections from prototype to full catalog sizes (up to 200 × 80 × 100 = 1.6M combinations), synthetic data benchmarks, and quantitative redundancy analysis showing wasted work from the flat approach. |
+
+#### V2 — Staged Pipeline Solver
+
+An optimisation over the flat N-candidate approach that prunes invalid partial combinations between stages.
+
+| Notebook | Description |
+|---|---|
+| [`demo/v2-staged-pipeline/v2_staged_pipeline_demo.ipynb`](demo/v2-staged-pipeline/v2_staged_pipeline_demo.ipynb) | **Staged pipeline vs flat N-candidate comparison.** Uses LED lighting (same data as above) split into two stages: Stage 1 evaluates bar × driver electrical compatibility (6 rules), prunes failures, then Stage 2 crosses survivors with dimmers for dimming compatibility (3 rules). Includes: stage-by-stage trace with pruning visualization, scenario solving (identical results to flat), failure analysis, head-to-head benchmarks at 5 catalog scales (up to 200 × 80 × 100), pruning rate analysis, and discussion of stage ordering and cross-cutting constraints. |
 
 ## Key Design Decisions
 
