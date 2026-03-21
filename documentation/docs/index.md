@@ -27,6 +27,11 @@ Central navigation hub for all project documentation.
 - [Constraint-Based vs Rules-Based](research/constraint-based-vs-rules-based.md) — Approach comparison with Tacton deep dive
 - [Competitive Landscape](research/competitive-landscape.md) — Market research for cabinet hardware configuration
 
+## Guides
+
+- [Dev Environment Setup](dev-env.md) -- Dev container configuration, AI tool launchers, and getting started
+- [Documentation Guide](guides/documentation-guide.md) -- Naming conventions, templates, and doc structure
+
 ## Demo Notebooks
 
 - `demo/v1/v1_hinge_constraint_demo.ipynb` — V1 paired engine walkthrough (concealed hinges)

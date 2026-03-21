@@ -1,319 +1,103 @@
-Good — this is exactly where Docker becomes *actually useful* rather than just installed.
+# Dev Environment Setup
 
-I’ll walk you through a **clean, production-grade “Pro Setup”** tailored to how you work (VS Code + .NET + AI + multi-service systems).
+How to set up and use the development environment for the window-project constraint engine.
 
----
+## How it works
 
-# 🚀 1. Install VS Code Extensions (foundation)
+The entire development environment lives inside a Docker container. You do not need to clone the repo or install Python, Node, or any tooling on your local machine. The dev container includes everything: Python 3.14, test runners, linters, AI coding tools, and the GitHub CLI.
 
-Open VS Code → Extensions → install:
+The project source code lives at `/workspaces/window-project` inside the container.
 
-### ✅ Required
+## Opening the project in VS Code
 
-* **Docker** (by Microsoft)
-* **Dev Containers** (by Microsoft)
+**Prerequisites:** [VS Code](https://code.visualstudio.com/) with the **Dev Containers** extension (`ms-vscode-remote.remote-containers`).
 
-### Optional but powerful
+1. Open VS Code.
+2. `Ctrl+Shift+P` -> **Dev Containers: Attach to Running Container...**
+3. Select the container from the list.
 
-* **Remote - WSL**
-* **Python** (for AI work)
-* **C# Dev Kit** (for .NET)
+VS Code opens with the workspace at `/workspaces/window-project`. The integrated terminal, Python interpreter, linters, and extensions all run inside the container rather than on your host. This means code execution uses the container's Python 3.14, installed packages, and tooling -- even though the files themselves are bind-mounted from your local machine.
 
----
+You can still use your host tools (git, editors, CLI utilities) directly on the same files. The container is a convenience that provides a consistent, pre-configured environment -- it does not replace your local workflow.
 
-# 🧱 2. Understand the model (this matters)
+### GitHub Codespaces
 
-You’re not just “running containers” — you’re:
+If the repo is hosted on GitHub, click **Code -> Codespaces -> New codespace**. GitHub builds the same dev container in the cloud -- no local Docker required.
 
-> **Developing *inside* containers**
+## Running AI tools from the terminal
 
-So instead of:
-
-```
-Your machine → project → dependencies everywhere
-```
-
-You get:
-
-```
-Your machine → Docker container → clean isolated dev environment
-```
-
----
-
-# ⚙️ 3. Create your first Dev Container
-
-In your project folder:
-
-### 👉 Step 1
-
-Open folder in VS Code
-
-### 👉 Step 2
-
-Press:
-
-```
-Ctrl + Shift + P
-```
-
-Type:
-
-```
-Dev Containers: Add Dev Container Configuration Files
-```
-
----
-
-## 🔧 Choose a template
-
-For your use cases:
-
-### 🟣 .NET + backend work
-
-→ **“.NET”**
-
-### 🟢 AI / Python / LLM work
-
-→ **“Python 3”**
-
-### 🧠 Advanced (recommended for you)
-
-→ Start with **“Ubuntu”** and customise
-
----
-
-# 📁 4. What gets created
-
-You’ll get:
-
-```
-.devcontainer/
-  devcontainer.json
-  Dockerfile (optional)
-```
-
----
-
-# 🧠 5. Example: Proper Dev Container (AI + .NET hybrid)
-
-Here’s a **real setup you should use** 👇
-
-### 📄 `.devcontainer/devcontainer.json`
-
-```json
-{
-  "name": "ai-dev-env",
-  "build": {
-    "dockerfile": "Dockerfile"
-  },
-  "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
-  },
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "ms-azuretools.vscode-docker",
-        "ms-python.python",
-        "ms-dotnettools.csdevkit"
-      ]
-    }
-  },
-  "forwardPorts": [8000, 5000, 11434],
-  "postCreateCommand": "pip install -r requirements.txt || true"
-}
-```
-
----
-
-### 📄 `.devcontainer/Dockerfile`
-
-```Dockerfile
-FROM mcr.microsoft.com/devcontainers/base:ubuntu
-
-# Install Python + tools
-RUN apt-get update && apt-get install -y \
-    python3 python3-pip git curl
-
-# Install .NET
-RUN wget https://dot.net/v1/dotnet-install.sh \
-    && chmod +x dotnet-install.sh \
-    && ./dotnet-install.sh --channel 8.0
-
-# Optional: install Node (for frontend/tools)
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs
-```
-
----
-
-# ▶️ 6. Launch it
-
-Once config exists:
-
-### Run:
-
-```
-Dev Containers: Reopen in Container
-```
-
-VS Code will:
-
-* Build Docker image
-* Start container
-* Attach VS Code inside it
-
----
-
-# 🔥 7. What you now have (this is the payoff)
-
-Inside VS Code you are now:
-
-✅ Running in Linux
-✅ Isolated environment
-✅ Reproducible setup
-✅ No dependency pollution
-
----
-
-# 🧪 8. Add real services (THIS is where it becomes powerful)
-
-Create:
-
-### 📄 `docker-compose.yml`
-
-```yaml
-version: '3.9'
-
-services:
-  app:
-    build: .
-    ports:
-      - "5000:5000"
-
-  postgres:
-    image: postgres:15
-    environment:
-      POSTGRES_PASSWORD: example
-    ports:
-      - "5432:5432"
-
-  ollama:
-    image: ollama/ollama
-    ports:
-      - "11434:11434"
-```
-
-Now you’ve got:
-
-* API
-* Database
-* Local LLM
-
----
-
-# 🧠 9. Workflow you should adopt
-
-This is the **pro workflow**:
-
-### Start project
+Once inside the container, run Claude Code or Codex directly:
 
 ```bash
-docker compose up
+claude    # Launch Claude Code
+codex     # Launch Codex CLI
 ```
 
-### Develop inside container
+Both tools are pre-installed as global npm packages in the container image.
 
-* Code in VS Code
-* Everything runs inside container
-
-### Kill everything cleanly
+## Running the project
 
 ```bash
-docker compose down
+# Install/update dependencies
+pip install -r requirements.txt
+
+# Run all V1 tests
+pytest engine_v1/tests/test_engine.py -v
+
+# Run all V2 tests
+pytest engine_v2/tests/ -v
+
+# Launch web demo
+python -m uvicorn demo.app:app --reload
 ```
 
----
+## What the container provides
 
-# ⚡ 10. Advanced (you should absolutely do this next)
+| Component | Detail |
+|-----------|--------|
+| Base image | `mcr.microsoft.com/devcontainers/python:3.14` |
+| Python tooling | pip, uv, black, ruff, ipykernel, pytest |
+| Node.js 20 | Required for Claude Code and Codex CLI |
+| GitHub CLI | `gh` for pull requests, issues, and auth |
+| Claude Code | `@anthropic-ai/claude-code` (global npm package) |
+| Codex CLI | `@openai/codex` (global npm package) |
 
-## GPU support (for LLMs)
+### VS Code extensions (auto-installed)
 
-Install:
+- Python (`ms-python.python`)
+- Jupyter (`ms-toolsai.jupyter`, `ms-toolsai.vscode-jupyter-cell-tags`)
+- Ruff (`charliermarsh.ruff`)
+- Black Formatter (`ms-python.black-formatter`)
 
-* NVIDIA drivers
-* NVIDIA Container Toolkit
+## Launching AI tools from Windows PowerShell (without VS Code)
 
-Then:
+If you have a local clone and have built the container at least once via VS Code, you can launch Claude Code or Codex from a Windows PowerShell terminal without VS Code open.
 
-```yaml
-deploy:
-  resources:
-    reservations:
-      devices:
-        - capabilities: [gpu]
+Add the PowerShell profile functions to your `$PROFILE`:
+
+```powershell
+. .devcontainer/Microsoft.PowerShell_profile.ps1
 ```
 
----
+Then run:
 
-## Dev Containers + Docker Compose (best setup)
-
-Update `devcontainer.json`:
-
-```json
-{
-  "dockerComposeFile": "docker-compose.yml",
-  "service": "app",
-  "workspaceFolder": "/workspace"
-}
+```powershell
+claude-wsl-window   # Launch Claude Code inside the dev container
+codex-wsl-window    # Launch Codex CLI inside the dev container
 ```
 
-Now:
+These functions find the dev container by Docker label, start it if stopped, exec in as the `vscode` user, inject a `GH_TOKEN` from `gh auth` if available, and launch the tool.
 
-* Your dev environment = full system (DB + API + AI)
+## File reference
 
----
+| File | Purpose |
+|------|---------|
+| `.devcontainer/devcontainer.json` | Dev container configuration |
+| `.devcontainer/Dockerfile` | Container image definition |
+| `.devcontainer/claude-entry.sh` | Entry script for Claude Code |
+| `.devcontainer/codex-entry.sh` | Entry script for Codex CLI |
+| `.devcontainer/Microsoft.PowerShell_profile.ps1` | PowerShell functions for launching AI tools from Windows |
 
-# 🧠 Why this matters for *you specifically*
+## Related
 
-Given your background:
-
-You’re essentially building:
-
-* Multi-agent AI systems
-* RAG pipelines
-* API-driven services
-
-This setup gives you:
-
-✅ Environment reproducibility
-✅ Clean separation of services
-✅ Easy scaling (prod parity)
-✅ Fast onboarding (future teams)
-
----
-
-# 🚀 If you want to go further
-
-I can set you up with:
-
-### 🔥 Option A — Full AI stack
-
-* Ollama + embeddings + vector DB
-* FastAPI + RAG pipeline
-* Dev container ready
-
-### 🔥 Option B — .NET AI system
-
-* .NET API
-* Python LLM service
-* Shared Docker network
-
-### 🔥 Option C — Claude-Code style agent system
-
-* Multi-container agent orchestration
-* Cost-aware pipelines
-
----
-
-Just tell me which direction 👍
+- [CLAUDE.md](../../CLAUDE.md) -- project context and key commands
