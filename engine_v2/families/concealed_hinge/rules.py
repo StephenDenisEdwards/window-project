@@ -230,7 +230,7 @@ def check_adjacent_clearance(candidates: dict[str, Product], req: Requirements, 
 def check_face_frame_overlay(candidates: dict[str, Product], req: Requirements, derived: dict) -> RuleResult:
     """R011: Face frame overlay constraint."""
     p, r = _plate(candidates), _req(req)
-    if p.cabinet_type != CabinetType.FACE_FRAME:
+    if r.cabinet_type != CabinetType.FACE_FRAME:
         return RuleResult(
             rule_id="R011", rule_name="face_frame_overlay", passed=True,
             detail="Not face frame — skipped",

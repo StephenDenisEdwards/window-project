@@ -72,6 +72,16 @@
   .hidden { display: none; }
   .loading { text-align: center; padding: 40px; color: #999; }
 
+  /* About panel */
+  .about { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+  .about h2 { font-size: 1rem; margin-bottom: 12px; }
+  .about p { font-size: 0.85rem; color: #555; line-height: 1.5; margin-bottom: 10px; }
+  .about ul { font-size: 0.85rem; color: #555; line-height: 1.7; margin-left: 20px; margin-bottom: 10px; }
+  .about .family-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 12px; }
+  .about .family-card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px; }
+  .about .family-card h3 { font-size: 0.85rem; margin-bottom: 4px; }
+  .about .family-card p { font-size: 0.8rem; margin-bottom: 0; }
+
   /* Copy button */
   .btn-copy { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
   .btn-copy:hover { background: #dcfce7; }
@@ -82,6 +92,38 @@
 <div class="container">
   <h1>Cabinet Hardware Constraint Engine</h1>
   <p class="subtitle">Deterministic solver — every recommendation is provably correct</p>
+
+  <details class="about" open>
+    <summary style="font-size:0.95rem;cursor:pointer;font-weight:600;">About this demo</summary>
+    <p style="margin-top:12px;">
+      This app demonstrates a <strong>deterministic constraint reasoning engine</strong> for cabinet hardware compatibility.
+      Given customer requirements (cabinet type, door dimensions, application, brand preference), the engine evaluates
+      all valid product combinations from the catalog and returns ranked configurations with full explainability traces.
+    </p>
+    <p>For each product family you can:</p>
+    <ul>
+      <li>Pick from <strong>preset example scenarios</strong> &mdash; including deliberately impossible ones to see how failures are explained</li>
+      <li>Edit or enter <strong>custom requirements</strong> using the generated form</li>
+      <li>View <strong>ranked valid configurations</strong> (recommended + alternatives), sorted by price then capacity</li>
+      <li>Inspect the <strong>full constraint trace</strong> for every rule (pass/fail, detail, remediation suggestions)</li>
+      <li>Browse the <strong>constraint rule definitions</strong> and their source code</li>
+      <li><strong>Copy results</strong> as formatted Markdown for further analysis</li>
+    </ul>
+    <div class="family-cards">
+      <div class="family-card">
+        <h3>Concealed Hinges (N=2)</h3>
+        <p>Finds compatible hinge + mounting plate pairs. 53 hinges, 55 plates evaluated against 14 constraint rules.</p>
+      </div>
+      <div class="family-card">
+        <h3>Drawer Slides (N=1)</h3>
+        <p>Finds compatible single drawer slides. 4 slides evaluated against 8 constraint rules.</p>
+      </div>
+      <div class="family-card">
+        <h3>LED Lighting (N=3)</h3>
+        <p>Finds compatible light bar + driver + dimmer triples. 5 bars, 4 drivers, 4 dimmers evaluated against 9 rules.</p>
+      </div>
+    </div>
+  </details>
 
   <div class="tabs" id="tabs"></div>
 

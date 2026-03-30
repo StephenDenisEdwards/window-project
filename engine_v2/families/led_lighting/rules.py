@@ -13,6 +13,7 @@ Constraints by relationship:
     All three:            total wattage under dimmer limit (LED005)
     Light bar only:       length fits cabinet (LED006), minimum brightness (LED007)
     Light bar ↔ Driver:   driver supports dimming if required (LED008)
+    Light bar ↔ Pref:     voltage preference (LED010)
 """
 
 from engine_v2.core.models import Product, Requirements, RuleCategory, RuleResult
@@ -192,6 +193,30 @@ def check_dimmer_wattage(candidates: dict[str, Product], req: Requirements, deri
     )
 
 
+def check_voltage_preference(candidates: dict[str, Product], req: Requirements, derived: dict) -> RuleResult:
+    """LED010: Light bar voltage should match customer preference."""
+    bar: LightBar = candidates["light_bar"]  # type: ignore[assignment]
+    r: LightingRequirements = req  # type: ignore[assignment]
+    if r.voltage_preference is None:
+        return RuleResult(
+            rule_id="LED010",
+            rule_name="voltage_preference",
+            passed=True,
+            detail="No voltage preference specified",
+            category=RuleCategory.PREFERENCE,
+        )
+    passed = bar.voltage == r.voltage_preference
+    return RuleResult(
+        rule_id="LED010",
+        rule_name="voltage_preference",
+        passed=passed,
+        detail=f"Bar voltage {bar.voltage.value} {'==' if passed else '!='} preferred {r.voltage_preference.value}",
+        category=RuleCategory.PREFERENCE,
+        values_compared={"bar_voltage": bar.voltage.value, "preferred": r.voltage_preference.value},
+        remediation=None if passed else f"Select a {r.voltage_preference.value} light bar",
+    )
+
+
 def check_dimmer_voltage(candidates: dict[str, Product], req: Requirements, derived: dict) -> RuleResult:
     """LED009: Dimmer must be compatible with the system voltage."""
     drv: Driver = candidates["driver"]  # type: ignore[assignment]
@@ -218,6 +243,7 @@ ALL_RULES = [
     check_bar_length,         # LED006 — bar ↔ cabinet
     check_brightness,         # LED007 — bar ↔ requirements
     check_driver_supports_dimming,  # LED008 — driver ↔ requirements
+    check_voltage_preference, # LED010 — bar ↔ preference
     check_dimming_protocol,   # LED004 — driver ↔ dimmer
     check_dimmer_wattage,     # LED005 — bar + dimmer
     check_dimmer_voltage,     # LED009 — driver ↔ dimmer
@@ -231,6 +257,7 @@ STAGE_1_RULES = [
     check_bar_length,         # LED006
     check_brightness,         # LED007
     check_driver_supports_dimming,  # LED008
+    check_voltage_preference, # LED010
 ]
 
 STAGE_2_RULES = [

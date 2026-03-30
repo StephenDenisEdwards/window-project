@@ -262,7 +262,7 @@ def check_adjacent_clearance(h: ConcealedHinge, p: MountingPlate, req: CustomerR
 
 def check_face_frame_overlay(h: ConcealedHinge, p: MountingPlate, req: CustomerRequirements, num_hinges: int) -> RuleResult:
     """R011: Face frame overlay constraint."""
-    if p.cabinet_type != CabinetType.FACE_FRAME:
+    if req.cabinet_type != CabinetType.FACE_FRAME:
         return RuleResult(
             rule_id="R011",
             rule_name="face_frame_overlay",
