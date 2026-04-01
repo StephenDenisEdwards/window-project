@@ -3,7 +3,7 @@
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class RuleCategory(str, Enum):
@@ -27,8 +27,14 @@ class Requirements(BaseModel):
     Each family subclasses this with its specific fields.
     """
 
-    preferred_brand: Optional[str] = None
-    brand_lock: bool = True
+    preferred_brand: Optional[str] = Field(
+        default=None,
+        description="Brand preference (e.g. Blum, Grass). Leave blank for all brands.",
+    )
+    brand_lock: bool = Field(
+        default=True,
+        description="When enabled, only products from the preferred brand are considered.",
+    )
 
 
 class RuleResult(BaseModel):

@@ -10,7 +10,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from engine_v2.core.models import Product, Requirements
 
@@ -112,16 +112,47 @@ class Plate(Product):
 class HingeRequirements(Requirements):
     """What the customer needs for their hinge selection."""
 
-    cabinet_type: CabinetType
-    door_thickness_mm: float
-    door_height_mm: float
-    door_weight_kg: float
-    application: ApplicationType
-    desired_overlay_mm: float
-    boring_pattern_mm: int
-    soft_close: bool
-    cabinet_position: CabinetPosition = CabinetPosition.STANDARD
-    has_adjacent_door: bool = False
-    adjacent_door_overlay_mm: float = 0
-    partition_thickness_mm: float = 19
-    face_frame_width_mm: float = 0
+    cabinet_type: CabinetType = Field(
+        description="Construction style: frameless (European, door mounts to side panel) or face_frame (American, wooden frame around opening).",
+    )
+    door_thickness_mm: float = Field(
+        description="Thickness of the door panel in mm (typically 16-22mm). Must be thick enough for the hinge cup bore.",
+    )
+    door_height_mm: float = Field(
+        description="Door height in mm. Determines how many hinges are needed: 2 for standard, 3 for ~900mm+, 4 for ~1600mm+.",
+    )
+    door_weight_kg: float = Field(
+        description="Total door weight in kg. Each hinge has a max weight rating; combined capacity must exceed this.",
+    )
+    application: ApplicationType = Field(
+        description="How the door sits: full_overlay (covers cabinet edge), half_overlay (shares partition with adjacent door), or inset (flush inside opening).",
+    )
+    desired_overlay_mm: float = Field(
+        description="How far the door overlaps the cabinet edge in mm. Full overlay is typically 14-20mm, half overlay 3-9mm.",
+    )
+    boring_pattern_mm: int = Field(
+        description="Distance from door edge to hinge cup centre in mm. Industry standard is 45mm; some hinges use 52mm.",
+    )
+    soft_close: bool = Field(
+        description="Whether damped closing is required (door decelerates and pulls itself shut quietly).",
+    )
+    cabinet_position: CabinetPosition = Field(
+        default=CabinetPosition.STANDARD,
+        description="Cabinet location: standard or corner. Corner cabinets need wide-angle hinges (>=155 deg) so the door clears the adjacent cabinet.",
+    )
+    has_adjacent_door: bool = Field(
+        default=False,
+        description="Whether another door shares the same partition (e.g. two doors meeting in the middle). Triggers clearance check.",
+    )
+    adjacent_door_overlay_mm: float = Field(
+        default=0,
+        description="How far the neighbouring door overlaps the shared partition in mm. Combined overlay of both doors cannot exceed partition thickness.",
+    )
+    partition_thickness_mm: float = Field(
+        default=19,
+        description="Thickness of the panel between two adjacent doors in mm (default 19mm). Used with adjacent door overlay for clearance check.",
+    )
+    face_frame_width_mm: float = Field(
+        default=0,
+        description="Width of the face frame rail in mm (face-frame cabinets only). Overlay cannot exceed frame width minus 3mm.",
+    )

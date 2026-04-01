@@ -8,6 +8,8 @@ preference. The engine finds all slides that satisfy these constraints.
 from enum import Enum
 from typing import Optional
 
+from pydantic import Field
+
 from engine_v2.core.models import Product, Requirements
 
 
@@ -47,11 +49,33 @@ class DrawerSlide(Product):
 class SlideRequirements(Requirements):
     """What the customer needs for their drawer slide selection."""
 
-    cabinet_depth_mm: int            # Internal cabinet depth
-    drawer_weight_kg: float          # Loaded drawer weight
-    drawer_width_mm: Optional[int] = None  # For undermount width limits
-    extension_type: Optional[ExtensionType] = None  # None = no preference
-    mount_type: Optional[SlideMountType] = None      # None = no preference
-    soft_close: bool = False
-    push_open: bool = False
-    disconnect_required: bool = False
+    cabinet_depth_mm: int = Field(
+        description="Internal depth of the cabinet box in mm. The slide must fit inside this depth.",
+    )
+    drawer_weight_kg: float = Field(
+        description="Total loaded weight of the drawer (contents + drawer box) in kg. Slides are rated for a maximum load.",
+    )
+    drawer_width_mm: Optional[int] = Field(
+        default=None,
+        description="Drawer opening width in mm. Only relevant for undermount slides, which have maximum width limits.",
+    )
+    extension_type: Optional[ExtensionType] = Field(
+        default=None,
+        description="How far the drawer pulls out: three_quarter (75%), full (100%, clears cabinet face), or over_travel (extends past face).",
+    )
+    mount_type: Optional[SlideMountType] = Field(
+        default=None,
+        description="How the slide attaches: side_mount (screws to wall), undermount (hidden beneath drawer), or center_mount (single slide underneath).",
+    )
+    soft_close: bool = Field(
+        default=False,
+        description="Whether the drawer should decelerate and self-close with a damped mechanism.",
+    )
+    push_open: bool = Field(
+        default=False,
+        description="Whether the drawer opens with a push (no handle needed). Uses a spring-loaded touch latch.",
+    )
+    disconnect_required: bool = Field(
+        default=False,
+        description="Whether the drawer must be removable without tools (e.g. for cleaning). Requires a quick-release lever.",
+    )
