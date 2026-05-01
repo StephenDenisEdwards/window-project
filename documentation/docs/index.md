@@ -14,12 +14,14 @@ Central navigation hub for all project documentation.
 - [N-Candidate Families](design/DESIGN-n-candidate-families.md) — Comprehensive data and rules reference for all three product families
 - [Generic Schema-Driven Solver](design/DESIGN-generic-schema-driven-solver.md) — Architectural exploration: JSON Schema products + declarative rules
 - [Domain Model](design/DESIGN-domain-model.md) — Product and configuration domain model
+- [Conversational Integration](design/DESIGN-conversational-integration.md) — Engine + Graph RAG + Micro-X agent integration via MCP
 
 ## Planning
 
 - [Planning Index](planning/INDEX.md) — Prioritised work queue and plan status
 - [Production Roadmap](planning/PLAN-production-roadmap.md) — Phased plan from PoC to production
 - [Catalog Integration](planning/PLAN-catalog-integration.md) — Data tiers, ingestion pipeline, known gaps
+- [Conversational MCP Server](planning/PLAN-conversational-mcp.md) — Phased delivery of the `window` MCP server for Micro-X
 
 ## Research
 
@@ -31,6 +33,7 @@ Central navigation hub for all project documentation.
 
 - [Dev Environment Setup](dev-env.md) -- Dev container configuration, AI tool launchers, and getting started
 - [Documentation Guide](guides/documentation-guide.md) -- Naming conventions, templates, and doc structure
+- [Graph RAG for the Product Catalogue](guides/graph-rag-for-product-catalogue.md) -- Tutorial: nodes, edges, worked example, and when to adopt
 
 ## Demo Notebooks
 
