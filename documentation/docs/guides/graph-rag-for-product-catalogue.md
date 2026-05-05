@@ -2,7 +2,11 @@
 
 A tutorial introduction to knowledge graphs, Graph RAG (Retrieval-Augmented Generation over a graph), and why they are an interesting fit for this project's multi-brand, multi-family product catalogue. Aimed at engineers who have not worked with graph databases before.
 
-This is **forward-looking material**. The current engine does not use a graph or RAG — see the [Knowledge Graph Research](../research/knowledge-graph-research.md) note for the recommendation to defer adoption to Phase 4. This guide explains the *why* and *what* so the team has shared vocabulary when that phase arrives.
+This is **forward-looking material** for the production engine. The deterministic engine (`engine_v1`/`engine_v2`) does not yet use a graph or RAG at runtime — see the [Knowledge Graph Research](../research/knowledge-graph-research.md) note for the recommendation to defer adoption to Phase 4.
+
+> **Working prototype available.** A standalone GraphRAG / vector-RAG prototype over the project's PDF catalogs lives in [`rag/`](../../../rag/README.md) (notebooks, knowledge-graph extraction, community summaries). It is not wired into the engine; it's the experimental ground for the `window.search_documentation` and `window.graph_*` tools in [ADR-003](../architecture/decisions/ADR-003-conversational-via-microx-mcp.md). Read the guide below for vocabulary, then jump to `rag/` to see the same ideas running on the real catalogs.
+
+This guide explains the *why* and *what* so the team has shared vocabulary when that phase arrives.
 
 ---
 

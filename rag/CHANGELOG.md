@@ -1,5 +1,12 @@
 # Changelog
 
+This changelog tracks the catalogue RAG / GraphRAG work. Entries before 2026-05-05 were authored in the standalone repo `micro-x-rag` and are preserved here so the prototype's history isn't lost.
+
+## 2026-05-05
+
+### Changed
+- Imported `micro-x-rag` PoC into `window-project` as the `rag/` subtree (commits `67f2fa2`, `fde264e`, `af0e079`). Notebooks and `scripts/run_extraction.py` repointed at the repo-root `catalogs/`. Dependencies merged into the root `requirements.txt`. Runtime artifacts (ChromaDB indices, `extractions.json`, graph HTML) covered by the root `.gitignore`.
+
 ## 2026-03-26
 
 ### Added

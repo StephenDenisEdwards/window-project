@@ -78,6 +78,7 @@ Full engineering specification — tool schemas, sequence flows, failure modes, 
 
 ## Related
 
+- [`rag/`](../../../../rag/README.md) — working Phase 2/3 prototype: vector RAG and GraphRAG over the project's PDF catalogs, the experimental basis for the `window.search_documentation` and `window.graph_*` tools described above. RAG-side architecture view: [deterministic-compatibility-integration](../../../../rag/docs/design/deterministic-compatibility-integration.md)
 - [DESIGN-conversational-integration.md](../../design/DESIGN-conversational-integration.md) — full engineering specification
 - [Graph RAG for the Product Catalogue](../../guides/graph-rag-for-product-catalogue.md) — tutorial on the graph layer
 - [Knowledge Graph Research](../../research/knowledge-graph-research.md) — Phase 4 graph adoption recommendation

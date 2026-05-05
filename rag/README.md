@@ -1,6 +1,8 @@
-# micro-x-rag
+# `rag/` — Catalogue RAG / GraphRAG Prototype
 
-A RAG (Retrieval-Augmented Generation) system that indexes hardware product catalogs into a ChromaDB vector database and answers natural language queries. Includes both standard RAG and GraphRAG (knowledge graph-enhanced retrieval) approaches, with configurable model providers for each pipeline operation.
+The catalogue search layer of `window-project`. Indexes the project's hardware product catalogs into a ChromaDB vector database and answers natural language queries using both standard vector RAG and GraphRAG (knowledge graph-enhanced retrieval), with configurable model providers per pipeline operation.
+
+> Originally the standalone repo `micro-x-rag`; merged into `window-project` on 2026-05-05. See [ADR-003: Conversational via Micro-X MCP](../documentation/docs/architecture/decisions/ADR-003-conversational-via-microx-mcp.md) for how this layer relates to the deterministic constraint engine.
 
 ## What You Can Do
 
@@ -64,12 +66,14 @@ ollama pull nomic-embed-text   # embeddings (required)
 
 ## Setup
 
+The RAG layer shares the repo's root `requirements.txt` and the root `catalogs/` PDFs. From the repo root:
+
 ```bash
-git clone https://github.com/StephenDenisEdwards/micro-x-rag.git
-cd micro-x-rag
-cp .env.example .env   # Add your API keys
+cp rag/.env.example rag/.env   # Add your API keys
 pip install -r requirements.txt
 ```
+
+Then launch the notebooks from `rag/notebooks/` (see Usage below).
 
 ## Configuration
 
@@ -100,9 +104,11 @@ Pipeline settings:
 
 ## Usage
 
+From the repo root:
+
 ```bash
-jupyter notebook notebooks/rag_catalog_search.ipynb
-jupyter notebook notebooks/graph_rag_catalog_search.ipynb
+jupyter notebook rag/notebooks/rag_catalog_search.ipynb
+jupyter notebook rag/notebooks/graph_rag_catalog_search.ipynb
 ```
 
 **Standard RAG** — run cells in order. First run takes a few minutes for PDF ingestion.
@@ -112,27 +118,30 @@ jupyter notebook notebooks/graph_rag_catalog_search.ipynb
 ## Project Structure
 
 ```
-micro-x-rag/
-├── notebooks/                              # Jupyter notebooks (main workflow)
-│   ├── rag_catalog_search.ipynb            # Standard RAG
-│   ├── graph_rag_catalog_search.ipynb      # GraphRAG (main notebook)
-│   ├── graph_rag_catalog_search_executed.ipynb   # Executed with mistral:7b summaries
-│   └── graph_rag_catalog_search_executed_2.ipynb # Executed with Claude summaries
-├── catalogs/                               # Source PDF product catalogs
-├── scripts/                                # Standalone utility scripts
-├── docs/                                   # Project documentation
-│   ├── architecture/decisions/             # Architecture Decision Records
-│   ├── design/                             # Design docs, analysis, comparisons
-│   └── planning/                           # Roadmaps and improvement plans
-├── requirements.txt                        # Python dependencies
-├── .env.example                            # Environment variable template
-├── CLAUDE.md                               # AI assistant project context
-├── CONTRIBUTING.md                         # Contribution guidelines
-├── CHANGELOG.md                            # Version history
-└── README.md                               # This file
+window-project/
+├── catalogs/                               # Source PDF product catalogs (shared)
+├── requirements.txt                        # Python dependencies (shared)
+└── rag/                                    # ← this subproject
+    ├── notebooks/                          # Jupyter notebooks (main workflow)
+    │   ├── rag_catalog_search.ipynb        # Standard RAG
+    │   ├── graph_rag_catalog_search.ipynb  # GraphRAG (main notebook)
+    │   ├── graph_rag_catalog_search_executed.ipynb   # Executed with mistral:7b summaries
+    │   └── graph_rag_catalog_search_executed_2.ipynb # Executed with Claude summaries
+    ├── scripts/                            # Standalone utility scripts
+    │   └── run_extraction.py               # Resumable entity extraction (Claude API)
+    ├── docs/                               # RAG-specific docs (engine-wide docs in ../documentation/)
+    │   ├── architecture/decisions/         # RAG-side ADRs
+    │   ├── design/                         # Design notes, comparisons, analysis
+    │   ├── guides/                         # Stubs / pointers to canonical guides
+    │   └── planning/                       # Roadmaps and improvement plans
+    ├── .env.example                        # Environment variable template (copy to rag/.env)
+    ├── CLAUDE.md                           # AI assistant context for the rag/ subtree
+    ├── CONTRIBUTING.md                     # RAG-specific contribution notes
+    ├── CHANGELOG.md                        # Version history (inherited from micro-x-rag)
+    └── README.md                           # This file
 ```
 
-Generated artifacts (gitignored):
+Generated artifacts (gitignored, all under `rag/`):
 - `chroma_db/` / `chroma_db_graph/` — persisted vector stores
 - `extractions.json` — cached LLM entity extractions
 - `knowledge_graph.html` — interactive graph visualization

@@ -33,7 +33,19 @@ Central navigation hub for all project documentation.
 
 - [Dev Environment Setup](dev-env.md) -- Dev container configuration, AI tool launchers, and getting started
 - [Documentation Guide](guides/documentation-guide.md) -- Naming conventions, templates, and doc structure
+- [Coding Standards](guides/coding-standards.md) -- Canonical Python style, type-checking, and conventions for the whole repo
 - [Graph RAG for the Product Catalogue](guides/graph-rag-for-product-catalogue.md) -- Tutorial: nodes, edges, worked example, and when to adopt
+
+## Catalogue RAG / GraphRAG (`rag/` subproject)
+
+A working prototype of the catalogue search layer described in ADR-003 lives in [`../../rag/`](../../rag/README.md). It indexes the same PDFs in [`catalogs/`](../../catalogs/) and supplies the future `window.search_documentation` and `window.graph_*` MCP tools.
+
+- [`rag/README.md`](../../rag/README.md) -- Setup, configuration, usage
+- [`rag/CLAUDE.md`](../../rag/CLAUDE.md) -- Subproject context for AI assistants
+- [GraphRAG Notebook Guide](../../rag/docs/design/graphrag-notebook-guide.md) -- Cell-by-cell walkthrough
+- [GraphRAG vs Standard RAG](../../rag/docs/design/graphrag-vs-standard-rag.md) -- Comparison and model upgrade analysis
+- [Deterministic Compatibility Integration](../../rag/docs/design/deterministic-compatibility-integration.md) -- RAG-side view of how this layer composes with the constraint engine (see also [DESIGN-conversational-integration](design/DESIGN-conversational-integration.md))
+- [GraphRAG Improvement Roadmap](../../rag/docs/planning/graphrag-improvement-roadmap.md) -- Prioritised plan
 
 ## Demo Notebooks
 

@@ -1,15 +1,20 @@
-# CLAUDE.md — Project Context for AI Assistants
+# CLAUDE.md — `rag/` Subproject Context for AI Assistants
+
+This file scopes the **`rag/` subproject** of `window-project`. For repo-wide context (engine, demo, top-level conventions) read `../CLAUDE.md` first.
 
 ## Project
 
-**micro-x-rag** — A RAG (Retrieval-Augmented Generation) system that indexes hardware product catalogs into ChromaDB and answers queries using both standard vector search and GraphRAG (knowledge graph-enhanced retrieval). Supports multiple LLM providers (Anthropic Claude, Ollama local models).
+**`rag/`** — Catalogue RAG / GraphRAG prototype for `window-project`. Indexes the project's hardware product catalogs (`../catalogs/*.pdf`) into ChromaDB and answers queries using both standard vector search and GraphRAG (knowledge graph-enhanced retrieval). Supports multiple LLM providers (Anthropic Claude, Ollama local models).
+
+Originally developed as the standalone repo `micro-x-rag` (`https://github.com/StephenDenisEdwards/micro-x-rag`); merged into this repo on 2026-05-05 so the deterministic constraint engine and the catalogue search layer live side by side. See [ADR-003](../documentation/docs/architecture/decisions/ADR-003-conversational-via-microx-mcp.md) for how this layer fits the broader architecture.
 
 ## Language & Layout
 
-- **Python 3.11+**, notebook-first workflow
-- Package manager: `pip` or `uv`
+- **Python 3.14** (matching repo top-level); notebook-first workflow
+- Package manager: `pip`
 - Config: notebook Setup & Configuration cell (provider/model per operation)
-- Secrets: `.env` file (never commit)
+- Secrets: `rag/.env` (never commit; root `.gitignore` covers it)
+- PDFs read from `../catalogs/` (repo-root `catalogs/`, not a `rag/catalogs/` directory)
 
 ## Key Commands
 
@@ -70,10 +75,10 @@ Query time: vector search + graph traversal + community summaries → LLM → An
 | `notebooks/graph_rag_catalog_search.ipynb` | GraphRAG pipeline (main notebook) |
 | `notebooks/graph_rag_catalog_search_executed.ipynb` | Executed GraphRAG with mistral:7b summaries |
 | `notebooks/graph_rag_catalog_search_executed_2.ipynb` | Executed GraphRAG with Claude summaries |
-| `catalogs/*.pdf` | Source PDF product catalogs |
-| `extractions.json` | Cached entity extraction results (gitignored) |
-| `knowledge_graph.html` | Interactive graph visualization (gitignored) |
-| `scripts/extract_standalone.py` | Standalone extraction script |
+| `../catalogs/*.pdf` | Source PDF product catalogs (repo-root, shared with engine) |
+| `extractions.json` | Cached entity extraction results (gitignored, lives in `rag/`) |
+| `knowledge_graph.html` | Interactive graph visualization (gitignored, lives in `rag/`) |
+| `scripts/run_extraction.py` | Resumable extraction script (Claude API) |
 | `.env` | API keys (gitignored) |
 
 ## Configuration
@@ -126,10 +131,11 @@ Use conventional prefix style:
 
 ### Documentation
 
-- Design docs and analysis in `docs/`
-- Keep README.md up to date when adding notebooks or changing config
-- Keep CLAUDE.md up to date when adding key files or changing conventions
-- Architecture decisions recorded in `docs/architecture/decisions/`
+- RAG-specific design docs and analysis in `rag/docs/` (this subtree)
+- Engine-wide design docs in `../documentation/docs/`
+- Keep `rag/README.md` up to date when adding notebooks or changing config
+- Keep this `rag/CLAUDE.md` up to date when adding key files or changing RAG-specific conventions
+- RAG-side architecture decisions recorded in `rag/docs/architecture/decisions/`; engine-wide ADRs live in `../documentation/docs/architecture/decisions/`
 
 ### Critical Rules
 

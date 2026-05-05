@@ -1,5 +1,7 @@
 # Integrating a Deterministic Compatibility Service with GraphRAG
 
+> **Companion document:** This is the **RAG-side view** of how the catalogue search layer composes with a deterministic compatibility service. The **engine-side view** — the same architecture seen from the constraint engine, with full MCP tool surface and orchestration sequence flows — is in [DESIGN-conversational-integration](../../../documentation/docs/design/DESIGN-conversational-integration.md), governed by [ADR-003](../../../documentation/docs/architecture/decisions/ADR-003-conversational-via-microx-mcp.md). The two documents describe the same system from opposite ends; read both for a complete picture.
+
 ## The Problem
 
 The current GraphRAG pipeline relies entirely on LLM extraction to discover relationships between products. When Claude reads a catalog chunk and encounters text like "the Nexis Snap-on hinge attaches to Nexis base plates", it extracts a `compatible_with` relationship. But this approach has limitations:

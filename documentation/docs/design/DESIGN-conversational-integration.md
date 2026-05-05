@@ -6,6 +6,8 @@ How the deterministic constraint engine, the (future) catalogue knowledge graph,
 
 This document is the detailed companion to ADR-003. It defines the tool surface, sequence flows, guardrails, phasing, and failure modes. Read the ADR for the decision in five paragraphs; read this for the engineering specification.
 
+> **Companion document:** The **RAG-side view** of the same architecture — written from the GraphRAG pipeline's perspective and demonstrating how a deterministic compatibility service plugs into a knowledge graph — is in [`rag/docs/design/deterministic-compatibility-integration.md`](../../../rag/docs/design/deterministic-compatibility-integration.md). See also the working prototype in [`rag/`](../../../rag/README.md).
+
 ---
 
 ## 1. Problem Statement

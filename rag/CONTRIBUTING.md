@@ -1,17 +1,19 @@
-# Contributing to micro-x-rag
+# Contributing to `rag/` (the catalogue RAG subproject of `window-project`)
+
+For repo-wide contribution conventions, see `../CONTRIBUTING.md` (or root README) and the canonical [Coding Standards](../documentation/docs/guides/coding-standards.md). This file covers RAG-specific notes only.
 
 ## Prerequisites
 
-- Python 3.11+
+- Python 3.14 (matching repo top-level)
 - Ollama running locally ([ollama.com](https://ollama.com))
 - An Anthropic API key
 
 ## Setup
 
+From the repo root (`window-project/`):
+
 ```bash
-git clone https://github.com/StephenDenisEdwards/micro-x-rag.git
-cd micro-x-rag
-cp .env.example .env   # Add your API keys
+cp rag/.env.example rag/.env   # Add your API keys
 pip install -r requirements.txt
 ```
 
