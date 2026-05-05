@@ -10,6 +10,8 @@
 - Production engine: `engine_v1/`
 - Experimental multi-family prototype: `engine_v2/`
 - Product catalog: `sample-data/`
+- Source PDF catalogs: `catalogs/`
+- Catalogue RAG / GraphRAG prototype: `rag/` (merged from `micro-x-rag`; reads `catalogs/`)
 - Demo notebooks: `demo/`
 - Documentation: `documentation/docs/`
 
@@ -60,6 +62,9 @@ python -m uvicorn demo.app:app --reload
 | `engine_v2/core/solver_n.py` | Flat N-candidate solver (recommended) |
 | `engine_v2/core/solver_staged.py` | Staged pipeline solver (optimisation path) |
 | `engine_v2/families/led_lighting/` | 3-candidate LED lighting prototype |
+| `rag/notebooks/graph_rag_catalog_search.ipynb` | GraphRAG over PDF catalogs (knowledge graph + community summaries) |
+| `rag/notebooks/rag_catalog_search.ipynb` | Standard vector-RAG over PDF catalogs |
+| `rag/scripts/run_extraction.py` | Entity/relationship extraction via Claude API (resumable) |
 
 ## Conventions
 

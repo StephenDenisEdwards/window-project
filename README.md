@@ -97,6 +97,13 @@ sample-data/                    # Product catalog JSON (all families)
 
 catalogs/                       # Source PDF catalogs (Wurth Baer, Grass)
 
+rag/                            # Catalogue RAG + GraphRAG prototype (merged from micro-x-rag)
+├── notebooks/                  # Standard RAG and GraphRAG notebooks (read PDFs from ../../catalogs)
+├── scripts/                    # run_extraction.py — entity extraction via Claude API
+├── docs/                       # RAG-side architecture and design notes
+├── README.md                   # RAG-specific setup and usage
+└── .env.example                # ANTHROPIC_API_KEY, VOYAGE_API_KEY (copy to rag/.env)
+
 demo/                           # Web demo + Jupyter notebooks
 ├── app.py                      # FastAPI backend — all three families
 ├── index.html                  # Browser UI — forms, results, constraint traces
