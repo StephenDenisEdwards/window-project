@@ -73,8 +73,8 @@ Query time: vector search + graph traversal + community summaries → LLM → An
 |------|---------|
 | `notebooks/rag_catalog_search.ipynb` | Standard RAG pipeline |
 | `notebooks/graph_rag_catalog_search.ipynb` | GraphRAG pipeline (main notebook) |
-| `notebooks/graph_rag_catalog_search_executed.ipynb` | Executed GraphRAG with mistral:7b summaries |
-| `notebooks/graph_rag_catalog_search_executed_2.ipynb` | Executed GraphRAG with Claude summaries |
+| `notebooks/graph_rag_catalog_search_executed_mistral.ipynb` | Executed GraphRAG with mistral:7b summaries |
+| `notebooks/graph_rag_catalog_search_executed_claude.ipynb` | Executed GraphRAG with Claude summaries |
 | `../catalogs/*.pdf` | Source PDF product catalogs (repo-root, shared with engine) |
 | `extractions.json` | Cached entity extraction results (gitignored, lives in `rag/`) |
 | `knowledge_graph.html` | Interactive graph visualization (gitignored, lives in `rag/`) |

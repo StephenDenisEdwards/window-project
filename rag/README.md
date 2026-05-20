@@ -125,8 +125,8 @@ window-project/
     ├── notebooks/                          # Jupyter notebooks (main workflow)
     │   ├── rag_catalog_search.ipynb        # Standard RAG
     │   ├── graph_rag_catalog_search.ipynb  # GraphRAG (main notebook)
-    │   ├── graph_rag_catalog_search_executed.ipynb   # Executed with mistral:7b summaries
-    │   └── graph_rag_catalog_search_executed_2.ipynb # Executed with Claude summaries
+    │   ├── graph_rag_catalog_search_executed_mistral.ipynb  # Executed with mistral:7b summaries
+    │   └── graph_rag_catalog_search_executed_claude.ipynb   # Executed with Claude summaries
     ├── scripts/                            # Standalone utility scripts
     │   └── run_extraction.py               # Resumable entity extraction (Claude API)
     ├── docs/                               # RAG-specific docs (engine-wide docs in ../documentation/)

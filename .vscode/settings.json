@@ -1,4 +1,4 @@
 {
     "python.defaultInterpreterPath": "C:\\Users\\steph\\AppData\\Local\\Programs\\Python\\Python314\\python.exe",
-    "jupyter.notebookFileRoot": "${workspaceFolder}"
+    "jupyter.notebookFileRoot": "${fileDirname}"
 }
