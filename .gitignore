@@ -16,5 +16,8 @@ knowledge_graph.json
 knowledge_graph.html
 test_graph.html
 
+# rag/eval — generated metrics output
+rag/eval/results/
+
 # Jupyter
 .ipynb_checkpoints/
