@@ -69,6 +69,7 @@
   expect: { part_number: BP71B3580 }
   cite: [wurth_b:B-6]
   ref: §9.1
+  note: "still ambiguous with BP73B3580 (110+); Blum overlay-mm is in a block bullet, not yet extracted"
 
 - id: SF2
   capability: spec_filter
@@ -78,8 +79,8 @@
 
 - id: SF3
   capability: spec_filter
-  q: "Grass TIOMOS soft-close, full overlay, screw-on, 45mm boring."
-  expect: { part_number: GFF028138519228 }
+  q: "Grass TIOMOS soft-close, full overlay (22mm), screw-on, 45mm boring."
+  expect: { part_number: GFF028138519228 }   # unambiguous once overlay_max_mm is extracted
   cite: [wurth_b:B-45]
 
 - id: SF4
@@ -99,12 +100,13 @@
 
 - id: CC2
   capability: compatibility       # exploded matrix completeness
-  q: "List the 0mm Salice stamped-steel wing baseplates by fixing type."
+  q: "List the 0mm Salice single-cam stamped-steel wing baseplates by fixing type."
   expect:
     wood_screw: UBBAV3L09F
     premounted_euro_screw: UBBAVGL09F16
     split_dowel: UBBAV4L09F16
   cite: [wurth_b:B-100]
+  note: "single-cam (V-series) needed to disambiguate from two-cam (R-series); both have a 0mm stamped plate"
 
 - id: CC3
   capability: compatibility

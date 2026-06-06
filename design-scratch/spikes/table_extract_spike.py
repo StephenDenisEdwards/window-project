@@ -284,6 +284,11 @@ def parse_page(page_no):
                 labs.append(rows[k]); k -= 1
             label_rows = list(reversed(labs))[-2:]
             cols = name_columns(header_columns(rows[i]), label_rows)
+            # block title = nearest descriptive label above the column-label run (skip bullets)
+            t = k
+            while t >= 0 and cls[t] in ("bullet", "skip"):
+                t -= 1
+            title = row_text(rows[t]) if (t >= 0 and cls[t] == "label") else None
             j, sub, recs = i + 1, None, []
             while j < n and cls[j] not in ("header", "banner"):
                 if cls[j] == "data":
@@ -292,7 +297,7 @@ def parse_page(page_no):
                     sub = row_text(rows[j])
                 j += 1
             fam = classify_block(cols, banner, recs[0][1] if recs else None)
-            blocks.append({"family": fam, "banner": banner,
+            blocks.append({"family": fam, "banner": banner, "title": title,
                            "columns": [c["label"] for c in cols], "cols": cols, "rows": recs})
             i = j; continue
         i += 1

@@ -14,6 +14,7 @@ design-scratch/build/. Run from repo root:  python design-scratch/build/thin_pip
 """
 from __future__ import annotations
 
+import collections
 import io
 import json
 import os
@@ -88,6 +89,20 @@ def page_prose(page_no):
     return info
 
 
+def cam_from_title(title):
+    t = (title or "").lower()
+    return "single_cam" if "single cam" in t else "two_cam" if "two cam" in t else None
+
+
+def series_from_title(title):
+    return "CLIP top BLUMOTION" if "BLUMOTION" in (title or "").upper() else None
+
+
+def overlay_mm(text):
+    m = re.search(r"\((\d+)\s*mm\)", text or "")   # e.g. "...Up to 7/8\" (22mm) Overlay"
+    return int(m.group(1)) if m else None
+
+
 def extract_page(page_no):
     out = []
     for b in tx.parse_page(page_no):
@@ -95,15 +110,25 @@ def extract_page(page_no):
         if not emit:
             continue
         brand, series = derive_brand_series(b["banner"])
+        title = b.get("title")
         wing = "WING" in (b["banner"] or "").upper()
+        cam = cam_from_title(title)
         for cells, sub in b["rows"]:
             for r in emit(cells, b["cols"], sub, page_no):
                 if brand:
                     r["brand"] = brand
-                if series and r["family"] == "concealed_hinge":
-                    r["series"] = series
-                if wing and r["family"] == "baseplate":
-                    r["plate_style"] = "wing"
+                if r["family"] == "concealed_hinge":
+                    s = series or series_from_title(title)      # Blum series is in the title
+                    if s:
+                        r["series"] = s
+                    om = overlay_mm(r.get("_subgroup"))          # TIOMOS: overlay-mm in sub-group
+                    if om:
+                        r["overlay_max_mm"] = om
+                if r["family"] == "baseplate":
+                    if wing:
+                        r["plate_style"] = "wing"
+                    if cam:                                       # single/two cam from the title
+                        r["cam_adjustment"] = cam
                 out.append(r)
     return out
 
@@ -163,6 +188,53 @@ def load_db(path=DB_PATH):
             "quarantine": doc.get("quarantine", [])}
 
 
+# --- gap report (the §2.4 gaps queue) ---
+
+GAP_PATH = os.path.join(os.path.dirname(__file__), "gap_report.json")
+
+# fields the catalog genuinely does not carry -> 'absent' (sourcing / should-decline)
+ABSENT_IN_CATALOG = {
+    "concealed_hinge": ["max_door_weight_kg", "price_usd"],
+    "baseplate": ["price_usd"],
+    "accessory": ["price_usd"],
+}
+# fields that are on the page (extract when present) -> empty ones are 'extraction' gaps
+EXPECTED = {
+    "concealed_hinge": ["brand", "series", "opening_angle_deg", "overlay_class", "overlay_max_mm",
+                        "fixing", "closing_type", "boring_pattern_mm", "max_door_thickness_mm",
+                        "cup_depth_mm", "certifications", "application", "max_door_weight_kg", "price_usd"],
+    "baseplate": ["brand", "series", "height_mm", "plate_style", "fixing_type", "material",
+                  "cam_adjustment", "compatible_hinge_series", "price_usd"],
+    "accessory": ["brand", "accessory_type", "for_series", "restricts_angle_to_deg", "color", "price_usd"],
+}
+
+
+def generate_gap_report(db, path=GAP_PATH):
+    gaps = []
+    for pn, r in db["products"].items():
+        fam = r["family"]
+        absent = set(ABSENT_IN_CATALOG.get(fam, []))
+        for f in EXPECTED.get(fam, []):
+            if r.get(f) in (None, "", []):
+                gaps.append({
+                    "part_number": pn, "family": fam, "field": f,
+                    "kind": "absent" if f in absent else "extraction",
+                    "cite": citation(r),
+                })
+    # low-confidence reference-table cells
+    if db["reference"]["hinges_per_door"].get("_verify"):
+        gaps.append({"part_number": None, "family": "reference:hinges_per_door",
+                     "field": "_cells_best_effort", "kind": "low_confidence",
+                     "cite": "grass_tiomos:p47"})
+    by_kind = collections.Counter(g["kind"] for g in gaps)
+    by_field = collections.Counter(f"{g['family']}.{g['field']}" for g in gaps)
+    doc = {"meta": {"total_gaps": len(gaps), "by_kind": dict(by_kind)},
+           "gaps": gaps}
+    with io.open(path, "w", encoding="utf-8") as f:
+        json.dump(doc, f, ensure_ascii=False, indent=2, sort_keys=True)
+    return path, by_kind, by_field
+
+
 # --- query layer ---
 
 def get(db, pn):
@@ -218,18 +290,18 @@ def run_eval(db):
     skus = [x["part_number"] for x in res]
     check("SF1", "BP71B3580" in skus, f"matches={skus}  (ambiguous: 110 vs 110+ needs overlay-mm)")
 
-    # SF3 — Grass TIOMOS full overlay, screw-on, 45mm (cranking 00 vs 03 ambiguous)
+    # SF3 — Grass TIOMOS full overlay, screw-on, 45mm, 22mm overlay (overlay-mm disambiguates)
     res = find(db, family="concealed_hinge", overlay_class="full",
-               fixing="screw_on", boring_pattern_mm="45mm")
+               fixing="screw_on", boring_pattern_mm="45mm", overlay_max_mm=22)
     skus = [x["part_number"] for x in res]
-    check("SF3", "GFF028138519228" in skus, f"matches={skus}  (ambiguous: cranking 00 vs 03 needs overlay-mm)")
+    check("SF3", skus == ["GFF028138519228"], f"matches={skus}  (now unambiguous via overlay_max_mm)")
 
-    # CC2 — completeness: 0mm Salice stamped wing baseplates by fixing
-    res = find(db, family="baseplate", height_mm=0, material="stamped_steel")
+    # CC2 — completeness: 0mm Salice SINGLE-CAM stamped wing baseplates by fixing
+    res = find(db, family="baseplate", height_mm=0, material="stamped_steel", cam_adjustment="single_cam")
     by_fix = {x["fixing_type"]: x["part_number"] for x in res}
     ok = by_fix.get("wood_screw") == "UBBAV3L09F" and by_fix.get("premounted_euro_screw") == "UBBAVGL09F16" \
         and by_fix.get("split_dowel") == "UBBAV4L09F16"
-    check("CC2", ok, f"{by_fix}")
+    check("CC2", ok, f"{by_fix}  (cam_adjustment now disambiguates V vs R series)")
 
     # WF1 — weight feasibility from the load chart
     n = hinges_for(db, 1500, 11)
@@ -263,6 +335,15 @@ def main():
     for eid, status, detail in rows:
         print(f"  [{status}] {eid:<4} {detail}".encode("ascii", "replace").decode())
     print(f"\n  eval: {npass}/{len(rows)} passed")
+
+    gpath, by_kind, by_field = generate_gap_report(db)
+    print(f"\n  gap report -> {os.path.relpath(gpath)}  ({sum(by_kind.values())} gaps)")
+    print(f"    by kind: {dict(by_kind)}")
+    print("    top extraction gaps:")
+    for name, n in by_field.most_common(8):
+        if name.endswith(".price_usd") or ".max_door_weight_kg" in name:
+            continue
+        print(f"      {name:<40} {n}")
 
 
 if __name__ == "__main__":

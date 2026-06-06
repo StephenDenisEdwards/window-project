@@ -404,19 +404,27 @@ spikes didn't emit: `brand` 68/68 (from the banner), baseplate `plate_style` 35/
 B-6 `max_door_thickness_mm` 14/14 (prose-bullet pass), restriction-clip
 `restricts_angle_to_deg` (parsed from the description), TIOMOS `series` 16/16.
 
+Now also closed (via the block **title**, now returned by `parse_page`):
+- **`overlay_max_mm`** parsed from the TIOMOS sub-group ("…(22mm) Overlay") → **SF3 now
+  unambiguous** (cranking 00 = 22mm vs 03 = 19mm).
+- **`cam_adjustment`** (single/two cam) from the block title → **CC2 now genuinely passes**
+  (was only passing by key-sort order); plus Blum `series` ("CLIP top BLUMOTION") from its
+  title.
+- **Gap report** (`gap_report.json`, gitignored) — the §2.4 queue: every empty expected
+  field per record, typed **absent** (catalog lacks it: weight, price) vs **extraction**
+  (on the page, not yet pulled) vs **low_confidence** (chart cells). Current run: 335 gaps
+  (236 extraction · 98 absent · 1 low-confidence).
+
 Findings still open:
-- **Extract overlay *range* (mm), not just overlay class.** Spec filters are ambiguous
-  without it: "110 vs 110+" (Blum) and "cranking 00 vs 03" (Grass) differ only by overlay
-  range (22 vs 19 mm), in the sub-group / bullet text (eval SF1, SF3 — pass-but-ambiguous).
-- **Baseplate `cam_adjustment`** (single- vs two-cam) still uncaptured — CC2 only "passes"
-  by key-sort order; the conflation is unfixed (see §2.1 baseplate note).
-- **Block-level association** — `series` (Blum) and `max_door_thickness_mm` (TIOMOS) live in
-  sub-titles / other pages, so page-level prose application leaves them partial.
+- **SF1 stays ambiguous** — Blum "110 vs 110+" overlay-mm is in a *block bullet* (not the
+  title/sub-group), so it needs the block-level prose association below.
+- **Block-level prose association** — Blum overlay-mm, certifications, `cup_depth_mm`,
+  `application`, and baseplate `compatible_hinge_series` live in block bullets/notes; the
+  current page-level prose pass doesn't bind them to the right block (top extraction gaps in
+  the report).
 - **Tier-A unicode finding:** the catalogs write degrees as **º (U+00BA, ordinal
   indicator)**, *not* **° (U+00B0, degree sign)** — normalization must canonicalize both, or
   degree-keyed parses silently miss (this bit the restriction-clip angle parse first).
-- The CC2 eval question is itself under-specified (two cam series) — the eval set should
-  name the series, mirroring the schema fix.
 
 ### 2.3 Join / merge + conflict resolution
 
