@@ -427,9 +427,65 @@ gap carries part number, field, reason, source + page, and any candidate value(s
 **Output:** the validated DB + the finalized, typed, prioritized **gaps/exceptions queue** —
 the deliverable that drives human resolution and gates "done".
 
+### 2.5 Eval harness
+
+"Done" is eval-driven (refinement #6). The harness measures whether the DB answers the §5
+query patterns / §9 walkthroughs correctly, and — when it doesn't — says **why** (data gap
+vs pipeline bug). It is both the **per-iteration gate** and the **regression net** as the DB
+evolves.
+
+#### Eval set
+- **Golden questions with known answers** — expected part number(s) + page citation(s).
+  Seeded from the §9 walkthroughs and §5 query patterns.
+- **Covers each capability** — exact SKU lookup (incl. cross-source `GF→F` resolution),
+  spec-filtered search, weight feasibility, compatibility/completeness, comparison, lift
+  sizing.
+- **Includes "should-decline" cases** — questions whose answer depends on an open gap; the
+  correct behaviour is "unknown / insufficient data" + cite the gap, **not** a fabricated
+  value.
+
+#### What's measured
+| Dimension | Question it answers |
+|-----------|---------------------|
+| Correctness | the right part number(s)? |
+| Completeness | all required companions returned (baseplate, clips, set members)? |
+| Grounding | does each citation point to a source + page that actually contains the value? |
+| Honesty | does it decline when the fact is a gap, instead of hallucinating? |
+
+#### Run against the DB first
+Exact lookups / filters / joins / feasibility are scored as **direct queries against the
+DB** (target architecture) — that is what the harness measures. The LLM/RAG layer (phrasing,
+comparison, prose) is evaluated separately on top, so a wording failure isn't confused with
+a data failure.
+
+#### Failure attribution — gap vs. bug
+Each miss is classified:
+- **Data gap** — the DB doesn't contain the fact (absent / low-confidence / conflict) →
+  routes to the gaps queue; resolution unblocks the question.
+- **Pipeline / query bug** — the DB *does* hold the right fact but the answer is wrong →
+  defect in extraction / merge / validation / query.
+
+Per-field provenance is what makes this distinction possible: the harness can check whether
+the value is in the DB and from where.
+
+#### Gate + regression
+- **Per-iteration gate** — an iteration is done when its targeted questions pass; a failing
+  question names the blocking gap(s), feeding prioritization (§2.4).
+- **Regression net** — re-run as the DB evolves (new extraction passes, resolved gaps,
+  schema changes); idempotent per-node rebuild keeps re-checks cheap and targeted.
+
+#### Metrics
+Per-query-type pass rate · coverage (share of eval questions answerable) · grounding
+accuracy · gap-vs-bug attribution — tracked across iterations to show the DB converging.
+
+**Output:** a repeatable eval report — pass/fail per question with citations, failure
+attribution, and the ranked gaps blocking the misses.
+
 ---
 
-*(Remaining §2 phase to iterate: eval harness.)*
+*§2 outline complete. Phases read top-to-bottom but the pipeline is re-runnable per node:
+resolving a gap re-enters at the record layer and flows forward through merge → validation →
+eval (ingestion model).*
 
 ---
 
