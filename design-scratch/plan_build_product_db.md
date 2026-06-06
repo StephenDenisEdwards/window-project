@@ -276,10 +276,60 @@ Each has its own force/weight spec model, so each is a *new* schema when promote
 `up_stay` (torque), `institutional_hinge`, `piano_hinge`, `invisible_hinge` (SOSS),
 `pivot` / `butt` / `glass_door` / `specialty`.
 
+### 2.2 Extraction approach (per tier)
+
+Extraction routes each piece of content to one of the four entity kinds (§2.1) and emits
+it as **provenance-wrapped, confidence-scored** fields. Absence or low confidence raises a
+gap; a missing *identity* field quarantines the record (ingestion model). The method
+depends on the content's tier (analysis §4 recap).
+
+**Stages (run per source — each catalog has its own layout profile):**
+1. Extract page text **with positional layout** (UTF-8, word bounding boxes retained).
+2. Tier-A hygiene over all text.
+3. Tier-B layout/vision passes for tables and charts.
+4. Tier-C routing/assembly into candidate entities (pre-merge).
+
+Output: per-source candidate entities **plus** a raw, inspectable intermediate (one record
+per detected block, with page provenance) for audit — this is the input to the merge phase.
+
+#### Tier A — deterministic text hygiene
+Rule-based, cheap, runs on all extracted text:
+- **Boilerplate strip** — remove the A–Y index rail, phone/URL/brand headers & footers, and
+  page numbers (pattern + position).
+- **Unicode + units** — normalize °, ″, •, ↑; parse tokens to typed values while keeping the
+  raw (`"Up to 7/8\" (22mm)"` → `{value: 22, unit: mm, raw: …}`); ranges → `{min, max}`.
+- **Vocabulary + join key** — canonicalize strings to enum values (reconciled to the
+  engine's vocabulary, §3), and strip the distributor prefix to compute `part_number_core`.
+
+#### Tier B — layout & vision extraction
+The two content types that don't survive plain text:
+- **B1 · Distributor tables → rows.** Reconstruct rows from the PDF's **positional layout**
+  (word boxes clustered by *y* into rows, by *x* into columns), or via a table extractor,
+  then apply a **per-layout column map** to bind columns to schema fields. One product row →
+  one product node. Brand layouts differ — Blum specialty / Salice baseplate matrices need
+  their own maps; spike the messiest first.
+- **B2 · Manufacturer charts → reference tables.** Render the chart page to an image and use
+  a **vision model** to extract it into structured reference records (`hinges_per_door`:
+  weight-band × height → count; `reveal_gap_chart`: DT → R/G/OL/DP).
+- Both passes attach a **confidence** to each field; below threshold → auto-gap.
+
+#### Tier C — routing & assembly (extraction side)
+Prepares the cross-cutting work the merge/query phases finish:
+- **Family routing** — assign each record a `family` from its section banner, selecting the
+  right schema (§2.1).
+- **Candidate edges** — pull catalog-stated conditions from prose/captions ("for 170°
+  hinges", "*requires 85° clip", set-member lists) as *candidate* relationship edges, to be
+  confirmed at merge.
+- **Dup/conflict flags** — mark records that look like the same product (for the merge join)
+  or that carry out-of-range values, without resolving them yet.
+
+**Mapping to analysis §6:** Tier A = Step 0 · B1 = Step 2 · B2 = Step 5 · Tier C feeds
+Steps 4 & 6 (merge, links).
+
 ---
 
-*(Remaining §2 phases to iterate: extraction approach per tier · join/merge + conflict
-resolution · validation & gap generation · eval harness.)*
+*(Remaining §2 phases to iterate: join/merge + conflict resolution · validation & gap
+generation · eval harness.)*
 
 ---
 
