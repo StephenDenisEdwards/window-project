@@ -345,6 +345,20 @@ The two content types that don't survive plain text:
 - **B2 · Manufacturer charts → reference tables.** Render the chart page to an image and use
   a **vision model** to extract it into structured reference records (`hinges_per_door`:
   weight-band × height → count; `reveal_gap_chart`: DT → R/G/OL/DP).
+
+  **✓ Validated by spike** (`chart_extract_spike.py` + `grass_tiomos_p47_hinges_chart.png`)
+  on *Grass TIOMOS* p47 "Number of Hinges Per Door":
+  - Vision recovered the chart **structure** that plain text scrambles — hinge-count axis
+    [2,3,4,5], door-height steps [500/900/1600/2200/2450 mm], weight bands
+    [4-6 / 7-12 / 13-17 / 18-22 kg].
+  - **Refinement — hybrid, not vision-alone:** render the chart for *structure*, but take
+    *values* from the text layer and **cross-check**. All 9 scaffold tokens (4 bands +
+    5 height thresholds) matched the text layer exactly → high-confidence scaffold without
+    trusting vision OCR for digits.
+  - **The dense 2-D cell grid is the genuine low-confidence part.** Axes/bands read cleanly;
+    the icon→cell staircase (which height×weight → how many hinges) is best-effort and is
+    flagged for human verify — i.e. even a well-read chart legitimately yields a
+    **low-confidence gap** for its cell grid (exactly the ingestion-model path).
 - Both passes attach a **confidence** to each field; below threshold → auto-gap.
 
 #### Tier C — routing & assembly (extraction side)
