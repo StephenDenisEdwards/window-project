@@ -326,10 +326,65 @@ Prepares the cross-cutting work the merge/query phases finish:
 **Mapping to analysis §6:** Tier A = Step 0 · B1 = Step 2 · B2 = Step 5 · Tier C feeds
 Steps 4 & 6 (merge, links).
 
+### 2.3 Join / merge + conflict resolution
+
+Extraction (§2.2) produces **per-source candidate entities**; this phase merges them into
+the **canonical** DB — one node per real product, reference tables, and confirmed edges —
+carrying per-field provenance. (Analysis §6 Steps 4a/4b/4c, plus edge confirmation from
+Step 6.)
+
+#### Join — which candidates are the same product
+- **Key = `part_number_core`** (manufacturer number with the distributor prefix stripped,
+  §3.1). Candidates grouped by key form one logical product.
+- **Within-source dedup** — the same SKU printed across several spec rows (§4 #8) collapses
+  to one candidate before grouping.
+- **Cross-source twin resolution** — a distributor candidate and its manufacturer twin join
+  on the shared key; the node records both the `manufacturer_pn` and the `distributor_skus`.
+- **Unjoinable / ambiguous** — a record with no resolvable part number, or one whose key
+  collides with a *different* product, is an **identity gap → quarantine** (not silently
+  merged). A product that legitimately appears in only one source is a valid single-source
+  node, not a gap.
+
+#### Merge — combine fields, keep provenance
+Per logical product, merge field by field. Each field keeps its full provenance set
+(`{value, source, page, confidence}` per contributing source):
+- **Single source** → take it.
+- **Multiple sources agree** (after Tier-A normalization) → take it, recording the
+  corroborating sources. *Normalize before comparing* so unit/rounding artifacts
+  (`7/8″` vs `22mm`) are **not** treated as conflicts — this keeps the queue clean.
+- **Sources disagree materially** → apply precedence (below), keep **both** values in
+  provenance, and raise a **conflict gap** for human adjudication.
+- Node `state` = `complete` if no open gaps, else `partial` (ingestion model).
+
+#### Source precedence (conflict policy)
+| Field class | Authority | Rationale |
+|-------------|-----------|-----------|
+| Specs (angle, overlay, thickness, boring, cup, load charts) | **manufacturer** | deepest, most authoritative |
+| Catalog coverage / distributor SKU / packaging | **distributor** | distributor owns availability |
+| Any **locked/curated** field | **human** | always wins; non-clobberable |
+
+A human-resolved value is never overridden by extraction; but a later re-extraction that
+*disagrees* with a locked value raises a **new** conflict for review rather than being
+dropped (ingestion model).
+
+#### Edges — candidate → confirmed
+Candidate edges from Tier C are resolved against the now-merged nodes: "for 170° hinges" →
+the matching `series`/`product_id`s; set-member lists → `companion_in_set` edges. **Only
+non-derivable, catalog-stated edges are materialized** — compatibility the engine can derive
+from attributes (series, mounting, brand) is left to engine rules (§3). Each kept edge keeps
+its own `source`/`page`.
+
+#### Reference tables
+Merged on their key `(brand, series[, angle])`, deduped across sources, with provenance per
+table. These are not products and are not part-number-joined.
+
+**Output of this phase:** canonical product nodes (`partial`/`complete`/`quarantined`),
+reference tables, confirmed edges, linked text chunks — and the populated gaps/conflicts
+queue.
+
 ---
 
-*(Remaining §2 phases to iterate: join/merge + conflict resolution · validation & gap
-generation · eval harness.)*
+*(Remaining §2 phases to iterate: validation & gap generation · eval harness.)*
 
 ---
 
