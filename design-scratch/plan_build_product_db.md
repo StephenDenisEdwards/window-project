@@ -280,3 +280,58 @@ Each has its own force/weight spec model, so each is a *new* schema when promote
 
 *(Remaining §2 phases to iterate: extraction approach per tier · join/merge + conflict
 resolution · validation & gap generation · eval harness.)*
+
+---
+
+## 3. Relationship to a constraint engine (integration target)
+
+The database is the **engine-agnostic facts layer**; a constraint engine is one
+*consumer* of it. The project already has a reference implementation — `engine_v2`, a
+generic multi-family constraint solver — but the DB is deliberately **not coupled** to
+it. The same DB could feed engine_v2, an evolved version of it, or a fresh engine.
+
+```
+PDFs → [extraction pipeline] → structured product DB → [adapter] → constraint engine → ranked configurations
+                                     (this plan)                   (consumer; engine_v2 = reference design)
+```
+
+**What the DB supplies an engine** — the four inputs a constraint solver needs:
+1. **Typed product attributes** — the operands every rule compares.
+2. **Reference tables** — the derivation data rules call (`hinges_per_door`,
+   `overlay_chart`, `reveal_gap_chart`).
+3. **Relationship edges** — catalog-stated compatibility not derivable from attributes.
+4. **Provenance** — so every verdict traces to a catalog page (explainability).
+
+**What stays engine work** (not catalog data → out of scope for the DB): the requirements
+model, the rules/compatibility logic, the solver, and ranking. Catalog *conditions*
+captured as edges seed some rules, but the logic itself is engineered.
+
+**Design consequences for the DB:**
+- **Stay engine-agnostic; integrate via an adapter.** Keep the DB as canonical sourced
+  facts; a thin projection maps product nodes → whatever the engine expects
+  (`part_number_core → sku`, overlay reference → a plate's achievable overlay range, …).
+  Preserves optionality — multiple consumers (engine(s) *and* the RAG chat) off one DB.
+- **Build the engine to fit the facts, not the reverse.** The catalogs are ground truth, so
+  a DB-backed engine can be *more correct* than a hand-data PoC — e.g. a real weight model
+  from the Grass weight×height charts rather than an invented per-hinge kg rating.
+- **Multi-family for free.** Per-family schemas + reference tables + edges are exactly what
+  a general multi-family engine needs; each promoted catalog family (lift systems, lid
+  stays…) becomes a new engine family driven by the same DB shape.
+- **Second definition of done.** Beyond answering the RAG eval (§8/§9), the DB succeeds if
+  it can *drive a constraint engine* through the adapter.
+
+**Open decisions surfaced by the reference engine:**
+- **Weight model.** The reference engine expects a per-hinge `max_door_weight_kg` scalar
+  and counts hinges by *height only*; the catalogs give no per-hinge kg but a richer
+  weight×height→count chart. Resolve as either (a) source the kg as a gap, or (b) have the
+  engine consume our `hinges_per_door` reference table. (b) is more faithful.
+- **Derived vs. stored compatibility.** The reference engine derives hinge↔plate
+  compatibility from attributes via rules (series, mounting, brand). So the DB should
+  materialize **only** non-derivable, catalog-stated edges; derivable compatibility stays
+  engine logic.
+- **Vocabulary target.** Reconcile our seed enums *to* the engine's existing vocabulary
+  (mounting methods incl. inserta/expando/impresso already exist there), extending for new
+  brands (Salice/Pro) rather than duplicating.
+- **Null-tolerance.** `partial` nodes (open gaps) require engine rules to skip gracefully on
+  missing fields; most already do, but the weight rule currently assumes the value is
+  present.
