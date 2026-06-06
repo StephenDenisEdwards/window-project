@@ -84,6 +84,48 @@ workable rather than just leaving holes.
   queue is ranked so the gaps standing between us and a passing §9 walkthrough get fixed
   first.
 
+### Ingestion model
+
+Ingestion is a **per-node, stage-based, idempotent** pipeline — not a blocking job
+(a *node* = one product record). Missing data records a gap and keeps going; it does not
+halt the pipeline. Three things define the model:
+
+**Node states.**
+- **`partial`** — node created but has one or more open gaps. Present and retrievable;
+  queries that need a missing field report "unknown" rather than guess, and queries that
+  don't, work normally.
+- **`complete`** — no open gaps.
+- **`quarantined`** — the node could not be formed at all (see blocking gaps).
+
+**Blocking vs. non-blocking gaps.**
+- **Attribute gap (non-blocking)** — a spec field is absent or low-confidence. The node
+  is created with the field `null` + a gap record, state `partial`, and ingestion
+  continues. One missing load rating never blocks the product or the pipeline.
+- **Identity gap (blocking)** — no resolvable part number, or a row that can't be tied to
+  a product. The node can't be formed, so the record goes to a **quarantine / exceptions**
+  store. This is the *only* case where ingestion stops "for that node," and it's an
+  identity failure, not an attribute one.
+
+**Resume forward, per node, on resolution.** A human resolution (from the gaps queue) is
+an *event*, not a restart:
+1. The value is written into the node as a **locked, attributed** field
+   (`source: human/curator`, who/when) — protected from future re-extraction.
+2. Only that node's **downstream stages** re-run: validate → finalize record → rebuild its
+   text chunk/embedding → re-index → re-check the eval queries it was blocking. No PDF
+   re-extraction (the human is the source now); no other node is touched.
+3. The node flips **`partial → complete`** once its gaps close; any §9 walkthrough it was
+   blocking is re-evaluated.
+
+So a human value re-enters at the **record layer** and flows forward — the same entry
+point whether the gap was *absent*, *low-confidence*, or *conflict* (only the human action
+differs: supply / correct / adjudicate). The corpus stays usable throughout; `partial`
+nodes converge to `complete` as the queue drains.
+
+**Curation vs. re-extraction precedence.** If a later re-extraction finds a value a human
+had supplied, the `locked` flag means the human value wins by default — but the divergence
+is raised as a **new conflict** for review rather than silently kept, so curated data
+doesn't drift from the source unnoticed.
+
 ### Non-goals (for now)
 - Not a pricing or availability system.
 - Not a fully-normalized schema covering every family on day one.
