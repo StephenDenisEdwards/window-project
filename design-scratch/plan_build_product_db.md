@@ -308,6 +308,24 @@ The two content types that don't survive plain text:
   then apply a **per-layout column map** to bind columns to schema fields. One product row →
   one product node. Brand layouts differ — Blum specialty / Salice baseplate matrices need
   their own maps; spike the messiest first.
+
+  **✓ Validated by spike** (`design-scratch/spikes/`, on Würth B p6 / p45 / p100). The full
+  path works: row reconstruction → **block segmentation on header rows** → **x-position
+  column binding** → schema records. Key results and the refinements they surfaced:
+  - **x-binding detects blank cells** instead of collapsing them — essential for the dense
+    Salice matrices (a missing SKU stays an explicit empty in the right column).
+  - **A field can be a *column* on one brand and a *sub-group heading* on another.** Overlay
+    is a column on Blum p6 but lives in the divider row on Grass p45
+    (`"Full Overlay Hinges (Cranking 00) …"`). So extraction must capture **both** column
+    cells *and* the mixed-case sub-group divider above a run of rows, and attach the divider
+    context to each record.
+  - **Refinements still needed** (understood, not architectural risk):
+    1. **Multi-row headers** — bind on the position row but merge the stacked label rows
+       above it to *name* the columns (Salice: Wood Screw / Euro Screw / Dowel).
+    2. **Per-block family routing** — an "Accessory Items" sub-table on a hinge page must
+       route to the `accessory` family, not be parsed as a hinge (Tier C, below).
+    3. **Callout-letter filtering** — inline single-letter diagram keys (`A`, `B`) must be
+       dropped beyond the margin-rail rule so they don't prepend to part numbers.
 - **B2 · Manufacturer charts → reference tables.** Render the chart page to an image and use
   a **vision model** to extract it into structured reference records (`hinges_per_door`:
   weight-band × height → count; `reveal_gap_chart`: DT → R/G/OL/DP).
