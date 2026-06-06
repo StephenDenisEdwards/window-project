@@ -232,6 +232,7 @@ their absence is the blocking *identity gap* that sends a record to quarantine.
 | `height_mm` | number | 0 / 2 / 4 / 6 |
 | `plate_style` | enum | wing_one_piece \| cam_adjustable_wing \| face_frame_adapter_steel \| face_frame_adapter_diecast \| thick_inline \| straight |
 | `fixing_type` | enum | wood_screw \| premounted_euro_screw \| split_dowel |
+| `material` | enum | stamped_steel \| die_cast_steel — *added after the B-100 spike surfaced it in the matrix sub-groups* |
 | `cam_adjustable` | bool | |
 | `compatible_hinge_series` | list<series> | → edge to hinges |
 
@@ -322,13 +323,25 @@ The two content types that don't survive plain text:
     (`"Full Overlay Hinges (Cranking 00) …"`). So extraction must capture **both** column
     cells *and* the mixed-case sub-group divider above a run of rows, and attach the divider
     context to each record.
-  - **Refinements still needed** (understood, not architectural risk):
-    1. **Multi-row headers** — bind on the position row but merge the stacked label rows
-       above it to *name* the columns (Salice: Wood Screw / Euro Screw / Dowel).
-    2. **Per-block family routing** — an "Accessory Items" sub-table on a hinge page must
-       route to the `accessory` family, not be parsed as a hinge (Tier C, below).
-    3. **Callout-letter filtering** — inline single-letter diagram keys (`A`, `B`) must be
-       dropped beyond the margin-rail rule so they don't prepend to part numbers.
+  - **Refinements — now also validated by the stage-3 spike** (`table_extract_spike.py`;
+    30 hinge / 3 accessory / 35 baseplate records, 0 unnamed columns, 0 callout leaks):
+    1. **✓ Multi-row headers** — when the binding row has duplicate labels, compose real
+       column meaning from the stacked label rows above it (Salice: Wood Screw / Euro
+       Screw / Dowel) → each matrix cell emits a baseplate with the right `fixing_type`.
+    2. **✓ Per-block family routing** — classify each block (`concealed_hinge` /
+       `baseplate` / `accessory`) from its columns + banner/divider context; the
+       "Accessory Items" sub-table now routes to `accessory`, not hinge.
+    3. **✓ Callout-letter filtering** — stray single-letter diagram keys (`A`, `B`) are
+       dropped so they don't prepend to part numbers.
+  - **Parser rule the spike established:** assign a header's column-label rows by looking
+    **backward** from the header (contiguous label rows immediately above), *not* by
+    forward-accumulation — otherwise one block's data loop swallows the next block's
+    label rows.
+  - **Still open (minor):** column *display* names are slightly garbled because naming bins
+    label words on the narrow binding-row column centres (the `fixing_type` keyword still
+    resolves correctly) — set column x-ranges from the union of binding + label + data
+    positions. And a matrix row carries **material** (Stamped vs Die-Cast Steel) with no
+    home in the §2.1 `baseplate` schema (see schema note).
 - **B2 · Manufacturer charts → reference tables.** Render the chart page to an image and use
   a **vision model** to extract it into structured reference records (`hinges_per_door`:
   weight-band × height → count; `reveal_gap_chart`: DT → R/G/OL/DP).
