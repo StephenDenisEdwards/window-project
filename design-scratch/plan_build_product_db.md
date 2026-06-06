@@ -496,6 +496,9 @@ vs pipeline bug). It is both the **per-iteration gate** and the **regression net
 evolves.
 
 #### Eval set
+> Concrete draft: [`eval_set.md`](eval_set.md) — 15 grounded items (answers taken from the
+> spike-extracted data), covering all capabilities below.
+
 - **Golden questions with known answers** — expected part number(s) + page citation(s).
   Seeded from the §9 walkthroughs and §5 query patterns.
 - **Covers each capability** — exact SKU lookup (incl. cross-source `GF→F` resolution),
