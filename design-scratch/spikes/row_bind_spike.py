@@ -8,6 +8,14 @@ Builds on row_reconstruct_spike.py. Adds:
     "Full Overlay Hinges (Cranking 00)") carried onto each record
   - schema-shaped emission for the concealed_hinge family (plan section 2.1)
 
+Catalog sources
+  Würth Baer Supply — Section B, Concealed Hinges (distributor catalog)
+  catalogs/wurth-baer-section-b-concealed-hinges.pdf  (104 pp; PDF page N == printed "B-N")
+  Pages exercised:
+    B-6   — Blum Soft-Close Euro Hinges (CLIP top BLUMOTION) — overlay is a COLUMN
+    B-45  — Grass TIOMOS Soft-Close Euro Hinges — overlay is a SUB-GROUP divider
+    B-100 — Salice Wing Baseplates — dense SKU matrix with blank cells
+
 Throwaway spike. Run: python design-scratch/spikes/row_bind_spike.py
 """
 from __future__ import annotations

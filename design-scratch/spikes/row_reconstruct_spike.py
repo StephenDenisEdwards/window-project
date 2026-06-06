@@ -4,6 +4,13 @@ Hypothesis (plan section 2.2 B1): plain get_text() linearises tables into scramb
 column streams, but the PDF carries x/y bounding boxes per word — so clustering words by
 y (rows) and x (columns) should reconstruct the original table rows.
 
+Catalog sources
+  Würth Baer Supply — Section B, Concealed Hinges (distributor catalog)
+  catalogs/wurth-baer-section-b-concealed-hinges.pdf  (104 pp; PDF page N == printed "B-N")
+  Pages exercised:
+    B-6   — Blum Soft-Close Euro Hinges (CLIP top BLUMOTION) — clean grid (baseline)
+    B-100 — Salice Wing Baseplates — dense SKU matrix (stress test)
+
 Throwaway spike. Run: python design-scratch/spikes/row_reconstruct_spike.py
 """
 from __future__ import annotations

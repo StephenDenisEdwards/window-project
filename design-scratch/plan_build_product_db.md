@@ -309,9 +309,12 @@ The two content types that don't survive plain text:
   one product node. Brand layouts differ — Blum specialty / Salice baseplate matrices need
   their own maps; spike the messiest first.
 
-  **✓ Validated by spike** (`design-scratch/spikes/`, on Würth B p6 / p45 / p100). The full
-  path works: row reconstruction → **block segmentation on header rows** → **x-position
-  column binding** → schema records. Key results and the refinements they surfaced:
+  **✓ Validated by spike** (`design-scratch/spikes/`). Source: *Würth Baer Section B —
+  Concealed Hinges* (`catalogs/wurth-baer-section-b-concealed-hinges.pdf`; PDF page N ==
+  printed "B-N"), pages **B-6** Blum Soft-Close Euro Hinges, **B-45** Grass TIOMOS
+  Soft-Close Euro Hinges, **B-100** Salice Wing Baseplates. The full path works: row
+  reconstruction → **block segmentation on header rows** → **x-position column binding** →
+  schema records. Key results and the refinements they surfaced:
   - **x-binding detects blank cells** instead of collapsing them — essential for the dense
     Salice matrices (a missing SKU stays an explicit empty in the right column).
   - **A field can be a *column* on one brand and a *sub-group heading* on another.** Overlay
