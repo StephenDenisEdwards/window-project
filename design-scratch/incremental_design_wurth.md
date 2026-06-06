@@ -224,21 +224,55 @@ choice below.
 
 ### Recap — the issues at a glance
 
-| # | Issue | Why it breaks naïve RAG | Addressed by |
-|---|-------|-------------------------|--------------|
-| 1 | Distributor tables extract as **flat column streams**, not rows | Spec↔SKU binding is lost → blended/wrong specs | Step 2 (row chunking) |
-| 2 | Manufacturer **key charts are diagrams** | Load/geometry data extracts as scrambled tokens | Step 5 (layout/image extraction) |
-| 3 | Heavy **per-page boilerplate** (index rail, phone/URL footers) | Dilutes embeddings, wastes chunk budget | Step 0 (clean extraction) |
-| 4 | A product **spans many fragments and two sources** | Single-chunk retrieval can't answer "what do I need" | Steps 4 + 6 (merge, links) |
-| 5 | Regular vocabulary **+ clean part-number join key** | (Asset, not a bug) under-used by pure vector search | Steps 3 + 4a (metadata/hybrid, join) |
-| 6 | **Mixed units & Unicode** (°, ″, mm/inch, ranges) | Numeric filters/compares unreliable if parsed naïvely | Step 0 (UTF-8, unit-aware) |
-| 7 | **Section C is heterogeneous** (no shared schema) | One rigid record shape won't fit | Step 7 (family-aware shapes) |
-| 8 | **Source noise / cross-source conflict** | Typos, dup rows, distributor vs. manufacturer disagreement | Steps 4b + 8 (precedence, citation) |
+| # | Issue | Why it breaks naïve RAG | Tier | Addressed by |
+|---|-------|-------------------------|:----:|--------------|
+| 1 | Distributor tables extract as **flat column streams**, not rows | Spec↔SKU binding is lost → blended/wrong specs | B | Step 2 (row chunking) |
+| 2 | Manufacturer **key charts are diagrams** | Load/geometry data extracts as scrambled tokens | B | Step 5 (layout/image extraction) |
+| 3 | Heavy **per-page boilerplate** (index rail, phone/URL footers) | Dilutes embeddings, wastes chunk budget | A | Step 0 (clean extraction) |
+| 4 | A product **spans many fragments and two sources** | Single-chunk retrieval can't answer "what do I need" | C | Steps 4 + 6 (merge, links) |
+| 5 | Regular vocabulary **+ clean part-number join key** | (Asset, not a bug) under-used by pure vector search | A | Steps 3 + 4a (metadata/hybrid, join) |
+| 6 | **Mixed units & Unicode** (°, ″, mm/inch, ranges) | Numeric filters/compares unreliable if parsed naïvely | A | Step 0 (UTF-8, unit-aware) |
+| 7 | **Section C is heterogeneous** (no shared schema) | One rigid record shape won't fit | C | Step 7 (family-aware shapes) |
+| 8 | **Source noise / cross-source conflict** | Typos, dup rows, distributor vs. manufacturer disagreement | C | Steps 4b + 8 (precedence, citation) |
 
 **Bottom line:** the two issues that sink a naïve pipeline are **#1 (rows → columns)** and
 **#2 (charts as images)** — they corrupt the data *before retrieval ever runs*. **#4**
 and **#8** are the new costs of the four-catalog corpus (stitching + merging across
 sources). **#5** is the lever that makes precise retrieval possible.
+
+### Preprocessing vs. query-time
+
+Almost every issue above is an **ingestion-time** problem, not a query-time one. The
+right architecture is a **one-time preprocessing pipeline** that turns the four PDFs
+into clean, structured, per-product records; once that exists, retrieval is the easy
+part. The `Tier` column above sorts the issues by *how cleanly preprocessing solves
+them*:
+
+- **Tier A — clean, deterministic preprocessing** (#3, #5, #6). Rule-based ingestion
+  hygiene: strip boilerplate, normalise units/Unicode, canonicalise vocabulary, compute
+  the part-number join key. Fully reliable, no judgement required.
+- **Tier B — preprocessing, but geometry/vision** (#1, #2). Fixed before retrieval, but
+  not with text wrangling: reconstruct rows from the PDF's **positional layout**
+  (bounding boxes / a table extractor) for the distributor tables; **render + vision-
+  model** the handful of manufacturer charts. One-time, but may need per-layout tuning
+  (Blum specialty / Salice matrices are messier than Pro).
+- **Tier C — preprocessing prepares it; query-time finishes it** (#4, #7, #8).
+  Preprocessing builds the records, the join, the relationship links, the family
+  schemas, the dedupe and the source-precedence rule — but **stitching companions,
+  cross-source comparison, and applying the conflict policy happen per query**.
+  Preprocessing makes these tractable; it doesn't complete them. And it cannot invent a
+  correct value for a genuine typo — that's a data/policy limit, not a pipeline one.
+
+**Mapping to §6.** The *preprocessing stage* is Steps **0, 2, 4a–b, 5, 7**, plus the
+field-extraction in Step 3 and the link-building in Step 6. The *query stage* is the
+retrieval/ranking in Step 3, dedup in Step **4c**, link expansion in Step 6, citation
+in Step **8**, and the comparison/feasibility behaviours in §5.
+
+**Net:** do Tiers A+B well and you have effectively built a **structured product
+database** out of the PDFs — at which point the system shifts from "vector RAG over
+scrambled text" toward **structured extraction + hybrid retrieval over clean records**,
+which is far more reliable for catalog data. Only the genuinely per-query behaviours
+live outside preprocessing.
 
 ---
 
