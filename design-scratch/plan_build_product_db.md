@@ -321,10 +321,14 @@ captured as edges seed some rules, but the logic itself is engineered.
   it can *drive a constraint engine* through the adapter.
 
 **Open decisions surfaced by the reference engine:**
-- **Weight model.** The reference engine expects a per-hinge `max_door_weight_kg` scalar
-  and counts hinges by *height only*; the catalogs give no per-hinge kg but a richer
-  weight×height→count chart. Resolve as either (a) source the kg as a gap, or (b) have the
-  engine consume our `hinges_per_door` reference table. (b) is more faithful.
+- **Weight model. → Deferred — decide at adapter phase.** The reference engine expects a
+  per-hinge `max_door_weight_kg` scalar and counts hinges by *height only*; the catalogs
+  give no per-hinge kg but a richer weight×height→count chart. Resolve as either (a) source
+  the kg as a gap, or (b) have the engine consume our `hinges_per_door` reference table.
+  (b) is the lean. Safe to defer because the DB stays neutral: it extracts the weight×height
+  chart either way, and models per-hinge weight as a nullable field (→ gap when absent), so
+  neither option is foreclosed. Becomes forcing at the adapter phase, or the first eval
+  query needing weight feasibility (§9.3).
 - **Derived vs. stored compatibility.** The reference engine derives hinge↔plate
   compatibility from attributes via rules (series, mounting, brand). So the DB should
   materialize **only** non-derivable, catalog-stated edges; derivable compatibility stays
