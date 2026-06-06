@@ -31,6 +31,34 @@ forces us to. A second axis is now in play — the corpus has **two kinds of sou
 (distributor vs. manufacturer) that overlap on the same products, so the design also
 has to decide how to merge them.
 
+### Target architecture (working answer)
+
+The goal is **not** "RAG over PDFs." It is: **extract a structured product database
+from the PDFs, and query that — falling back to retrieval over the leftover prose only
+where structure can't hold the content.** Concretely:
+
+- **Backbone: a structured product database.** One record per part number, with typed
+  spec fields (angle, overlay, fixing, boring, thickness, load, …). Not one schema but
+  **several linked tables** (concealed hinges, baseplates, lift systems, lid stays, …),
+  because the corpus is heterogeneous (§4 #7). Distributor and manufacturer records for
+  the same product are **joined on the shared part-number core** (§3.1).
+- **Plus retained text.** The genuinely unstructured content — marketing/application
+  notes, installation guidance, and the qualitative compatibility conditions
+  ("for use with Blum Euro free-swing hinges", "*only achievable with 85° angle
+  reduction clip") — is kept as text chunks **linked to the relevant records by part
+  number**, not discarded into a column.
+- **Query directly where possible.** Exact SKU lookups, spec filters, joins and
+  range/feasibility checks are **direct queries against the records** — exact and
+  verifiable, not routed through vector similarity. The LLM + retrieval layer is
+  reserved for natural-language phrasing, comparison, the qualitative/prose content, and
+  open browsing.
+
+Why this shape: the real questions here are **relational and numeric** (filter, join,
+table lookup), which structured data answers exactly and traceably, whereas embeddings
+only approximate — and approximation is precisely how you return the wrong part number.
+The whole incremental plan (§6) is, in effect, the pipeline that **builds this database
+out of the PDFs**.
+
 ---
 
 ## 2. Corpus inventory
