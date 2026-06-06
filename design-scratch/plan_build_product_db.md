@@ -310,7 +310,8 @@ The two content types that don't survive plain text:
   one product node. Brand layouts differ — Blum specialty / Salice baseplate matrices need
   their own maps; spike the messiest first.
 
-  **✓ Validated by spike** (`row_reconstruct_spike.py` → `row_bind_spike.py` →
+  **✓ Method validated by spike** — proves the extraction *mechanism*, **not
+  field-completeness** (`row_reconstruct_spike.py` → `row_bind_spike.py` →
   `table_extract_spike.py`). Source: *Würth Baer Section B —
   Concealed Hinges* (`catalogs/wurth-baer-section-b-concealed-hinges.pdf`; PDF page N ==
   printed "B-N"), pages **B-6** Blum Soft-Close Euro Hinges, **B-45** Grass TIOMOS
@@ -347,7 +348,8 @@ The two content types that don't survive plain text:
   a **vision model** to extract it into structured reference records (`hinges_per_door`:
   weight-band × height → count; `reveal_gap_chart`: DT → R/G/OL/DP).
 
-  **✓ Validated by spike** (`chart_extract_spike.py` + `grass_tiomos_p47_hinges_chart.png`)
+  **✓ Method validated by spike** — proves the chart-extraction *method*, **not
+  field-completeness** (`chart_extract_spike.py` + `grass_tiomos_p47_hinges_chart.png`)
   on *Grass TIOMOS* p47 "Number of Hinges Per Door":
   - Vision recovered the chart **structure** that plain text scrambles — hinge-count axis
     [2,3,4,5], door-height steps [500/900/1600/2200/2450 mm], weight bands
@@ -377,7 +379,10 @@ Steps 4 & 6 (merge, links).
 
 #### Spike evidence (`design-scratch/spikes/`)
 
-Runnable scripts behind the ✓ notes above (all read the catalogs directly):
+Runnable scripts behind the ✓ notes above (all read the catalogs directly). **They prove
+the hard extraction *mechanisms* and emit table/chart fields only** — breadth fields
+(brand/series from the banner, prose-bullet specs) were out of scope for the spikes and are
+closed in the build below.
 
 | File | Validates | Pages |
 |------|-----------|-------|
@@ -391,18 +396,25 @@ Runnable scripts behind the ✓ notes above (all read the catalogs directly):
 
 [`build/thin_pipeline.py`](build/thin_pipeline.py) composes the spikes into a minimal DB
 (B-6/B-45/B-100 + the p47 chart): **68 products** (30 hinge / 3 accessory / 35 baseplate)
-+ the `hinges_per_door` reference, a GF→F join, provenance, and a query layer — and runs
-8 eval-set items, **7/8 passing** (cross-source resolution, spec filter, completeness,
-weight feasibility, and should-decline honesty all pass). The findings it surfaced:
++ the `hinges_per_door` reference, a GF→F join, provenance, a small query layer, and JSON
+persistence (`product_db.json`, build-once/query-many). It runs 8 eval-set items.
 
+**Cheap (bucket-B) gaps now closed in the build** — fields that were on the page but the
+spikes didn't emit: `brand` 68/68 (from the banner), baseplate `plate_style` 35/35 (wing),
+B-6 `max_door_thickness_mm` 14/14 (prose-bullet pass), restriction-clip
+`restricts_angle_to_deg` (parsed from the description), TIOMOS `series` 16/16.
+
+Findings still open:
 - **Extract overlay *range* (mm), not just overlay class.** Spec filters are ambiguous
   without it: "110 vs 110+" (Blum) and "cranking 00 vs 03" (Grass) differ only by overlay
-  range (22 vs 19 mm), which lives in the sub-group / bullet text (eval SF1, SF3).
-- **Baseplate needs `cam_adjustment`** (single- vs two-cam) — the only CC2 failure;
-  see the §2.1 baseplate note.
-- **Prose-field extraction is a real follow-on path.** Door thickness ("up to 26 mm") is a
-  bullet, not a table cell, so the table pipeline leaves `max_door_thickness_mm` a gap
-  (eval EX1). Bullets/spec-notes need their own light extraction pass.
+  range (22 vs 19 mm), in the sub-group / bullet text (eval SF1, SF3 — pass-but-ambiguous).
+- **Baseplate `cam_adjustment`** (single- vs two-cam) still uncaptured — CC2 only "passes"
+  by key-sort order; the conflation is unfixed (see §2.1 baseplate note).
+- **Block-level association** — `series` (Blum) and `max_door_thickness_mm` (TIOMOS) live in
+  sub-titles / other pages, so page-level prose application leaves them partial.
+- **Tier-A unicode finding:** the catalogs write degrees as **º (U+00BA, ordinal
+  indicator)**, *not* **° (U+00B0, degree sign)** — normalization must canonicalize both, or
+  degree-keyed parses silently miss (this bit the restriction-clip angle parse first).
 - The CC2 eval question is itself under-specified (two cam series) — the eval set should
   name the series, mirroring the schema fix.
 
