@@ -233,7 +233,7 @@ their absence is the blocking *identity gap* that sends a record to quarantine.
 | `plate_style` | enum | wing_one_piece \| cam_adjustable_wing \| face_frame_adapter_steel \| face_frame_adapter_diecast \| thick_inline \| straight |
 | `fixing_type` | enum | wood_screw \| premounted_euro_screw \| split_dowel |
 | `material` | enum | stamped_steel \| die_cast_steel — *added after the B-100 spike surfaced it in the matrix sub-groups* |
-| `cam_adjustable` | bool | |
+| `cam_adjustment` | enum | none \| single_cam \| two_cam — *discriminator; the thin build (CC2) showed V-series (single-cam) and R-series (two-cam) both have a 0mm stamped plate, so height+material alone conflates them. Lives in the block sub-title.* |
 | `compatible_hinge_series` | list<series> | → edge to hinges |
 
 #### Family: `accessory` *(first iteration)*
@@ -386,6 +386,25 @@ Runnable scripts behind the ✓ notes above (all read the catalogs directly):
 | [`table_extract_spike.py`](spikes/table_extract_spike.py) | B1 — multi-row header naming + per-block family routing | B-6, B-45, B-100 |
 | [`chart_extract_spike.py`](spikes/chart_extract_spike.py) | B2 — chart via vision + text-layer cross-check | Grass TIOMOS p47 |
 | [`grass_tiomos_p47_hinges_chart.png`](spikes/grass_tiomos_p47_hinges_chart.png) | B2 — rendered chart crop (evidence) | Grass TIOMOS p47 |
+
+#### First thin end-to-end build
+
+[`build/thin_pipeline.py`](build/thin_pipeline.py) composes the spikes into a minimal DB
+(B-6/B-45/B-100 + the p47 chart): **68 products** (30 hinge / 3 accessory / 35 baseplate)
++ the `hinges_per_door` reference, a GF→F join, provenance, and a query layer — and runs
+8 eval-set items, **7/8 passing** (cross-source resolution, spec filter, completeness,
+weight feasibility, and should-decline honesty all pass). The findings it surfaced:
+
+- **Extract overlay *range* (mm), not just overlay class.** Spec filters are ambiguous
+  without it: "110 vs 110+" (Blum) and "cranking 00 vs 03" (Grass) differ only by overlay
+  range (22 vs 19 mm), which lives in the sub-group / bullet text (eval SF1, SF3).
+- **Baseplate needs `cam_adjustment`** (single- vs two-cam) — the only CC2 failure;
+  see the §2.1 baseplate note.
+- **Prose-field extraction is a real follow-on path.** Door thickness ("up to 26 mm") is a
+  bullet, not a table cell, so the table pipeline leaves `max_door_thickness_mm` a gap
+  (eval EX1). Bullets/spec-notes need their own light extraction pass.
+- The CC2 eval question is itself under-specified (two cam series) — the eval set should
+  name the series, mirroring the schema fix.
 
 ### 2.3 Join / merge + conflict resolution
 
