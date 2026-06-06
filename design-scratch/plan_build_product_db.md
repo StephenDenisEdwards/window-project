@@ -136,6 +136,147 @@ doesn't drift from the source unnoticed.
 
 ## 2. Plan
 
-*(to be iterated — next we'll work through extraction approach per tier, the family
-schema definitions, the join/merge + provenance model, validation, and the eval
-harness.)*
+The build breaks into: **(2.1) family schema definitions** → extraction approach per tier
+→ join/merge + provenance → validation & gaps → eval harness. We start with the schemas,
+because everything downstream (what to extract, how to merge, what "valid" means) is
+defined against them.
+
+### 2.1 Family schema definitions
+
+Notation is **serialization-agnostic** (could land as JSON docs, relational tables, or a
+graph) and **standalone** — types are generic (`enum`, `number`, `range`, `bool`,
+`list<…>`). Value sets shown are **seed values observed in the catalogs**, to be
+reconciled during extraction, not a closed list.
+
+#### Entity kinds
+
+Not everything in the corpus is a product. Four entity kinds:
+
+| Entity | What it is | Keyed by | Examples |
+|--------|-----------|----------|----------|
+| **Product node** | One real, orderable product | part-number core (§3.1) | a hinge, a baseplate, a clip |
+| **Reference table** | A spec/lookup table that applies to a *series*, not a SKU | (brand, series) | hinges-per-door load chart, overlay chart |
+| **Relationship edge** | A compatibility/companion link | (from, to, type) | hinge → requires → baseplate |
+| **Text chunk** | Unstructured prose linked to a node/series | chunk id | install notes, application guidance |
+
+This separation matters: e.g. **load capacity is *not* a hinge field** — the catalogs
+publish it as a series-level *hinges-per-door* table (Grass p47/p38), so it's a reference
+table, not a column on the product. Putting it on the hinge would be wrong modelling.
+
+#### Field value wrapper (provenance)
+
+Per refinement #2, every stored field is a value object, not a bare scalar:
+
+```
+field = {
+  value:      <normalized typed value>,
+  unit:       <mm | deg | mm² | kg | lb | …, where applicable>,
+  raw:        <original extracted token, e.g. "Up to 7/8\" (22mm)">,
+  source:     <wurth_b | wurth_c | grass_tiomos | grass_nexis | human>,
+  page:       <int>,
+  confidence: <0.0–1.0; 1.0 for human/curated>,
+  locked:     <bool; true = curated, non-clobberable>
+}
+```
+
+Field tables below list the **logical field + type**; assume each is wrapped as above.
+
+#### Shared product base (all families)
+
+| Field | Type | Notes |
+|-------|------|-------|
+| `product_id` | string | canonical id = normalized part-number core (join key) |
+| `part_number_core` | string | manufacturer number, distributor prefix stripped (§3.1) |
+| `manufacturer_pn` | string | as printed by the manufacturer (e.g. `F028138341228`) |
+| `distributor_skus` | list<{sku, source}> | e.g. `GFF028138341228` (wurth_b) |
+| `brand` | enum | Blum, Grass, Salice, Pro, SOSS, Peter Meier, Youngdale, … |
+| `series` | enum/string | CLIP top BLUMOTION, TIOMOS, NEXIS, COMPACT, Pro, AIR, … |
+| `family` | enum | concealed_hinge \| baseplate \| accessory \| (deferred families) |
+| `finish` | enum/string | nickel, onyx black, … (optional) |
+| `package_qty` | number | PU / box qty (optional) |
+| `state` | enum | partial \| complete \| quarantined (ingestion model) |
+| `gaps` | list<gap_ref> | open gaps on this node |
+| `text_refs` | list<chunk_id> | linked prose |
+
+Identity fields (`part_number_core`, `brand`, `family`) are **required to form a node** —
+their absence is the blocking *identity gap* that sends a record to quarantine.
+
+#### Family: `concealed_hinge` *(first iteration)*
+
+| Field | Type | Seed values / notes |
+|-------|------|---------------------|
+| `opening_angle_deg` | number | 95, 100, 105, 110, 120, 125, 155 (+ diagonal 45 variant) |
+| `overlay_class` | enum | full \| half \| inset |
+| `overlay_max_mm` | number | e.g. 22, 19 |
+| `cranking_code` | string | Grass only: 00 / 03 / 9.5 / 19 (maps to `overlay_class`) |
+| `fixing` | enum | screw_on \| dowel \| inserta \| expando \| impresso |
+| `closing_type` | enum | soft \| self \| free |
+| `soft_close_integrated` | bool | true = damper in arm/cup; false = needs add-on (→ edge) |
+| `boring_pattern_mm` | enum | 42 \| 45 \| 42_45 |
+| `cup_diameter_mm` | number | typically 35 |
+| `cup_depth_mm` | number | e.g. 10.5, 12 |
+| `max_door_thickness_mm` | number | 22 / 24 / 26 / 30 / 36 … |
+| `min_door_thickness_mm` | number | where stated (Grass: 6, 8) |
+| `application` | enum | standard \| blind_corner \| angled_30 \| angled_45 \| zero_protrusion \| narrow_aluminum \| thick_door |
+| `adjustment` | object | `{depth: range, height: range, side: range}` mm, where stated |
+| `certifications` | list<enum> | ANSI, BIFMA, KCMA, BHMA |
+| `requires_baseplate` | bool | true (baseplate sold separately) → edge |
+
+> **No `load_capacity` here** — derived from the `hinges_per_door` reference table
+> (below) keyed on this hinge's `(brand, series)` plus door height & weight.
+
+#### Family: `baseplate` *(first iteration)*
+
+| Field | Type | Seed values / notes |
+|-------|------|---------------------|
+| `height_mm` | number | 0 / 2 / 4 / 6 |
+| `plate_style` | enum | wing_one_piece \| cam_adjustable_wing \| face_frame_adapter_steel \| face_frame_adapter_diecast \| thick_inline \| straight |
+| `fixing_type` | enum | wood_screw \| premounted_euro_screw \| split_dowel |
+| `cam_adjustable` | bool | |
+| `compatible_hinge_series` | list<series> | → edge to hinges |
+
+#### Family: `accessory` *(first iteration)*
+
+Restriction clips, soft-close adapters, cover caps, screws/bits/templates.
+
+| Field | Type | Seed values / notes |
+|-------|------|---------------------|
+| `accessory_type` | enum | restriction_clip \| soft_close_adapter \| cover_cap \| hinge_screw \| drill_bit \| template |
+| `for_series` | list<series> | gating condition |
+| `for_angle_deg` | list<number> | gating (e.g. adapter "for 170° hinges") |
+| `restricts_angle_to_deg` | number | clips only: 75 / 85 / 86 / 92 / 100 / 104 |
+| `color` | enum/string | gray, black, white, … |
+
+#### Reference tables (non-product)
+
+| Table | Key | Shape | Source |
+|-------|-----|-------|--------|
+| `hinges_per_door` | (brand, series) | weight_band `{min_kg,max_kg,min_lb,max_lb}` × door_height_mm → hinge_count | grass_tiomos p47, grass_nexis p38 |
+| `overlay_chart` | (brand, series) | (cranking_code, baseplate_height_mm) → overlay_mm (+ reveal for inset) | wurth_b B-4, grass charts |
+| `reveal_gap_chart` | (brand, series, angle) | door_thickness_mm → `{reveal, gap, overlay, protrusion, X, Z}` mm | grass model pages |
+
+These are how weight-feasibility and precise-install questions (§5) get answered — they
+are looked up at query time using a product's `(brand, series)` and the user's inputs.
+
+#### Relationship edges
+
+| Field | Type | Notes |
+|-------|------|-------|
+| `from` | product_id \| (brand, series) | series-level rules allowed (e.g. "all TIOMOS need …") |
+| `to` | product_id \| family \| series | |
+| `type` | enum | requires \| compatible_with \| companion_in_set \| restricts \| adds_soft_close \| replaces |
+| `condition` | object | `{text, applies_to_angle?, applies_to_series?, applies_to_overlay?}` |
+| `source`, `page` | — | provenance for the link itself |
+
+#### Deferred families (later iterations)
+
+Captured as **text-with-metadata** until the eval set demands structure (refinement #5).
+Each has its own force/weight spec model, so each is a *new* schema when promoted:
+`lift_system` (AVENTOS / KINVARO / WIND — Power Factor, spring code), `lid_stay` /
+`up_stay` (torque), `institutional_hinge`, `piano_hinge`, `invisible_hinge` (SOSS),
+`pivot` / `butt` / `glass_door` / `specialty`.
+
+---
+
+*(Remaining §2 phases to iterate: extraction approach per tier · join/merge + conflict
+resolution · validation & gap generation · eval harness.)*
