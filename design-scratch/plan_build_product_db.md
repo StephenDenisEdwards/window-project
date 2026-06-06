@@ -382,9 +382,54 @@ table. These are not products and are not part-number-joined.
 reference tables, confirmed edges, linked text chunks — and the populated gaps/conflicts
 queue.
 
+### 2.4 Validation & gap generation
+
+Merge (§2.3) yields canonical entities; this phase **checks** them and consolidates every
+gap — from extraction, merge, *and* these checks — into the single prioritized
+gaps/exceptions queue (§1). Gaps are **generated** here, not just collected: absent expected
+fields are detected by comparing each node to its family schema. Runs per node and is
+idempotent (re-runs forward when a gap is resolved — ingestion model).
+
+#### Validation checks
+- **Schema** — identity fields present (else quarantine); types correct; enum values in the
+  canonical vocabulary; units present where required.
+- **Range / sanity** — values within a plausible domain (angle in the known set, positive
+  thickness, boring ∈ {42, 45}, …). Out-of-range → flagged as a likely extraction error vs a
+  genuine outlier (this catches the OCR/typo noise, §4 #8).
+- **Intra-product consistency** — the product's *own* fields cohere: `cranking_code` ↔
+  `overlay_class`; `closing_type = soft` ⇒ integrated damper **or** an `adds_soft_close`
+  edge; `cup_depth` sensible vs `max_door_thickness`. (Internal coherence only — *cross*-
+  product compatibility is the engine's job at query time, §3.)
+- **Referential integrity** — edges resolve to existing nodes/series; a `requires_baseplate`
+  hinge has ≥1 compatible plate (else flag); a series needing feasibility lookups has its
+  reference table.
+- **Vocabulary reconciliation** — enum strings that don't map to the canonical vocabulary →
+  a *reconciliation* gap (extend the vocabulary, or it's an extraction error).
+
+#### Severity → outcome
+| Severity | Meaning | Outcome |
+|----------|---------|---------|
+| Blocking | can't form identity | quarantine |
+| Error | field untrusted or absent | gap; node `partial` |
+| Warning | suspicious but usable | flag for review; node stays usable |
+
+#### Gap generation (the queue)
+Consolidate gaps from all phases into one typed queue (kinds from §1: **absent /
+low-confidence / conflict**, plus **reconciliation**; quarantine tracked separately). Each
+gap carries part number, field, reason, source + page, and any candidate value(s).
+- **Absent gaps are generated here** by diffing each node's populated fields against its
+  family schema's expected fields.
+- **Criticality is set by the consumer** — a field needed by an eval query (§8/§9) or an
+  engine rule (§3) is *critical*; cosmetic fields are not.
+- **Prioritized by impact** (refinement #6) — gaps blocking an eval-set query rank first;
+  cosmetic absences sit at the bottom.
+
+**Output:** the validated DB + the finalized, typed, prioritized **gaps/exceptions queue** —
+the deliverable that drives human resolution and gates "done".
+
 ---
 
-*(Remaining §2 phases to iterate: validation & gap generation · eval harness.)*
+*(Remaining §2 phase to iterate: eval harness.)*
 
 ---
 
