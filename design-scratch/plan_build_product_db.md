@@ -310,7 +310,8 @@ The two content types that don't survive plain text:
   one product node. Brand layouts differ — Blum specialty / Salice baseplate matrices need
   their own maps; spike the messiest first.
 
-  **✓ Validated by spike** (`design-scratch/spikes/`). Source: *Würth Baer Section B —
+  **✓ Validated by spike** (`row_reconstruct_spike.py` → `row_bind_spike.py` →
+  `table_extract_spike.py`). Source: *Würth Baer Section B —
   Concealed Hinges* (`catalogs/wurth-baer-section-b-concealed-hinges.pdf`; PDF page N ==
   printed "B-N"), pages **B-6** Blum Soft-Close Euro Hinges, **B-45** Grass TIOMOS
   Soft-Close Euro Hinges, **B-100** Salice Wing Baseplates. The full path works: row
@@ -373,6 +374,18 @@ Prepares the cross-cutting work the merge/query phases finish:
 
 **Mapping to analysis §6:** Tier A = Step 0 · B1 = Step 2 · B2 = Step 5 · Tier C feeds
 Steps 4 & 6 (merge, links).
+
+#### Spike evidence (`design-scratch/spikes/`)
+
+Runnable scripts behind the ✓ notes above (all read the catalogs directly):
+
+| File | Validates | Pages |
+|------|-----------|-------|
+| [`row_reconstruct_spike.py`](spikes/row_reconstruct_spike.py) | B1 — rows from positional layout; boilerplate strip | B-6, B-100 |
+| [`row_bind_spike.py`](spikes/row_bind_spike.py) | B1 — segmentation + x-binding (blank cells) + schema records | B-6, B-45, B-100 |
+| [`table_extract_spike.py`](spikes/table_extract_spike.py) | B1 — multi-row header naming + per-block family routing | B-6, B-45, B-100 |
+| [`chart_extract_spike.py`](spikes/chart_extract_spike.py) | B2 — chart via vision + text-layer cross-check | Grass TIOMOS p47 |
+| [`grass_tiomos_p47_hinges_chart.png`](spikes/grass_tiomos_p47_hinges_chart.png) | B2 — rendered chart crop (evidence) | Grass TIOMOS p47 |
 
 ### 2.3 Join / merge + conflict resolution
 
