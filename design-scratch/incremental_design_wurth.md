@@ -14,6 +14,9 @@
 > - `catalogs/Wurth_Baer_Section_C.pdf` (56 pp) — distributor
 > - `catalogs/grass-tiomos-catalog.pdf` (64 pp) — manufacturer
 > - `catalogs/grass-nexis-catalog.pdf` (52 pp) — manufacturer
+>
+> **Build plan:** the plan to turn these catalogs into the structured product database
+> lives in [`plan_build_product_db.md`](plan_build_product_db.md).
 
 ---
 
