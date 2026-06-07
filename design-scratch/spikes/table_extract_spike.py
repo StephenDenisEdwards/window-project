@@ -157,21 +157,30 @@ def name_columns(cols, label_rows):
 def classify_block(cols, banner, divider):
     labels = " ".join(c["label"].lower() for c in cols)
     ctx = f"{banner or ''} {divider or ''}".lower()
+    # 1) tooling / reference pages (not a hinge/baseplate/accessory product)
+    if any(k in ctx for k in ("machine", "assembly aid", "overlay chart", "drill", "vix bit")):
+        return "tool"
+    # 2) add-on components / mechanisms -> accessory (before column rules: these pages
+    #    often look like plain SKU lists)
+    # NB: not bare "blumotion" — that's also the CLIP top BLUMOTION *hinge* line; require
+    # "device"/"adapter"/"tip-on" so only the add-on components route here
+    if any(k in ctx for k in ("tip-on", "tipmatic", "soft-close device",
+                              "soft-close adapter", "restriction clip", " device")):
+        return "accessory"
+    # 3) structural detection from the columns
     hinge = any(k in labels for k in ("opening", "overlay", "boring", "clos"))
     plate = ("height" in labels) or ("plate" in labels)
-    descr = "descr" in labels
     if hinge and not plate:
         return "concealed_hinge"
     if plate and not hinge:
         return "baseplate"
-    if descr and not hinge and not plate:
-        return "accessory"
-    if "baseplate" in ctx or "mounting plate" in ctx:
+    # 4) column-ambiguous -> lean on the banner
+    if any(k in ctx for k in ("baseplate", "base plate", "mounting plate", "adapter plate")):
         return "baseplate"
-    if any(k in ctx for k in ("accessor", "clip", "bit", "screw", "template", "vix")):
-        return "accessory"
-    if "hinge" in ctx:
+    if "hinge" in ctx and "accessor" not in ctx:        # e.g. "Onyx Black Euro Hinges"
         return "concealed_hinge"
+    if any(k in ctx for k in ("accessor", "hardware")) or "descr" in labels:
+        return "accessory"
     return "unknown"
 
 
@@ -258,6 +267,20 @@ def emit_accessory(cells, sub, page_no, bbox=None):
              "part_number": pn, "accessory_type": atype, "description": desc, "_subgroup": sub}]
 
 
+def emit_tool(cells, sub, page_no, bbox=None):
+    """Machines, assembly aids, drill bits, templates — catalog items that aren't
+    hinge/baseplate/accessory products."""
+    pn = desc = ""
+    for label, val in cells.items():
+        L = label.lower()
+        if "item" in L:
+            pn = strip_callout(val)
+        elif "descr" in L:
+            desc = val
+    return [{"family": "tool", "_page": page_no, "_source": "wurth_b", "_bbox": bbox,
+             "part_number": pn, "description": desc, "_subgroup": sub}]
+
+
 # --- block-oriented page parse ---
 
 def classify_row(row):
@@ -268,7 +291,8 @@ def classify_row(row):
     if len(row) == 1 and len(row[0][2]) == 1 and row[0][2].isalpha():
         return "skip"                                  # stray single-letter diagram callout
     txt = row_text(row)
-    if txt and txt == txt.upper() and len(txt) > 3:
+    # a banner is all-caps AND has a real word — not just single index-rail letters/digits
+    if txt and txt == txt.upper() and len(txt) > 3 and any(len(t) >= 3 and t.isalpha() for t in txt.split()):
         return "banner"
     if row and row[0][2] in ("•", "·"):
         return "bullet"
@@ -326,7 +350,8 @@ def parse_page(page_no):
 
 EMIT = {"concealed_hinge": lambda cells, cols, sub, p, bbox=None: emit_hinge(cells, sub, p, bbox),
         "baseplate": lambda cells, cols, sub, p, bbox=None: emit_baseplate(cells, cols, sub, p, bbox),
-        "accessory": lambda cells, cols, sub, p, bbox=None: emit_accessory(cells, sub, p, bbox)}
+        "accessory": lambda cells, cols, sub, p, bbox=None: emit_accessory(cells, sub, p, bbox),
+        "tool": lambda cells, cols, sub, p, bbox=None: emit_tool(cells, sub, p, bbox)}
 
 
 def run(page_no, label):

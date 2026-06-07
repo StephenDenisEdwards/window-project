@@ -9,9 +9,16 @@
 
 Catalogs → records → eval over **all of Würth Section B** (104 pp) + the two Grass load charts.
 
-Output: `product_db.json` (gitignored, reproducible) — **884 products** (503 concealed_hinge /
-221 baseplate / 160 accessory) + **88 quarantined** (rows with no resolvable part number —
-machines/screws/chart pages) + **2 reference tables**. Eval: **11/11**.
+Output: `product_db.json` (gitignored, reproducible) — **913 products** (527 concealed_hinge /
+221 baseplate / 94 accessory / 71 **tool**) + **88 quarantined** (rows with no resolvable
+part number) + **2 reference tables**. Eval: **11/11**.
+
+**Quality pass — iteration 1 (family routing) done:** add-on components (TIP-ON, BLUMOTION
+soft-close devices, restriction clips, adapters) now route to `accessory`; machines /
+assembly aids / overlay-chart / drill-bit pages route to a new `tool` family; the Onyx Black
+*hinge* line is corrected to `concealed_hinge`; index-rail/callout rows (`F G H I J`, `1 2 3
+4`) no longer mis-detected as banners. `unknown` blocks down to ~4 rows (ECOJIG/PLATEMATE
+jigs, a Salice adapter).
 
 > **⚠️ Coverage-first, quality pass owed.** The pipeline + heuristics were validated on only
 > **3 pages** (B-6/B-45/B-100); they now run over all 104 with no crashes, but the other ~84
