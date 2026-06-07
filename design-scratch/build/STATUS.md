@@ -28,6 +28,15 @@ conflates the left/right tables (columns double up; the SKU column, here named e
 number. They're **recoverable parser misses, not non-products** — recovering them needs
 side-by-side table splitting (detect the horizontal gap, parse each half). Next iteration.
 
+> **Attempt + revert (honest):** a gutter-detection splitter (find a vertical empty band,
+> parse each side) was tried and **backed out** — it false-positived on the multi-column
+> **baseplate matrix** (many SKU columns look like a "gutter" → broke it, eval 8/11) while
+> **missing** the actual TEC/Salice pages (their gutter isn't a clean central empty band).
+> A simple x-gap heuristic can't distinguish *one multi-column table* from *two side-by-side
+> tables*. A better approach: detect a **repeated header-group structure** (e.g. the column
+> sequence Item/Boring/Fixing appearing twice) or handle these specific layouts explicitly.
+> The 88 remain quarantined for now (no regression shipped).
+
 > **⚠️ Coverage-first, quality pass owed.** The pipeline + heuristics were validated on only
 > **3 pages** (B-6/B-45/B-100); they now run over all 104 with no crashes, but the other ~84
 > pages are **unvalidated**. So 884 is honest *coverage*, not 884 *verified* records. Known
