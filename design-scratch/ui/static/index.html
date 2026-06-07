@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Catalog DB Explorer</title>
+<style>
+  :root{
+    --bg:#0f1320; --panel:#171c2e; --line:#2a3350; --txt:#e6e9f2; --dim:#9aa3bd;
+    --accent:#4f8cff;
+    --absent:#e5534b; --notpage:#6b7280; --unparsed:#e0a020; --lowconf:#3aa0ff; --ok:#3ecf8e;
+  }
+  *{box-sizing:border-box} body{margin:0;font:13px/1.4 ui-sans-serif,system-ui,Segoe UI,Roboto,sans-serif;
+    background:var(--bg);color:var(--txt)}
+  header{display:flex;align-items:center;gap:16px;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
+  header h1{font-size:15px;margin:0;font-weight:600}
+  .chips{display:flex;gap:6px;flex-wrap:wrap}
+  .chip{font-size:11px;padding:2px 8px;border-radius:10px;background:#222a42;color:var(--dim);border:1px solid var(--line)}
+  .grid{display:grid;grid-template-columns:300px 1fr 1.1fr;height:calc(100vh - 49px)}
+  .col{overflow:auto;padding:12px;border-right:1px solid var(--line)}
+  input,select{background:#10182b;color:var(--txt);border:1px solid var(--line);border-radius:6px;padding:6px 8px;width:100%}
+  .row{margin-bottom:8px}
+  .item{padding:6px 8px;border-radius:6px;cursor:pointer;border:1px solid transparent}
+  .item:hover{background:#1d2540} .item.sel{background:#23304f;border-color:var(--accent)}
+  .item .pn{font-family:ui-monospace,Consolas,monospace}
+  .item .sub{color:var(--dim);font-size:11px}
+  h2{font-size:13px;color:var(--dim);text-transform:uppercase;letter-spacing:.04em;margin:14px 0 6px}
+  .sku{font-family:ui-monospace,Consolas,monospace;font-size:18px;font-weight:600}
+  table{border-collapse:collapse;width:100%} td{padding:3px 6px;border-bottom:1px solid #1f2740;vertical-align:top}
+  td.k{color:var(--dim);width:42%} td.v{font-family:ui-monospace,Consolas,monospace}
+  .photo{max-width:220px;max-height:140px;background:#fff;border-radius:6px;padding:4px;margin-top:6px}
+  .badge{display:inline-block;font-size:10px;padding:1px 6px;border-radius:8px;color:#0b0f18;font-weight:600}
+  .b-absent{background:var(--absent)} .b-not_on_page{background:var(--notpage);color:#fff}
+  .b-unparsed{background:var(--unparsed)} .b-low_confidence{background:var(--lowconf)}
+  .gap{margin:3px 0;color:var(--dim)} .gap code{color:var(--txt)}
+  .stage{position:relative;display:inline-block;max-width:100%;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  .stage img{display:block;max-width:100%}
+  .hl{position:absolute;border:2px solid var(--accent);background:rgba(79,140,255,.18);box-shadow:0 0 0 9999px rgba(8,10,18,.55)}
+  .cap{color:var(--dim);margin:6px 0}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Catalog DB Explorer</h1>
+  <div class="chips" id="summary"></div>
+  <div class="chips" style="margin-left:auto"><span class="chip" id="count"></span></div>
+</header>
+<div class="grid">
+  <div class="col" id="listcol">
+    <div class="row"><input id="q" placeholder="search part number / brand…"></div>
+    <div class="row"><select id="fam"><option value="">all families</option></select></div>
+    <div id="list"></div>
+  </div>
+  <div class="col" id="detail"><p class="cap">Select a product.</p></div>
+  <div class="col" id="source"></div>
+</div>
+<script>
+let DB=null, GAPCOLORS={absent_in_catalog:"absent",not_on_page:"not_on_page",unparsed:"unparsed",low_confidence:"low_confidence"};
+const $=s=>document.querySelector(s);
+
+async function boot(){
+  DB = await (await fetch("/api/db")).json();
+  const fams=[...new Set(Object.values(DB.products).map(p=>p.family))].sort();
+  $("#fam").innerHTML='<option value="">all families</option>'+fams.map(f=>`<option>${f}</option>`).join("");
+  $("#summary").innerHTML=Object.entries(DB.gap_summary).map(([k,v])=>`<span class="chip">${k}: ${v}</span>`).join("");
+  $("#q").oninput=render; $("#fam").onchange=render;
+  render();
+}
+function render(){
+  const q=$("#q").value.toLowerCase(), fam=$("#fam").value;
+  const items=Object.values(DB.products)
+    .filter(p=>(!fam||p.family===fam)&&(p.part_number.toLowerCase().includes(q)||(p.brand||"").toLowerCase().includes(q)))
+    .sort((a,b)=>a.part_number.localeCompare(b.part_number));
+  $("#count").textContent=items.length+" products";
+  $("#list").innerHTML=items.map(p=>`<div class="item" data-pn="${p.part_number}">
+      <div class="pn">${p.part_number}</div><div class="sub">${p.brand||"?"} · ${p.family}</div></div>`).join("");
+  document.querySelectorAll(".item").forEach(el=>el.onclick=()=>select(el.dataset.pn));
+}
+async function select(pn){
+  document.querySelectorAll(".item").forEach(e=>e.classList.toggle("sel",e.dataset.pn===pn));
+  const r=DB.products[pn], gaps=await (await fetch("/api/gaps/"+encodeURIComponent(pn))).json();
+  renderDetail(r,gaps); renderSource(r);
+}
+function renderDetail(r,gaps){
+  const skip=new Set(["part_number","family","_bbox","_image","_overlay_on_page","_subgroup","_material"]);
+  const rows=Object.keys(r).filter(k=>!k.startsWith("_")&&!skip.has(k)&&r[k]!=null&&r[k]!=="")
+    .map(k=>`<tr><td class="k">${k}</td><td class="v">${fmt(r[k])}</td></tr>`).join("");
+  const gapHtml=gaps.length?`<h2>gaps</h2>`+gaps.map(g=>
+    `<div class="gap"><span class="badge b-${g.kind}">${g.kind}</span> <code>${g.field}</code></div>`).join(""):"";
+  const photo=r._image?`<h2>photo</h2><img class="photo" src="/img/${r._image.path.split('/').pop()}">`:"";
+  $("#detail").innerHTML=`<div class="sku">${r.part_number}</div>
+    <div class="cap">${r.brand||"?"}${r.series?" · "+r.series:""} · ${r.family}</div>
+    <table>${rows}</table>${photo}${gapHtml}`;
+}
+function renderSource(r){
+  const src=DB.sources[r._source]||{}, plabel=(src.page_label||"p{n}").replace("{n}",r._page);
+  let hl="";
+  if(r._bbox){const[x0,y0,x1,y1]=r._bbox;
+    hl=`<div class="hl" style="left:${x0*100}%;top:${y0*100}%;width:${(x1-x0)*100}%;height:${(y1-y0)*100}%"></div>`;}
+  $("#source").innerHTML=`<h2>source: ${src.label||r._source} — ${plabel}</h2>
+    <div class="cap">highlight = where this product's row was extracted</div>
+    <div class="stage"><img src="/page/${r._source}/${r._page}.png">${hl}</div>`;
+}
+const fmt=v=>Array.isArray(v)?v.join(", "):String(v);
+boot();
+</script>
+</body>
+</html>

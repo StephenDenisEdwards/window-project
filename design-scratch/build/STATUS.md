@@ -71,6 +71,16 @@ not a defect:
 | closed the 3 unparsed fields | −73 | `compatible_hinge_series`, TIOMOS `opening_angle_deg`, `overlay_max_mm` |
 | **now** | **0 unparsed** | every on-page field extracted |
 
+## UI (option C — FastAPI explorer)
+
+[`../ui/app.py`](../ui/app.py) + [`../ui/static/index.html`](../ui/static/index.html): a
+split-pane **record ↔ catalog** viewer. Run from the repo root:
+`python design-scratch/ui/app.py` → http://localhost:8000. It builds the DB at startup and
+serves: `/api/db`, `/api/gaps/{pn}`, `/page/{source}/{n}.png` (rendered catalog page),
+`/img/{name}` (product photo). The frontend lets you filter/search products, shows each
+one's fields + photo + typed gap badges, and **highlights the exact source row on the
+rendered catalog page** via `_source`/`_page`/`_bbox`.
+
 ## Reproducibility
 
 `python design-scratch/build/thin_pipeline.py` rebuilds `product_db.json` + `gap_report.json`
