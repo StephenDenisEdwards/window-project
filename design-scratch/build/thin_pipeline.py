@@ -119,6 +119,14 @@ def overlay_mm(text):
     return int(m.group(1)) if m else None
 
 
+def overlay_mm_from_bullets(bullets):
+    for b in bullets or []:                         # e.g. "• For door overlays up to 22mm"
+        m = re.search(r"overlays?\s+up to\s+(\d+)\s*mm", b, re.I)
+        if m:
+            return int(m.group(1))
+    return None
+
+
 def extract_page(page_no):
     out = []
     for b in tx.parse_page(page_no):
@@ -137,7 +145,9 @@ def extract_page(page_no):
                     s = series or series_from_title(title)      # Blum series is in the title
                     if s:
                         r["series"] = s
-                    om = overlay_mm(r.get("_subgroup"))          # TIOMOS: overlay-mm in sub-group
+                    # overlay-mm: TIOMOS in the sub-group; Blum in this block's own bullet
+                    om = overlay_mm(r.get("_subgroup")) or overlay_mm_from_bullets(b.get("bullets"))
+                    r["_overlay_on_page"] = om is not None       # block-level: stated for this block?
                     if om:
                         r["overlay_max_mm"] = om
                 if r["family"] == "baseplate":
@@ -246,9 +256,12 @@ def expected_fields(r):
     if fam == "concealed_hinge":
         # no max_door_weight_kg: load is the series-level hinges-per-door chart, not a
         # per-hinge field (see weight_model.md)
-        return ["brand", "series", "opening_angle_deg", "overlay_class", "overlay_max_mm",
-                "fixing", "closing_type", "boring_pattern_mm", "max_door_thickness_mm",
-                "cup_depth_mm", "certifications", "application", "price_usd"]
+        fields = ["brand", "series", "opening_angle_deg", "overlay_class",
+                  "fixing", "closing_type", "boring_pattern_mm", "max_door_thickness_mm",
+                  "cup_depth_mm", "certifications", "application", "price_usd"]
+        if r.get("overlay_class") == "full":        # only full overlay has a max-overlay-mm
+            fields.insert(4, "overlay_max_mm")
+        return fields
     if fam == "baseplate":
         return ["brand", "height_mm", "plate_style", "fixing_type", "material",
                 "cam_adjustment", "compatible_hinge_series", "price_usd"]
@@ -286,8 +299,12 @@ def generate_gap_report(db, path=GAP_PATH):
         pt = _page_text(r.get("_source"), r.get("_page"))
         for f in expected_fields(r):
             if r.get(f) in (None, "", []):
+                if f == "overlay_max_mm":            # block-aware: did this block state it?
+                    kind = "unparsed" if r.get("_overlay_on_page") else "not_on_page"
+                else:
+                    kind = classify_gap(f, r["family"], pt)
                 gaps.append({"part_number": pn, "family": r["family"], "field": f,
-                             "kind": classify_gap(f, r["family"], pt), "cite": citation(r)})
+                             "kind": kind, "cite": citation(r)})
     for key, chart in db["reference"]["hinges_per_door"].items():
         if chart.get("_verify"):
             gaps.append({"part_number": None, "family": f"reference:hinges_per_door[{key}]",

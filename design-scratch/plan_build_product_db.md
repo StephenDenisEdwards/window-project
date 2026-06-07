@@ -417,19 +417,22 @@ Now also closed (via the block **title**, now returned by `parse_page`):
   per-record expectations** (no demanding fields that don't apply) and each empty field
   classified by *why*: **absent_in_catalog** (source never has it — price) ·
   **not_on_page** (printed elsewhere, not on this product's page) · **unparsed** (data *is*
-  on the page, we missed it = the real to-do) · **low_confidence**. Current run: 212 empty
-  fields → 68 absent · 120 not-on-page · **22 actionable (unparsed)** · 2 low-confidence.
-  `compatible_hinge_series` (35, prose on B-100) and TIOMOS `opening_angle_deg` (16, from the
-  page heading) are now extracted, leaving the actionable backlog at **1 field**:
-  `overlay_max_mm` (22) — the Blum "up to 22mm" in a block bullet + TIOMOS half/inset rows.
+  on the page, we missed it = the real to-do) · **low_confidence**. Current run: 194 empty
+  fields → 68 absent · 124 not-on-page · **0 actionable (unparsed)** · 2 low-confidence.
+  All three actionable fields are now closed: `compatible_hinge_series` (35, prose on B-100),
+  TIOMOS `opening_angle_deg` (16, page heading), and `overlay_max_mm` (Blum 110+ from its
+  **block-level bullet**; `overlay_max_mm` made conditional on full-overlay, and Blum-110
+  full reclassified `not_on_page` since its block states no overlay-mm). **The unparsed
+  backlog is empty** — every field on a product's page is extracted; the rest is genuinely
+  absent / not-on-these-pages / low-confidence.
 
 Findings still open:
-- **SF1 stays ambiguous** — Blum "110 vs 110+" overlay-mm is in a *block bullet* (not the
-  title/sub-group), so it needs the block-level prose association below.
-- **Block-level prose association** — Blum overlay-mm, certifications, `cup_depth_mm`,
-  `application`, and baseplate `compatible_hinge_series` live in block bullets/notes; the
-  current page-level prose pass doesn't bind them to the right block (top extraction gaps in
-  the report).
+- **SF1 stays ambiguous *by question*** — `BP71B3580` (110) and `BP73B3580` (110+) now carry
+  distinct overlay-mm (None vs 22), so the data *can* disambiguate them; the eval question
+  just doesn't specify an overlay, so a bare "110 full dowel" still matches both.
+- **Block-level prose pass** — implemented for overlay-mm; the same per-block bullet capture
+  (`parse_page` now returns `block["bullets"]`) could later pull other block-bullet specs if
+  a page needs them.
 - **Tier-A unicode finding:** the catalogs write degrees as **º (U+00BA, ordinal
   indicator)**, *not* **° (U+00B0, degree sign)** — normalization must canonicalize both, or
   degree-keyed parses silently miss (this bit the restriction-clip angle parse first).

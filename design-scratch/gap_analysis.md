@@ -29,18 +29,20 @@ human-verify path.
 
 ## Current state (thin build: 68 products, 3 pages)
 
-**212 empty fields**, classified:
+**194 empty fields**, classified:
 
 | kind | count | detail |
 |------|-------|--------|
 | absent_in_catalog | **68** | `price` — one per product. Correct empties. (No per-hinge weight: load is a chart, not a field — see [`weight_model.md`](weight_model.md).) |
-| not_on_page | **120** | `cup_depth` 30 · `certifications` 30 · `application` 30 · TIOMOS thickness 16 · Blum boring 14 |
-| unparsed (real to-do) | **22** | `overlay_max_mm` 22 (`compatible_hinge_series` 35 and TIOMOS `opening_angle_deg` 16 now extracted) |
+| not_on_page | **124** | `cup_depth` 30 · `certifications` 30 · `application` 30 · TIOMOS thickness 16 · Blum boring 14 · Blum-110 overlay-mm 4 |
+| unparsed (real to-do) | **0** | all closed |
 | low_confidence | **2** | the TIOMOS + NEXIS `hinges_per_door` cell grids |
 
-The actionable backlog is now **1 field → 1 extractor task** (was 3): `overlay_max_mm`.
-`compatible_hinge_series` (prose on B-100) and TIOMOS `opening_angle_deg` (page heading)
-have been closed.
+The actionable backlog is now **empty** (was 3 fields). Closed: `compatible_hinge_series`
+(prose on B-100), TIOMOS `opening_angle_deg` (page heading), and `overlay_max_mm`
+(Blum 110+ from its block-level bullet; made conditional on full-overlay, and Blum-110 full
+reclassified `not_on_page` because its block states no overlay-mm). Every field that's on a
+product's page is now extracted.
 
 ## Takeaways
 
@@ -51,9 +53,10 @@ have been closed.
   removing the phantoms the genuine backlog is **~73 across 3 fields**.
 - **A gap report is only useful if it classifies by reason.** An undifferentiated count
   reads as chaos and tells you nothing about what to do.
-- **Closed so far:** `compatible_hinge_series` (35, prose on B-100) and TIOMOS
-  `opening_angle_deg` (16, page heading). **Remaining actionable: `overlay_max_mm` (22)** —
-  the Blum "up to 22mm" lives in a block bullet (needs the block-level bullet pass) plus the
-  TIOMOS half/inset rows that have no mm.
+- **All actionable gaps closed:** `compatible_hinge_series` (prose on B-100), TIOMOS
+  `opening_angle_deg` (page heading), and `overlay_max_mm` (Blum 110+ from a block-level
+  bullet pass; `overlay_max_mm` made conditional on full-overlay; Blum-110 full reclassified
+  `not_on_page` because its block states no overlay-mm). The remaining 194 empties are all
+  genuinely out of reach: absent-in-catalog (price), not-on-these-pages, or low-confidence.
 - **The persistent honest gaps** (per-hinge weight, price) are exactly the two the plan
   already flags for external sourcing / should-decline — nothing new to invent.

@@ -289,6 +289,13 @@ def parse_page(page_no):
             while t >= 0 and cls[t] in ("bullet", "skip"):
                 t -= 1
             title = row_text(rows[t]) if (t >= 0 and cls[t] == "label") else None
+            # block bullets = bullet lines above this header, up to the previous block boundary
+            bk, bullets = i - 1, []
+            while bk >= 0 and cls[bk] not in ("header", "banner", "data"):
+                if cls[bk] == "bullet":
+                    bullets.append(row_text(rows[bk]))
+                bk -= 1
+            bullets = list(reversed(bullets))
             j, sub, recs = i + 1, None, []
             while j < n and cls[j] not in ("header", "banner"):
                 if cls[j] == "data":
@@ -297,7 +304,7 @@ def parse_page(page_no):
                     sub = row_text(rows[j])
                 j += 1
             fam = classify_block(cols, banner, recs[0][1] if recs else None)
-            blocks.append({"family": fam, "banner": banner, "title": title,
+            blocks.append({"family": fam, "banner": banner, "title": title, "bullets": bullets,
                            "columns": [c["label"] for c in cols], "cols": cols, "rows": recs})
             i = j; continue
         i += 1
