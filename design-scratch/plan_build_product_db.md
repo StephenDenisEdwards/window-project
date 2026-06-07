@@ -434,14 +434,29 @@ closed in the build below.
 | [`grass_tiomos_p47_hinges_chart.png`](spikes/grass_tiomos_p47_hinges_chart.png) | B2 — rendered TIOMOS chart crop (evidence) | Grass TIOMOS p47 |
 | [`grass_nexis_p8_hinges_chart.png`](spikes/grass_nexis_p8_hinges_chart.png) | B2 — rendered NEXIS chart crop (evidence) | Grass NEXIS p8 |
 
-#### First thin end-to-end build
+#### End-to-end build (all of Section B)
 
-> Current status & field coverage: [`build/STATUS.md`](build/STATUS.md).
+> Current status, counts & quality caveats: [`build/STATUS.md`](build/STATUS.md).
 
-[`build/thin_pipeline.py`](build/thin_pipeline.py) composes the spikes into a minimal DB
-(B-6/B-45/B-100 + the p47 chart): **68 products** (30 hinge / 3 accessory / 35 baseplate)
-+ the `hinges_per_door` reference, a GF→F join, provenance, a small query layer, and JSON
-persistence (`product_db.json`, build-once/query-many). It runs 8 eval-set items.
+[`build/thin_pipeline.py`](build/thin_pipeline.py) extracts **all of Würth Section B (104 pp)**
++ the two Grass load charts: **884 products** (503 hinge / 221 baseplate / 160 accessory) +
+**88 quarantined** (rows with no resolvable part number), with provenance (`_source`/`_page`/
+`_bbox`), product photos (`_image`), the `hinges_per_door` reference tables, a GF→F join, a
+query layer, and JSON persistence. Eval **11/11**.
+
+> **Coverage vs. quality.** Mechanically it runs clean over all 104 pages, but the
+> extraction heuristics were validated on **3 pages** — so 884 is *coverage*, not 884
+> *verified* records. The outstanding **quality pass** (see STATUS):
+> 1. **Family routing** beyond hinge/baseplate/accessory — machines, screws, drivers,
+>    TIP-ON, assembly aids currently mis-bin or quarantine.
+> 2. **Triage the 88 quarantined** rows — genuine non-products vs. parser misses.
+> 3. **Validate fields on the new layouts** (Blum specialty, Pro, TEC, Salice face-frame).
+> 4. **Re-measure the gap report** catalog-wide (current wide counts are dominated by
+>    unvalidated pages).
+> 5. **Then Section C + the Grass product pages** (different layouts) for full corpus coverage.
+
+The gap-closing narrative below was the original **3-page pilot** (68 products) — kept as the
+record of how the extractor was hardened; its counts are pilot-era (see the §2.4 note).
 
 **Cheap (bucket-B) gaps now closed in the build** — fields that were on the page but the
 spikes didn't emit: `brand` 68/68 (from the banner), baseplate `plate_style` 35/35 (wing),
