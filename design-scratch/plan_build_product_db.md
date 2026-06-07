@@ -417,11 +417,11 @@ Now also closed (via the block **title**, now returned by `parse_page`):
   per-record expectations** (no demanding fields that don't apply) and each empty field
   classified by *why*: **absent_in_catalog** (source never has it — price) ·
   **not_on_page** (printed elsewhere, not on this product's page) · **unparsed** (data *is*
-  on the page, we missed it = the real to-do) · **low_confidence**. Current run: 228 empty
-  fields → 68 absent · 120 not-on-page · **38 actionable (unparsed)** · 2 low-confidence.
-  `compatible_hinge_series` (35) is now extracted (a prose parse on B-100), leaving the
-  actionable backlog at **2 fields**: `overlay_max_mm` (22) and TIOMOS `opening_angle_deg`
-  (16) — i.e. ~2 small extractor tasks, not 300-odd problems.
+  on the page, we missed it = the real to-do) · **low_confidence**. Current run: 212 empty
+  fields → 68 absent · 120 not-on-page · **22 actionable (unparsed)** · 2 low-confidence.
+  `compatible_hinge_series` (35, prose on B-100) and TIOMOS `opening_angle_deg` (16, from the
+  page heading) are now extracted, leaving the actionable backlog at **1 field**:
+  `overlay_max_mm` (22) — the Blum "up to 22mm" in a block bullet + TIOMOS half/inset rows.
 
 Findings still open:
 - **SF1 stays ambiguous** — Blum "110 vs 110+" overlay-mm is in a *block bullet* (not the

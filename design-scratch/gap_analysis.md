@@ -29,17 +29,18 @@ human-verify path.
 
 ## Current state (thin build: 68 products, 3 pages)
 
-**228 empty fields**, classified:
+**212 empty fields**, classified:
 
 | kind | count | detail |
 |------|-------|--------|
 | absent_in_catalog | **68** | `price` — one per product. Correct empties. (No per-hinge weight: load is a chart, not a field — see [`weight_model.md`](weight_model.md).) |
 | not_on_page | **120** | `cup_depth` 30 · `certifications` 30 · `application` 30 · TIOMOS thickness 16 · Blum boring 14 |
-| unparsed (real to-do) | **38** | `overlay_max_mm` 22 · TIOMOS `opening_angle_deg` 16 (`compatible_hinge_series` 35 now extracted) |
+| unparsed (real to-do) | **22** | `overlay_max_mm` 22 (`compatible_hinge_series` 35 and TIOMOS `opening_angle_deg` 16 now extracted) |
 | low_confidence | **2** | the TIOMOS + NEXIS `hinges_per_door` cell grids |
 
-The actionable backlog is now **2 fields → ~2 small extractor tasks** (was 3; the
-35-record `compatible_hinge_series` was closed by a prose parse on B-100).
+The actionable backlog is now **1 field → 1 extractor task** (was 3): `overlay_max_mm`.
+`compatible_hinge_series` (prose on B-100) and TIOMOS `opening_angle_deg` (page heading)
+have been closed.
 
 ## Takeaways
 
@@ -50,8 +51,9 @@ The actionable backlog is now **2 fields → ~2 small extractor tasks** (was 3; 
   removing the phantoms the genuine backlog is **~73 across 3 fields**.
 - **A gap report is only useful if it classifies by reason.** An undifferentiated count
   reads as chaos and tells you nothing about what to do.
-- **Biggest single win — done:** `compatible_hinge_series` (35) closed by a prose parse on
-  B-100 ("compatible with all Salice Series F and B"). Remaining actionable: `overlay_max_mm`
-  (22, mostly the Blum block-bullet) and TIOMOS `opening_angle_deg` (16, from the title).
+- **Closed so far:** `compatible_hinge_series` (35, prose on B-100) and TIOMOS
+  `opening_angle_deg` (16, page heading). **Remaining actionable: `overlay_max_mm` (22)** —
+  the Blum "up to 22mm" lives in a block bullet (needs the block-level bullet pass) plus the
+  TIOMOS half/inset rows that have no mm.
 - **The persistent honest gaps** (per-hinge weight, price) are exactly the two the plan
   already flags for external sourcing / should-decline — nothing new to invent.

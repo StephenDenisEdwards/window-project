@@ -89,6 +89,14 @@ def page_prose(page_no):
     return info
 
 
+def page_hinge_angle(page_no):
+    """TIOMOS/NEXIS opening angle lives in the page heading ('110° Tiomos … Hinges'),
+    not a table column. Guarded to the series name so it ignores the restriction-clip '85°'."""
+    t = fitz.open(tx.PDF)[page_no - 1].get_text()
+    m = re.search(r"(\d{2,3})\s*[°º]\s*(?:Tiomos|Nexis)", t, re.I)
+    return int(m.group(1)) if m else None
+
+
 def baseplate_compat(page_no):
     """Parse 'compatible with all Salice hinges Series F and Series B' -> ['Series B','Series F'].
     Page-level: fine here because the page is single-brand and both blocks share compatibility."""
@@ -146,6 +154,7 @@ def build_db():
     for p in SECTION_B:
         prose = page_prose(p)
         bp_series = baseplate_compat(p)
+        hinge_angle = page_hinge_angle(p)
         for r in extract_page(p):
             pn = r.get("part_number")
             if not pn:                                     # identity gap -> quarantine
@@ -159,6 +168,8 @@ def build_db():
             if r["family"] == "concealed_hinge":           # page-level prose facts
                 for k, v in prose.items():
                     r.setdefault(k, v)
+                if r.get("opening_angle_deg") is None and hinge_angle:  # TIOMOS angle from heading
+                    r["opening_angle_deg"] = hinge_angle
             if r["family"] == "baseplate" and bp_series:
                 r.setdefault("compatible_hinge_series", bp_series)
             if r["family"] == "accessory" and r.get("accessory_type") == "restriction_clip":
@@ -336,8 +347,9 @@ def run_eval(db):
 
     # EX2 — cross-source GF->F resolution (derived, no Grass page extracted in thin build)
     r = get(db, "GFF028138341228")
-    ok = bool(r) and r["manufacturer_pn"] == "F028138341228" and r["part_number_core"] == "028138341228"
-    check("EX2", ok, f"{citation(r)} | mfr_pn={r and r['manufacturer_pn']}")
+    ok = bool(r) and r["manufacturer_pn"] == "F028138341228" and r["part_number_core"] == "028138341228" \
+        and r.get("opening_angle_deg") == 110           # from the page heading, not a column
+    check("EX2", ok, f"{citation(r)} | mfr_pn={r and r['manufacturer_pn']} angle={r and r.get('opening_angle_deg')}")
 
     # EX3 — baseplate lookup
     r = get(db, "UBBAV4L09F16")
