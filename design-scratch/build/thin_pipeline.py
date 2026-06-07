@@ -89,6 +89,14 @@ def page_prose(page_no):
     return info
 
 
+def baseplate_compat(page_no):
+    """Parse 'compatible with all Salice hinges Series F and Series B' -> ['Series B','Series F'].
+    Page-level: fine here because the page is single-brand and both blocks share compatibility."""
+    t = fitz.open(tx.PDF)[page_no - 1].get_text()
+    letters = sorted(set(re.findall(r"[Ss]eries\s+([A-Z])\b", t)))
+    return [f"Series {x}" for x in letters]
+
+
 def cam_from_title(title):
     t = (title or "").lower()
     return "single_cam" if "single cam" in t else "two_cam" if "two cam" in t else None
@@ -137,6 +145,7 @@ def build_db():
     products, quarantine = {}, []
     for p in SECTION_B:
         prose = page_prose(p)
+        bp_series = baseplate_compat(p)
         for r in extract_page(p):
             pn = r.get("part_number")
             if not pn:                                     # identity gap -> quarantine
@@ -150,6 +159,8 @@ def build_db():
             if r["family"] == "concealed_hinge":           # page-level prose facts
                 for k, v in prose.items():
                     r.setdefault(k, v)
+            if r["family"] == "baseplate" and bp_series:
+                r.setdefault("compatible_hinge_series", bp_series)
             if r["family"] == "accessory" and r.get("accessory_type") == "restriction_clip":
                 # NB: catalog writes degrees as º (U+00BA, ordinal indicator), not ° (U+00B0)
                 # — so match the number, not the degree glyph. (Tier-A unicode normalization.)
@@ -345,6 +356,13 @@ def run_eval(db):
                fixing="screw_on", boring_pattern_mm="45mm", overlay_max_mm=22)
     skus = [x["part_number"] for x in res]
     check("SF3", skus == ["GFF028138519228"], f"matches={skus}  (now unambiguous via overlay_max_mm)")
+
+    # CC1 — baseplate compatible with a Series F hinge (uses the newly-parsed field)
+    res = [x for x in find(db, family="baseplate", height_mm=0,
+                           fixing_type="premounted_euro_screw", cam_adjustment="single_cam")
+           if "Series F" in (x.get("compatible_hinge_series") or [])]
+    check("CC1", [x["part_number"] for x in res] == ["UBBAVGL09F16"],
+          f"{[x['part_number'] for x in res]} compatible_hinge_series checked")
 
     # CC2 — completeness: 0mm Salice SINGLE-CAM stamped wing baseplates by fixing
     res = find(db, family="baseplate", height_mm=0, material="stamped_steel", cam_adjustment="single_cam")
