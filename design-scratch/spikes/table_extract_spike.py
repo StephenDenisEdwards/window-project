@@ -59,19 +59,26 @@ def clean_words(page):
 
 
 def to_rows(words, y_tol=3.0):
+    """Cluster words into rows. Returns (rows, bboxes): rows[i] is a list of (x0,x1,s)
+    cells (sorted L->R); bboxes[i] is the row's (x0,y0,x1,y1) box in PDF points."""
     words = sorted(words, key=lambda r: (r[1] + r[3]) / 2)
-    rows, cur, cy = [], [], None
+    rows, bboxes, cur, full, cy = [], [], [], [], None
+
+    def flush():
+        rows.append(sorted(cur, key=lambda c: c[0]))
+        bboxes.append((min(w[0] for w in full), min(w[1] for w in full),
+                       max(w[2] for w in full), max(w[3] for w in full)))
+
     for x0, y0, x1, y1, s in words:
         mid = (y0 + y1) / 2
         if cy is None or abs(mid - cy) <= y_tol:
-            cur.append((x0, x1, s))
+            cur.append((x0, x1, s)); full.append((x0, y0, x1, y1))
             cy = mid if cy is None else (cy + mid) / 2
         else:
-            rows.append(sorted(cur, key=lambda c: c[0]))
-            cur, cy = [(x0, x1, s)], mid
+            flush(); cur, full, cy = [(x0, x1, s)], [(x0, y0, x1, y1)], mid
     if cur:
-        rows.append(sorted(cur, key=lambda c: c[0]))
-    return rows
+        flush()
+    return rows, bboxes
 
 
 def row_text(row):
@@ -193,8 +200,8 @@ def fixing_from_name(name):
     return n or None
 
 
-def emit_hinge(cells, sub, page_no):
-    o = {"family": "concealed_hinge", "_page": page_no, "_source": "wurth_b"}
+def emit_hinge(cells, sub, page_no, bbox=None):
+    o = {"family": "concealed_hinge", "_page": page_no, "_source": "wurth_b", "_bbox": bbox}
     for label, val in cells.items():
         L = label.lower()
         if "item" in L:
@@ -214,8 +221,9 @@ def emit_hinge(cells, sub, page_no):
     return [o]
 
 
-def emit_baseplate(cells, cols, sub, page_no):
-    """Explode a matrix row into one baseplate product per non-empty SKU cell."""
+def emit_baseplate(cells, cols, sub, page_no, bbox=None):
+    """Explode a matrix row into one baseplate product per non-empty SKU cell.
+    (All share the row bbox; cell-level bbox would be a later refinement.)"""
     height = next((cells[c["label"]] for c in cols if "height" in c["label"].lower()), None)
     out = []
     for c in cols:
@@ -226,7 +234,7 @@ def emit_baseplate(cells, cols, sub, page_no):
         if not v or v == "-":
             continue
         out.append({
-            "family": "baseplate", "_page": page_no, "_source": "wurth_b",
+            "family": "baseplate", "_page": page_no, "_source": "wurth_b", "_bbox": bbox,
             "part_number": strip_callout(v),
             "height_mm": parse_mm(height),
             "fixing_type": fixing_from_name(lab),
@@ -235,7 +243,7 @@ def emit_baseplate(cells, cols, sub, page_no):
     return out
 
 
-def emit_accessory(cells, sub, page_no):
+def emit_accessory(cells, sub, page_no, bbox=None):
     pn = desc = ""
     for label, val in cells.items():
         L = label.lower()
@@ -246,7 +254,7 @@ def emit_accessory(cells, sub, page_no):
     d = desc.lower()
     atype = ("drill_bit" if "bit" in d else "restriction_clip" if ("clip" in d or "angle" in d)
              else "hinge_screw" if "screw" in d else "template" if "template" in d else None)
-    return [{"family": "accessory", "_page": page_no, "_source": "wurth_b",
+    return [{"family": "accessory", "_page": page_no, "_source": "wurth_b", "_bbox": bbox,
              "part_number": pn, "accessory_type": atype, "description": desc, "_subgroup": sub}]
 
 
@@ -268,7 +276,12 @@ def classify_row(row):
 
 
 def parse_page(page_no):
-    rows = to_rows(clean_words(fitz.open(PDF)[page_no - 1]))
+    page = fitz.open(PDF)[page_no - 1]
+    W, H = page.rect.width, page.rect.height
+    rows, bboxes = to_rows(clean_words(page))
+    # normalize each row's bbox to 0..1 fractions of the page (render-size independent)
+    nbox = [(round(b[0] / W, 4), round(b[1] / H, 4), round(b[2] / W, 4), round(b[3] / H, 4))
+            for b in bboxes]
     cls = [classify_row(r) for r in rows]
     blocks, banner = [], None
     i, n = 0, len(rows)
@@ -299,7 +312,7 @@ def parse_page(page_no):
             j, sub, recs = i + 1, None, []
             while j < n and cls[j] not in ("header", "banner"):
                 if cls[j] == "data":
-                    recs.append((bind(rows[j], cols), sub))
+                    recs.append((bind(rows[j], cols), sub, nbox[j]))   # cells, sub, row bbox
                 elif cls[j] == "label":
                     sub = row_text(rows[j])
                 j += 1
@@ -311,9 +324,9 @@ def parse_page(page_no):
     return blocks
 
 
-EMIT = {"concealed_hinge": lambda cells, cols, sub, p: emit_hinge(cells, sub, p),
-        "baseplate": lambda cells, cols, sub, p: emit_baseplate(cells, cols, sub, p),
-        "accessory": lambda cells, cols, sub, p: emit_accessory(cells, sub, p)}
+EMIT = {"concealed_hinge": lambda cells, cols, sub, p, bbox=None: emit_hinge(cells, sub, p, bbox),
+        "baseplate": lambda cells, cols, sub, p, bbox=None: emit_baseplate(cells, cols, sub, p, bbox),
+        "accessory": lambda cells, cols, sub, p, bbox=None: emit_accessory(cells, sub, p, bbox)}
 
 
 def run(page_no, label):
@@ -329,9 +342,9 @@ def run(page_no, label):
         if not emit:
             print(f"          (no emitter for family {b['family']!r})")
             continue
-        for cells, sub in b["rows"]:
-            for rec in emit(cells, b["cols"], sub, page_no):
-                s = " | ".join(f"{k}={v!r}" for k, v in rec.items())
+        for cells, sub, bbox in b["rows"]:
+            for rec in emit(cells, b["cols"], sub, page_no, bbox):
+                s = " | ".join(f"{k}={v!r}" for k, v in rec.items() if k != "_bbox")
                 print("      " + s.encode("ascii", "replace").decode())
         print()
 

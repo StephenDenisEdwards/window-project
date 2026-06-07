@@ -174,10 +174,14 @@ field = {
   raw:        <original extracted token, e.g. "Up to 7/8\" (22mm)">,
   source:     <wurth_b | wurth_c | grass_tiomos | grass_nexis | human>,
   page:       <int>,
+  bbox:       <[x0,y0,x1,y1] as 0..1 fractions of the page — region-level provenance>,
   confidence: <0.0–1.0; 1.0 for human/curated>,
   locked:     <bool; true = curated, non-clobberable>
 }
 ```
+> The thin build now captures `bbox` at the **row** level on each record (`_bbox`,
+> normalized 0..1) — enough to highlight a product's source region on the rendered page
+> (the UI source-link feature). Cell-level bbox per field is a later refinement.
 
 Field tables below list the **logical field + type**; assume each is wrapped as above.
 

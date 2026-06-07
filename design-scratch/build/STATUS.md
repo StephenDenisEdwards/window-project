@@ -17,6 +17,11 @@ Output: `product_db.json` (gitignored, reproducible) — **68 products** + **2 r
 
 ## What's in the DB now
 
+**Provenance:** every product carries `_page` **and `_bbox`** (the source row's box,
+normalized 0..1 fractions of the page) — region-level, enough to highlight where a product
+was extracted on the rendered page (the UI source-link feature). Cell-level (per-field) bbox
+is a later refinement.
+
 **Reference tables:** `hinges_per_door` for `Grass/TIOMOS` (mm/kg) and `Grass/NEXIS`
 (inches/pounds) — both low-confidence vision reads.
 

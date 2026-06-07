@@ -137,8 +137,8 @@ def extract_page(page_no):
         title = b.get("title")
         wing = "WING" in (b["banner"] or "").upper()
         cam = cam_from_title(title)
-        for cells, sub in b["rows"]:
-            for r in emit(cells, b["cols"], sub, page_no):
+        for cells, sub, bbox in b["rows"]:
+            for r in emit(cells, b["cols"], sub, page_no, bbox):
                 if brand:
                     r["brand"] = brand
                 if r["family"] == "concealed_hinge":
