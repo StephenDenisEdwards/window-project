@@ -35,14 +35,20 @@ def is_sku(s):
             and any(c.isdigit() for c in s) and s.replace("-", "").isalnum())
 
 
-def banner_of(page):
-    for line in page.get_text().splitlines():
-        s = re.sub(r"\s+", " ", re.sub(r"[^\x20-\x7e]", "", line)).strip()
-        if len(s) < 6 or any(b in s.upper() for b in BOILER):
-            continue
-        if s == s.upper() and len([w for w in s.split() if len(w) >= 3 and w.isalpha()]) >= 2:
-            return s
-    return None
+def banner_on(page):
+    """Return (banner_text, normalized_bbox) for the section banner on this page, or (None, None).
+    bbox = the banner line's [x0,y0,x1,y1] as 0..1 fractions of the page (for UI highlighting)."""
+    W, H = page.rect.width, page.rect.height
+    for blk in page.get_text("dict")["blocks"]:
+        for line in blk.get("lines", []):
+            text = "".join(sp["text"] for sp in line["spans"])
+            s = re.sub(r"\s+", " ", re.sub(r"[^\x20-\x7e]", "", text)).strip()
+            if len(s) < 6 or any(b in s.upper() for b in BOILER):
+                continue
+            if s == s.upper() and len([w for w in s.split() if len(w) >= 3 and w.isalpha()]) >= 2:
+                x0, y0, x1, y1 = line["bbox"]
+                return s, [round(x0 / W, 4), round(y0 / H, 4), round(x1 / W, 4), round(y1 / H, 4)]
+    return None, None
 
 
 def classify(banner):
@@ -91,18 +97,18 @@ def brand_of(banner):
 
 def sections_for(pdf):
     doc = fitz.open(pdf)
-    out, cur, start, sku = [], None, 1, 0
+    out, cur, start, sku, bbox = [], None, 1, 0, None
     for i in range(doc.page_count):
-        b = banner_of(doc[i])
+        b, bb = banner_on(doc[i])
         n = sum(1 for w in doc[i].get_text().split() if is_sku(w))
         norm = re.sub(r"\s+", " ", b).strip() if b else None
         if norm != cur:
             if cur:
-                out.append({"banner": cur, "pages": [start, i], "approx_skus": sku})
-            cur, start, sku = norm, i + 1, 0
+                out.append({"banner": cur, "pages": [start, i], "approx_skus": sku, "page": start, "bbox": bbox})
+            cur, start, sku, bbox = norm, i + 1, 0, bb     # banner bbox on the section's first page
         sku += n
     if cur:
-        out.append({"banner": cur, "pages": [start, doc.page_count], "approx_skus": sku})
+        out.append({"banner": cur, "pages": [start, doc.page_count], "approx_skus": sku, "page": start, "bbox": bbox})
     return [s for s in out if s["approx_skus"] > 0 or "ITEMS" in s["banner"]]
 
 
@@ -113,7 +119,8 @@ def build():
             ptype, fam = classify(s["banner"])
             tax.append({"catalog": code, "catalog_label": label, "section": s["banner"],
                         "product_type": ptype, "family": fam, "brand": brand_of(s["banner"]),
-                        "pages": s["pages"], "approx_skus": s["approx_skus"]})
+                        "pages": s["pages"], "page": s["page"], "bbox": s["bbox"],
+                        "approx_skus": s["approx_skus"]})
     return tax
 
 

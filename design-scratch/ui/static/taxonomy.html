@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Taxonomy verifier</title>
+<style>
+  :root{--bg:#0f1320;--panel:#171c2e;--line:#2a3350;--txt:#e6e9f2;--dim:#9aa3bd;--accent:#4f8cff}
+  *{box-sizing:border-box} body{margin:0;font:13px/1.4 system-ui,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--txt)}
+  header{display:flex;gap:14px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
+  header h1{font-size:15px;margin:0}
+  .grid{display:grid;grid-template-columns:430px 1fr;height:calc(100vh - 49px)}
+  .col{overflow:auto;padding:12px} .col.left{border-right:1px solid var(--line)}
+  input,select{background:#10182b;color:var(--txt);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+  .filters{display:flex;gap:6px;margin-bottom:10px} .filters select{flex:1}
+  .cat{color:var(--dim);text-transform:uppercase;font-size:11px;letter-spacing:.04em;margin:12px 0 4px}
+  .item{padding:6px 8px;border-radius:6px;cursor:pointer;border:1px solid transparent;display:flex;gap:8px;align-items:baseline}
+  .item:hover{background:#1d2540} .item.sel{background:#23304f;border-color:var(--accent)}
+  .item .nm{flex:1} .item .pg{color:var(--dim);font-size:11px;white-space:nowrap}
+  .ty{display:inline-block;font-size:10px;padding:1px 6px;border-radius:8px;background:#2a3350;color:#bcd;margin-top:2px}
+  .stage{position:relative;display:inline-block;max-width:100%;border:1px solid var(--line);border-radius:6px}
+  .stage img{display:block;max-width:100%}
+  .hl{position:absolute;border:2px solid #ffcc33;background:rgba(255,204,51,.22);box-shadow:0 0 0 9999px rgba(8,10,18,.5)}
+  .cap{color:var(--dim);margin:6px 0}
+  .big{font-size:16px;color:var(--txt)}
+</style>
+</head>
+<body>
+<header><h1>Taxonomy verifier</h1><span class="cap" id="count"></span>
+  <span class="cap" style="margin-left:auto">click a section → its banner is highlighted on the source page</span></header>
+<div class="grid">
+  <div class="col left">
+    <div class="filters">
+      <input id="q" placeholder="search…" style="flex:1">
+      <select id="ty"><option value="">all types</option></select>
+    </div>
+    <div id="list"></div>
+  </div>
+  <div class="col" id="src"><p class="cap">Select a section to verify its source.</p></div>
+</div>
+<script>
+let DATA=null;const $=s=>document.querySelector(s);
+async function boot(){
+  DATA=await (await fetch("/api/taxonomy")).json();
+  const types=[...new Set(DATA.sections.map(s=>s.product_type))].sort();
+  $("#ty").innerHTML='<option value="">all types</option>'+types.map(t=>`<option>${t}</option>`).join("");
+  $("#q").oninput=render;$("#ty").onchange=render;render();
+}
+function render(){
+  const q=$("#q").value.toLowerCase(),ty=$("#ty").value;
+  const rows=DATA.sections.filter(s=>(!ty||s.product_type===ty)&&
+    (s.section.toLowerCase().includes(q)||s.product_type.includes(q)||(s.brand||"").toLowerCase().includes(q)));
+  $("#count").textContent=rows.length+" sections";
+  let html="",cat=null;
+  rows.forEach((s,idx)=>{
+    if(s.catalog_label!==cat){cat=s.catalog_label;html+=`<div class="cat">${cat}</div>`;}
+    const p=s.pages[0]===s.pages[1]?s.pages[0]:`${s.pages[0]}–${s.pages[1]}`;
+    html+=`<div class="item" data-i="${DATA.sections.indexOf(s)}">
+      <div class="nm">${s.section}<br><span class="ty">${s.product_type}</span></div>
+      <div class="pg">p${p} · ~${s.approx_skus}</div></div>`;
+  });
+  $("#list").innerHTML=html;
+  document.querySelectorAll(".item").forEach(el=>el.onclick=()=>sel(+el.dataset.i,el));
+}
+function sel(i,el){
+  document.querySelectorAll(".item").forEach(e=>e.classList.remove("sel"));el.classList.add("sel");
+  const s=DATA.sections[i],src=DATA.sources[s.catalog]||{},pl=(src.page_label||"p{n}").replace("{n}",s.page);
+  let hl="";
+  if(s.bbox){const[x0,y0,x1,y1]=s.bbox;
+    hl=`<div class="hl" style="left:${x0*100}%;top:${y0*100}%;width:${(x1-x0)*100}%;height:${(y1-y0)*100}%"></div>`;}
+  $("#src").innerHTML=`<div class="big">${s.section}</div>
+    <div class="cap">type <b>${s.product_type}</b> · ${src.label||s.catalog} · ${pl} · ~${s.approx_skus} skus</div>
+    <div class="cap">yellow box = the banner this section was identified from</div>
+    <div class="stage"><img src="/page/${s.catalog}/${s.page}.png">${hl}</div>`;
+}
+boot();
+</script>
+</body>
+</html>
