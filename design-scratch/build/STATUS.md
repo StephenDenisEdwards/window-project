@@ -20,6 +20,14 @@ assembly aids / overlay-chart / drill-bit pages route to a new `tool` family; th
 4`) no longer mis-detected as banners. `unknown` blocks down to ~4 rows (ECOJIG/PLATEMATE
 jigs, a Salice adapter).
 
+**Quality pass — iteration 2 (quarantine triage) — diagnosed, not yet fixed:** the 88
+quarantined rows cluster on ~6 pages — **Grass TEC (p82–87)** and **Salice face-frame
+(p103–104)** — which use a **two-tables-side-by-side** layout. The single-table row binder
+conflates the left/right tables (columns double up; the SKU column, here named e.g.
+"Side-Mount", only fills where the two sides' rows align), so most rows lose their part
+number. They're **recoverable parser misses, not non-products** — recovering them needs
+side-by-side table splitting (detect the horizontal gap, parse each half). Next iteration.
+
 > **⚠️ Coverage-first, quality pass owed.** The pipeline + heuristics were validated on only
 > **3 pages** (B-6/B-45/B-100); they now run over all 104 with no crashes, but the other ~84
 > pages are **unvalidated**. So 884 is honest *coverage*, not 884 *verified* records. Known
