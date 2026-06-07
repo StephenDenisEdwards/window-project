@@ -143,6 +143,11 @@ defined against them.
 
 ### 2.1 Family schema definitions
 
+> **⚠️ Superseded by [`data_model.md`](data_model.md) (v2, taxonomy-driven).** The schema
+> below was derived from 3 pages and covered only 3 of the 21 product types; the v2 model
+> covers all types, fixes identity, and resolves the provenance question. Kept here for the
+> record of how the model started.
+
 Notation is **serialization-agnostic** (could land as JSON docs, relational tables, or a
 graph) and **standalone** — types are generic (`enum`, `number`, `range`, `bool`,
 `list<…>`). Value sets shown are **seed values observed in the catalogs**, to be
