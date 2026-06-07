@@ -397,6 +397,8 @@ closed in the build below.
 
 #### First thin end-to-end build
 
+> Current status & field coverage: [`build/STATUS.md`](build/STATUS.md).
+
 [`build/thin_pipeline.py`](build/thin_pipeline.py) composes the spikes into a minimal DB
 (B-6/B-45/B-100 + the p47 chart): **68 products** (30 hinge / 3 accessory / 35 baseplate)
 + the `hinges_per_door` reference, a GF→F join, provenance, a small query layer, and JSON
