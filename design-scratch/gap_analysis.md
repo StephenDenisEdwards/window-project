@@ -9,7 +9,7 @@
 
 | kind | meaning | remediation | example |
 |------|---------|-------------|---------|
-| **absent_in_catalog** | the source never carries it (on any page) | external sourcing, or a *should-decline* answer | `price` (all products), per-hinge `max_door_weight_kg` (hinges) |
+| **absent_in_catalog** | the source never carries it (on any page) | external sourcing, or a *should-decline* answer | `price` (all products) |
 | **not_on_page** | real data, but printed on *other* pages — not this product's | extract from the right page/source later | `certifications` (live on the Pro pages), `cup_depth_mm` |
 | **unparsed** | the data **is** on this product's page; we just didn't pull it | more extractor coverage — **the real to-do** | `compatible_hinge_series`, `overlay_max_mm`, TIOMOS `opening_angle_deg` |
 | **low_confidence** | extracted but uncertain (vision read) | human verify | `hinges_per_door` chart cells |
@@ -29,11 +29,11 @@ human-verify path.
 
 ## Current state (thin build: 68 products, 3 pages)
 
-**292 empty fields**, classified:
+**262 empty fields**, classified:
 
 | kind | count | detail |
 |------|-------|--------|
-| absent_in_catalog | **98** | 68 `price` (one per product) + 30 per-hinge `weight` — correct empties |
+| absent_in_catalog | **68** | `price` — one per product. Correct empties. (No per-hinge weight: load is a chart, not a field — see [`weight_model.md`](weight_model.md).) |
 | not_on_page | **120** | `cup_depth` 30 · `certifications` 30 · `application` 30 · TIOMOS thickness 16 · Blum boring 14 |
 | unparsed (real to-do) | **73** | `compatible_hinge_series` 35 · `overlay_max_mm` 22 · TIOMOS `opening_angle_deg` 16 |
 | low_confidence | **1** | the `hinges_per_door` cell grid |
@@ -42,9 +42,11 @@ The 73 actionable collapse to **3 fields → ~3 small extractor tasks**.
 
 ## Takeaways
 
-- The original "335 gaps" headline was **mostly noise**: ~30% is data the catalog can
-  *never* have (price/weight), ~40% isn't on these pages, and ~15% were phantom
-  expectations I'd over-declared. The genuine backlog is **~73 across 3 fields**.
+- The original "335 gaps" headline was **mostly noise**: a chunk was phantom expectations
+  I'd over-declared — including a **per-hinge weight field that the catalogs don't even
+  use** (load is the hinges-per-door chart; see [`weight_model.md`](weight_model.md)) —
+  plus data the catalog can never have (price) and data simply not on these pages. After
+  removing the phantoms the genuine backlog is **~73 across 3 fields**.
 - **A gap report is only useful if it classifies by reason.** An undifferentiated count
   reads as chaos and tells you nothing about what to do.
 - **Biggest single win:** `compatible_hinge_series` (35) via a prose parse on B-100

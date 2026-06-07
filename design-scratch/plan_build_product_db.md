@@ -222,8 +222,10 @@ their absence is the blocking *identity gap* that sends a record to quarantine.
 | `certifications` | list<enum> | ANSI, BIFMA, KCMA, BHMA |
 | `requires_baseplate` | bool | true (baseplate sold separately) → edge |
 
-> **No `load_capacity` here** — derived from the `hinges_per_door` reference table
-> (below) keyed on this hinge's `(brand, series)` plus door height & weight.
+> **No `load_capacity` / per-hinge weight here** — the catalogs don't rate a hinge in kg;
+> load is the series-level `hinges-per-door` chart (below), looked up by `(brand, series)` +
+> door height & weight. A per-hinge weight field is an *imported assumption*, not a catalog
+> concept — see [`weight_model.md`](weight_model.md).
 
 #### Family: `baseplate` *(first iteration)*
 
@@ -412,7 +414,7 @@ Now also closed (via the block **title**, now returned by `parse_page`):
   title.
 - **Gap report** (`gap_report.json`, gitignored) — the §2.4 queue, with **conditional
   per-record expectations** (no demanding fields that don't apply) and each empty field
-  classified by *why*: **absent_in_catalog** (source never has it — price/weight) ·
+  classified by *why*: **absent_in_catalog** (source never has it — price) ·
   **not_on_page** (printed elsewhere, not on this product's page) · **unparsed** (data *is*
   on the page, we missed it = the real to-do) · **low_confidence**. Current run: 292 empty
   fields → 98 absent · 120 not-on-page · **73 actionable (unparsed)** · 1 low-confidence.
@@ -524,8 +526,9 @@ reason, source + page, and any candidate value(s). **An empty field must be clas
 *why* it's empty** — an undifferentiated count is meaningless (the thin build's "335 gaps"
 was ~30% data the catalog can't have, ~40% not-on-this-page, ~15% phantom). The
 build-validated taxonomy ([`gap_analysis.md`](gap_analysis.md)):
-- **absent_in_catalog** — source never carries it (price, per-hinge weight) → sourcing /
-  should-decline.
+- **absent_in_catalog** — source never carries it (price) → sourcing / should-decline.
+  (Per-hinge weight is *not* here: it's not a catalog concept — load is the
+  hinges-per-door chart, see [`weight_model.md`](weight_model.md).)
 - **not_on_page** — real data, but on another page/source, not this product's → defer.
 - **unparsed** — data *is* on this page, not pulled yet → **the real to-do**.
 - **low_confidence** — extracted but uncertain (vision) → human verify. (Plus
@@ -649,14 +652,15 @@ captured as edges seed some rules, but the logic itself is engineered.
   it can *drive a constraint engine* through the adapter.
 
 **Open decisions surfaced by the reference engine:**
-- **Weight model. → Deferred — decide at adapter phase.** The reference engine expects a
-  per-hinge `max_door_weight_kg` scalar and counts hinges by *height only*; the catalogs
-  give no per-hinge kg but a richer weight×height→count chart. Resolve as either (a) source
-  the kg as a gap, or (b) have the engine consume our `hinges_per_door` reference table.
-  (b) is the lean. Safe to defer because the DB stays neutral: it extracts the weight×height
-  chart either way, and models per-hinge weight as a nullable field (→ gap when absent), so
-  neither option is foreclosed. Becomes forcing at the adapter phase, or the first eval
-  query needing weight feasibility (§9.3).
+- **Weight model. → Deferred — decide at adapter phase.** ([`weight_model.md`](weight_model.md))
+  The reference engine expects a per-hinge `max_door_weight_kg` scalar and counts hinges by
+  *height only*; the catalogs give **no per-hinge kg** at all — load is the series-level
+  weight×height→count chart. Resolve as either (a) source a per-hinge kg externally, or
+  (b) have the engine consume our `hinges_per_door` reference table. (b) is the lean and the
+  faithful one. Safe to defer because the DB stays neutral: it carries the chart and does
+  **not** model a per-hinge weight field at all (so it's not even a gap), leaving either
+  choice open. Becomes forcing at the adapter phase, or the first eval query needing weight
+  feasibility (§9.3).
 - **Derived vs. stored compatibility.** The reference engine derives hinge↔plate
   compatibility from attributes via rules (series, mounting, brand). So the DB should
   materialize **only** non-derivable, catalog-stated edges; derivable compatibility stays

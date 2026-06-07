@@ -193,8 +193,10 @@ def load_db(path=DB_PATH):
 GAP_PATH = os.path.join(os.path.dirname(__file__), "gap_report.json")
 
 # Fields the catalog never carries (on ANY page) -> 'absent_in_catalog'.
+# NB: there is no per-hinge weight field — the catalog expresses load as the series-level
+# hinges-per-door chart (reference table), not a per-hinge kg. See weight_model.md.
 ABSENT = {
-    "concealed_hinge": {"max_door_weight_kg", "price_usd"},
+    "concealed_hinge": {"price_usd"},
     "baseplate": {"price_usd"},
     "accessory": {"price_usd"},
 }
@@ -219,9 +221,11 @@ def expected_fields(r):
     """Conditional per-record expectations — don't demand fields that don't apply."""
     fam = r["family"]
     if fam == "concealed_hinge":
+        # no max_door_weight_kg: load is the series-level hinges-per-door chart, not a
+        # per-hinge field (see weight_model.md)
         return ["brand", "series", "opening_angle_deg", "overlay_class", "overlay_max_mm",
                 "fixing", "closing_type", "boring_pattern_mm", "max_door_thickness_mm",
-                "cup_depth_mm", "certifications", "application", "max_door_weight_kg", "price_usd"]
+                "cup_depth_mm", "certifications", "application", "price_usd"]
     if fam == "baseplate":
         return ["brand", "height_mm", "plate_style", "fixing_type", "material",
                 "cam_adjustment", "compatible_hinge_series", "price_usd"]
