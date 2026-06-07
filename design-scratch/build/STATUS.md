@@ -7,13 +7,23 @@
 
 ## Scope
 
-Catalogs → records → eval, over a deliberately thin slice:
+Catalogs → records → eval over **all of Würth Section B** (104 pp) + the two Grass load charts.
 
-- **Würth Section B** pages **B-6** (Blum), **B-45** (Grass TIOMOS), **B-100** (Salice baseplates)
-- **Grass TIOMOS p47** + **Grass NEXIS p8** load charts
+Output: `product_db.json` (gitignored, reproducible) — **884 products** (503 concealed_hinge /
+221 baseplate / 160 accessory) + **88 quarantined** (rows with no resolvable part number —
+machines/screws/chart pages) + **2 reference tables**. Eval: **11/11**.
 
-Output: `product_db.json` (gitignored, reproducible) — **68 products** + **2 reference tables**.
-`gap_report.json` — the typed gap queue. Eval: **11/11**.
+> **⚠️ Coverage-first, quality pass owed.** The pipeline + heuristics were validated on only
+> **3 pages** (B-6/B-45/B-100); they now run over all 104 with no crashes, but the other ~84
+> pages are **unvalidated**. So 884 is honest *coverage*, not 884 *verified* records. Known
+> follow-ups: (a) **family routing** only knows hinge/baseplate/accessory — pages for hinge
+> machines, screws, drivers, TIP-ON devices, assembly aids mis-bin or quarantine; (b) field
+> heuristics (brand/series/overlay/cam) tuned on 3 layouts may misfire elsewhere; (c) the
+> gap report is now catalog-wide and dominated by unvalidated pages. **Next work is the
+> quality pass, not more coverage.** (Section C + the Grass product pages are still out.)
+
+The detailed per-field coverage below was measured on the **3-page pilot** and is kept as an
+illustration of *what good looks like* — it needs re-measuring after the quality pass.
 
 ## What's in the DB now
 

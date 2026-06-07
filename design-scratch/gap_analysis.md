@@ -1,5 +1,11 @@
 # Gap analysis — what's missing in the product DB, and why
 
+> **Note (scope):** the numbers below are from the **3-page pilot** (B-6/B-45/B-100, 68
+> products). The build now covers **all of Section B** (884 products), so the live gap
+> counts are far larger and dominated by **unvalidated** pages — they're not meaningful
+> until the quality pass (see `build/STATUS.md`). The *taxonomy and method* here still hold;
+> only the counts are pilot-era.
+
 > Worked analysis from the thin build ([`build/thin_pipeline.py`](build/thin_pipeline.py))
 > over Würth Section B (B-6 Blum, B-45 Grass TIOMOS, B-100 Salice) + the Grass TIOMOS p47
 > load chart. Companion to the plan's §2.4. **The point: a gap *count* is meaningless

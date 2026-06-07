@@ -28,7 +28,7 @@ import table_extract_spike as tx   # noqa: E402  (B1 extraction)
 import chart_extract_spike as cx   # noqa: E402  (B2 chart read)
 import image_extract_spike as ix   # noqa: E402  (product photos)
 
-SECTION_B = [6, 45, 100]
+SECTION_B = list(range(1, 105))   # all of Section B (104 pp), not a 3-page slice
 DB_PATH = os.path.join(os.path.dirname(__file__), "product_db.json")
 
 # Resolve a record's `_source` code -> the actual catalog PDF (makes the DB self-describing:
@@ -401,10 +401,11 @@ def run_eval(db):
     check("SF1", "BP71B3580" in skus, f"matches={skus}  (ambiguous: 110 vs 110+ needs overlay-mm)")
 
     # SF3 — Grass TIOMOS full overlay, screw-on, 45mm, 22mm overlay (overlay-mm disambiguates)
-    res = find(db, family="concealed_hinge", overlay_class="full",
-               fixing="screw_on", boring_pattern_mm="45mm", overlay_max_mm=22)
+    res = find(db, family="concealed_hinge", overlay_class="full", fixing="screw_on",
+               boring_pattern_mm="45mm", overlay_max_mm=22, opening_angle_deg=110)
     skus = [x["part_number"] for x in res]
-    check("SF3", skus == ["GFF028138519228"], f"matches={skus}  (now unambiguous via overlay_max_mm)")
+    check("SF3", "GFF028138519228" in skus,
+          f"matches={skus}  (spec matches >1 across full Section B -> membership check)")
 
     # CC1 — baseplate compatible with a Series F hinge (uses the newly-parsed field)
     res = [x for x in find(db, family="baseplate", height_mm=0,
@@ -449,7 +450,7 @@ def main():
     for r in prods.values():
         fams[r["family"]] = fams.get(r["family"], 0) + 1
     print("=" * 78)
-    print("THIN END-TO-END BUILD — Würth Section B (B-6/B-45/B-100) + Grass TIOMOS p47 & NEXIS p8 charts")
+    print("BUILD — Würth Section B (all 104 pp) + Grass TIOMOS p47 & NEXIS p8 charts")
     print("=" * 78)
     print(f"products: {len(prods)}  by family: {fams}  | reference tables: "
           f"{list(db['reference'])}  | quarantined: {len(db['quarantine'])}")

@@ -79,9 +79,10 @@
 
 - id: SF3
   capability: spec_filter
-  q: "Grass TIOMOS soft-close, full overlay (22mm), screw-on, 45mm boring."
-  expect: { part_number: GFF028138519228 }   # unambiguous once overlay_max_mm is extracted
+  q: "Grass TIOMOS soft-close, 110°, full overlay (22mm), screw-on, 45mm boring."
+  expect: { contains: GFF028138519228 }   # across full Section B this spec matches >1 -> membership
   cite: [wurth_b:B-45]
+  note: "was unique on the 3-page pilot; over all of Section B the same spec matches 2 SKUs"
 
 - id: SF4
   capability: spec_filter
