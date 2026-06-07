@@ -47,6 +47,34 @@ axes/bands/thresholds cross-check against the text layer (high confidence), but 
 **cell grid** (which weight×height → which count) is best-effort and flagged for human
 verification — a `low_confidence` gap, not a clean fact.
 
+## What the DB can answer today (and its limits)
+
+The thin build can already determine **how many hinges a door needs** —
+`hinges_for(height_mm, weight_kg)` reads the `hinges_per_door` table:
+
+```
+700mm / 4kg  -> 2        1500mm / 11kg -> 3        2300mm / 20kg -> 5
+1500mm / 4kg -> None     2600mm / 25kg -> None
+```
+
+Four limits to be precise about:
+
+1. **Needs door *height AND weight*, not weight alone** — the chart is 2-D; the count rises
+   with height for the same weight.
+2. **Grass TIOMOS only** — it's the one chart we've extracted (p47). No table yet for Blum,
+   Salice, or even Grass NEXIS, so those brands **can't** be answered (a not-yet-extracted
+   gap, not a real absence).
+3. **Low-confidence and coarse** — it's the best-effort B2 vision read (a simplified
+   4-cell diagonal, `_verify` flagged). The `None` results above are holes between those
+   cells (a light-but-tall door, or off the top of the chart); a fully-digitized chart
+   wouldn't have them.
+4. **Per *series*, not per part number** — every TIOMOS hinge shares the one chart; the
+   count doesn't depend on the specific overlay/fixing variant. So "hinges of a certain
+   type" means the series/system, which is how hinge-count actually works.
+
+So: **for a Grass TIOMOS door, given height + weight, yes — the DB yields the hinge count,
+at low confidence with edge gaps.** Other brands need their charts extracted first.
+
 ## Section C — weight/force is handled *differently again* per family
 
 "Weight" isn't one concept across the corpus. Each lift/stay family has its own load model:
