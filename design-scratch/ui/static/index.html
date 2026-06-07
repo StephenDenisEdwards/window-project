@@ -29,9 +29,11 @@
   td.k{color:var(--dim);width:42%} td.v{font-family:ui-monospace,Consolas,monospace}
   .photo{max-width:220px;max-height:140px;background:#fff;border-radius:6px;padding:4px;margin-top:6px}
   .badge{display:inline-block;font-size:10px;padding:1px 6px;border-radius:8px;color:#0b0f18;font-weight:600}
-  .b-absent{background:var(--absent)} .b-not_on_page{background:var(--notpage);color:#fff}
+  .b-absent_in_catalog{background:var(--absent)} .b-not_on_page{background:var(--notpage);color:#fff}
   .b-unparsed{background:var(--unparsed)} .b-low_confidence{background:var(--lowconf)}
-  .gap{margin:3px 0;color:var(--dim)} .gap code{color:var(--txt)}
+  .b-human{background:var(--ok)}
+  .gap{margin:5px 0;color:var(--dim);display:flex;align-items:center;gap:6px;flex-wrap:wrap} .gap code{color:var(--txt)}
+  .gap input{width:120px;padding:3px 6px} .gap button{cursor:pointer;background:var(--accent);color:#fff;border:none;border-radius:5px;padding:3px 9px}
   .stage{position:relative;display:inline-block;max-width:100%;border:1px solid var(--line);border-radius:6px;overflow:hidden}
   .stage img{display:block;max-width:100%}
   .hl{position:absolute;border:2px solid var(--accent);background:rgba(79,140,255,.18);box-shadow:0 0 0 9999px rgba(8,10,18,.55)}
@@ -82,15 +84,28 @@ async function select(pn){
   renderDetail(r,gaps); renderSource(r);
 }
 function renderDetail(r,gaps){
-  const skip=new Set(["part_number","family","_bbox","_image","_overlay_on_page","_subgroup","_material"]);
+  const skip=new Set(["part_number","family"]);
+  const cur=r._curated||{};
   const rows=Object.keys(r).filter(k=>!k.startsWith("_")&&!skip.has(k)&&r[k]!=null&&r[k]!=="")
-    .map(k=>`<tr><td class="k">${k}</td><td class="v">${fmt(r[k])}</td></tr>`).join("");
-  const gapHtml=gaps.length?`<h2>gaps</h2>`+gaps.map(g=>
-    `<div class="gap"><span class="badge b-${g.kind}">${g.kind}</span> <code>${g.field}</code></div>`).join(""):"";
+    .map(k=>`<tr><td class="k">${k}${cur[k]?' <span class="badge b-human">human</span>':''}</td><td class="v">${fmt(r[k])}</td></tr>`).join("");
+  const gapHtml=gaps.length?`<h2>gaps — read the page on the right and fill in</h2>`+gaps.map(g=>
+    `<div class="gap"><span class="badge b-${g.kind}">${g.kind}</span> <code>${g.field}</code>
+      <input data-f="${g.field}" placeholder="value">
+      <button onclick="saveCur('${r.part_number}','${g.field}',this)">save</button></div>`).join(""):"";
   const photo=r._image?`<h2>photo</h2><img class="photo" src="/img/${r._image.path.split('/').pop()}">`:"";
   $("#detail").innerHTML=`<div class="sku">${r.part_number}</div>
     <div class="cap">${r.brand||"?"}${r.series?" · "+r.series:""} · ${r.family}</div>
     <table>${rows}</table>${photo}${gapHtml}`;
+}
+async function saveCur(pn, field, btn){
+  const inp=btn.previousElementSibling, value=inp.value.trim();
+  if(!value){ inp.focus(); return; }
+  btn.disabled=true;
+  const res=await (await fetch("/api/curate",{method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({part_number:pn, field, value})})).json();
+  DB.products[pn]=res.record;          // refresh client cache with server's updated record
+  select(pn);                          // re-render (gap now filled, badged human)
 }
 function renderSource(r){
   const src=DB.sources[r._source]||{}, plabel=(src.page_label||"p{n}").replace("{n}",r._page);

@@ -115,6 +115,13 @@ serves: `/api/db`, `/api/gaps/{pn}`, `/page/{source}/{n}.png` (rendered catalog 
 one's fields + photo + typed gap badges, and **highlights the exact source row on the
 rendered catalog page** via `_source`/`_page`/`_bbox`.
 
+**Human curation (manual gap-filling):** each gap is an editable field — read the value off
+the page (shown on the right) and type it in. `POST /api/curate` persists it to a durable,
+**committed** `curations.json` overlay (keyed by part-number + field). `build_db` applies
+curations on top of extraction as **locked, `source: human`** values (never clobbered by a
+re-extraction; shown with a "human" badge), and the gap closes. Survives rebuilds. For
+existing products only; quarantined rows (no part number yet) are a later case.
+
 ## Reproducibility
 
 `python design-scratch/build/thin_pipeline.py` rebuilds `product_db.json` + `gap_report.json`

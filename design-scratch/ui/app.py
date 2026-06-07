@@ -20,6 +20,7 @@ import fitz  # pymupdf
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse, HTMLResponse, Response
+from pydantic import BaseModel
 
 HERE = os.path.dirname(__file__)
 BUILD = os.path.join(HERE, "..", "build")
@@ -49,6 +50,25 @@ def api_db():
 @app.get("/api/gaps/{part_number}")
 def api_gaps(part_number: str):
     return GAPS_BY_PN.get(part_number, [])
+
+
+class Curation(BaseModel):
+    part_number: str
+    field: str
+    value: str
+
+
+@app.post("/api/curate")
+def curate(c: Curation):
+    """Persist a human-entered value (durable overlay) and apply it in memory."""
+    r = DB["products"].get(c.part_number)
+    if r is None:
+        raise HTTPException(404, "unknown product")
+    tp.save_curation(c.part_number, c.field, c.value)   # write durable curations.json
+    r[c.field] = tp._coerce(c.value)
+    r.setdefault("_curated", {})[c.field] = {"by": "ui"}
+    GAPS_BY_PN[c.part_number] = [g for g in GAPS_BY_PN.get(c.part_number, []) if g["field"] != c.field]
+    return {"ok": True, "record": r, "gaps": GAPS_BY_PN[c.part_number]}
 
 
 def _gap_summary():

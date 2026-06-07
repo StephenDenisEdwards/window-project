@@ -208,6 +208,7 @@ def build_db():
                 if m:
                     r["restricts_angle_to_deg"] = int(m.group(1))
             products[pn] = r
+    apply_curations(products)                                       # human overlay (locked)
     charts = {f"{c['brand']}/{c['series']}": c for c in cx.CHARTS}  # TIOMOS + NEXIS
     return {"products": products, "reference": {"hinges_per_door": charts},
             "quarantine": quarantine, "sources": SOURCES}
@@ -239,6 +240,49 @@ def load_db(path=DB_PATH):
         doc = json.load(f)
     return {"products": doc["products"], "reference": doc["reference_tables"],
             "quarantine": doc.get("quarantine", []), "sources": doc.get("sources", {})}
+
+
+# --- human curations (durable overlay; survives rebuilds; non-clobberable) ---
+
+CURATIONS_PATH = os.path.join(os.path.dirname(__file__), "curations.json")
+
+
+def _coerce(v):
+    if not isinstance(v, str):
+        return v
+    s = v.strip()
+    for cast in (int, float):
+        try:
+            return cast(s)
+        except ValueError:
+            pass
+    return s
+
+
+def load_curations():
+    if os.path.exists(CURATIONS_PATH):
+        return json.load(io.open(CURATIONS_PATH, encoding="utf-8"))
+    return {}
+
+
+def save_curation(part_number, field, value, by="ui"):
+    cur = load_curations()
+    cur.setdefault(part_number, {})[field] = {"value": _coerce(value), "by": by}
+    with io.open(CURATIONS_PATH, "w", encoding="utf-8") as f:
+        json.dump(cur, f, ensure_ascii=False, indent=2, sort_keys=True)
+    return cur
+
+
+def apply_curations(products):
+    """Overlay human-entered values on extracted records: source=human, locked, and tracked
+    in `_curated` so the UI can badge them. A human value is never overwritten by extraction."""
+    for pn, fields in load_curations().items():
+        r = products.get(pn)
+        if not r:
+            continue                      # curation for a not-yet-extracted product (e.g. quarantined): skip in v1
+        for f, e in fields.items():
+            r[f] = e["value"]
+            r.setdefault("_curated", {})[f] = {"by": e.get("by", "?")}
 
 
 # --- gap report (the §2.4 gaps queue) ---
