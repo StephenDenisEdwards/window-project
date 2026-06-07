@@ -391,8 +391,9 @@ closed in the build below.
 | [`row_reconstruct_spike.py`](spikes/row_reconstruct_spike.py) | B1 — rows from positional layout; boilerplate strip | B-6, B-100 |
 | [`row_bind_spike.py`](spikes/row_bind_spike.py) | B1 — segmentation + x-binding (blank cells) + schema records | B-6, B-45, B-100 |
 | [`table_extract_spike.py`](spikes/table_extract_spike.py) | B1 — multi-row header naming + per-block family routing | B-6, B-45, B-100 |
-| [`chart_extract_spike.py`](spikes/chart_extract_spike.py) | B2 — chart via vision + text-layer cross-check | Grass TIOMOS p47 |
-| [`grass_tiomos_p47_hinges_chart.png`](spikes/grass_tiomos_p47_hinges_chart.png) | B2 — rendered chart crop (evidence) | Grass TIOMOS p47 |
+| [`chart_extract_spike.py`](spikes/chart_extract_spike.py) | B2 — charts via vision + text cross-check (TIOMOS mm/kg + NEXIS inches/pounds) | Grass TIOMOS p47, NEXIS p8 |
+| [`grass_tiomos_p47_hinges_chart.png`](spikes/grass_tiomos_p47_hinges_chart.png) | B2 — rendered TIOMOS chart crop (evidence) | Grass TIOMOS p47 |
+| [`grass_nexis_p8_hinges_chart.png`](spikes/grass_nexis_p8_hinges_chart.png) | B2 — rendered NEXIS chart crop (evidence) | Grass NEXIS p8 |
 
 #### First thin end-to-end build
 

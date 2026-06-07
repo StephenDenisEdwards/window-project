@@ -133,6 +133,13 @@
   cite: [grass_tiomos:p47]
   note: "same B2 low-confidence caveat as WF1"
 
+- id: WF3
+  capability: weight_feasibility
+  q: "How many NEXIS hinges for a 56in-tall, 19 lb door?"
+  expect: { hinges: 2 }           # NEXIS chart is in inches/pounds; matches the page example
+  cite: [grass_nexis:p8]
+  note: "different series -> different chart (inches/pounds); low-confidence cell read"
+
 # --- E. Comparison ---
 - id: CM1
   capability: comparison

@@ -157,7 +157,8 @@ def build_db():
                 if m:
                     r["restricts_angle_to_deg"] = int(m.group(1))
             products[pn] = r
-    return {"products": products, "reference": {"hinges_per_door": cx.VISION},
+    charts = {f"{c['brand']}/{c['series']}": c for c in cx.CHARTS}  # TIOMOS + NEXIS
+    return {"products": products, "reference": {"hinges_per_door": charts},
             "quarantine": quarantine}
 
 
@@ -265,10 +266,11 @@ def generate_gap_report(db, path=GAP_PATH):
             if r.get(f) in (None, "", []):
                 gaps.append({"part_number": pn, "family": r["family"], "field": f,
                              "kind": classify_gap(f, r["family"], pt), "cite": citation(r)})
-    if db["reference"]["hinges_per_door"].get("_verify"):
-        gaps.append({"part_number": None, "family": "reference:hinges_per_door",
-                     "field": "_cells_best_effort", "kind": "low_confidence",
-                     "cite": "grass_tiomos:p47"})
+    for key, chart in db["reference"]["hinges_per_door"].items():
+        if chart.get("_verify"):
+            gaps.append({"part_number": None, "family": f"reference:hinges_per_door[{key}]",
+                         "field": "_cells_best_effort", "kind": "low_confidence",
+                         "cite": f"{chart['source']}:p{chart['page']}"})
     by_kind = collections.Counter(g["kind"] for g in gaps)
     actionable = collections.Counter(
         f"{g['family']}.{g['field']}" for g in gaps if g["kind"] == "unparsed")
@@ -294,8 +296,11 @@ def find(db, **flt):
     return out
 
 
-def hinges_for(db, height_mm, weight_kg):
-    for c in db["reference"]["hinges_per_door"]["_cells_best_effort"]:
+def hinges_for(db, height_mm, weight_kg, brand="Grass", series="TIOMOS"):
+    chart = db["reference"]["hinges_per_door"].get(f"{brand}/{series}")
+    if not chart:
+        return None                       # no chart extracted for this series yet
+    for c in chart["_cells_best_effort"]:
         lo, hi = c["weight_kg"]
         if lo <= weight_kg <= hi and height_mm <= c["max_door_height_mm"]:
             return c["hinges"]
@@ -352,6 +357,10 @@ def run_eval(db):
     n = hinges_for(db, 1500, 11)
     check("WF1", n == 3, f"1500mm/11kg -> {n} hinges  (B2 low-confidence cell read)")
 
+    # WF3 — Nexis weight feasibility (its chart is in inches/pounds; page example 56in/19lb)
+    n = hinges_for(db, 1422, 9, series="NEXIS")   # 56in / ~19lb
+    check("WF3", n == 2, f"NEXIS 1422mm/9kg -> {n} hinges  (matches the p8 worked example)")
+
     # SD1 — should-decline: no per-hinge weight rating in the corpus
     r = get(db, "BP71B3580")
     ok = bool(r) and "max_door_weight_kg" not in r          # correct = decline
@@ -369,7 +378,7 @@ def main():
     for r in prods.values():
         fams[r["family"]] = fams.get(r["family"], 0) + 1
     print("=" * 78)
-    print("THIN END-TO-END BUILD — Würth Section B (B-6, B-45, B-100) + Grass p47 chart")
+    print("THIN END-TO-END BUILD — Würth Section B (B-6/B-45/B-100) + Grass TIOMOS p47 & NEXIS p8 charts")
     print("=" * 78)
     print(f"products: {len(prods)}  by family: {fams}  | reference tables: "
           f"{list(db['reference'])}  | quarantined: {len(db['quarantine'])}")

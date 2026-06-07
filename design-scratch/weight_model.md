@@ -61,9 +61,12 @@ Four limits to be precise about:
 
 1. **Needs door *height AND weight*, not weight alone** — the chart is 2-D; the count rises
    with height for the same weight.
-2. **Grass TIOMOS only** — it's the one chart we've extracted (p47). No table yet for Blum,
-   Salice, or even Grass NEXIS, so those brands **can't** be answered (a not-yet-extracted
-   gap, not a real absence).
+2. **Grass TIOMOS *and* NEXIS** — both charts are now extracted (TIOMOS p47 in mm/kg;
+   NEXIS p8 in **inches/pounds** — the two Grass lines use *different units*, a Tier-A
+   normalization point). Stored keyed by `(brand, series)`; `hinges_for(..., series=…)`
+   picks the right one. No table yet for Blum or Salice, so those still can't be answered
+   (a not-yet-extracted gap, not a real absence). The NEXIS feasibility check (WF3) matches
+   the page's worked example (56in / 19lb → 2 hinges).
 3. **Low-confidence and coarse** — it's the best-effort B2 vision read (a simplified
    4-cell diagonal, `_verify` flagged). The `None` results above are holes between those
    cells (a light-but-tall door, or off the top of the chart); a fully-digitized chart
