@@ -185,6 +185,34 @@ field = {
 
 Field tables below list the **logical field + type**; assume each is wrapped as above.
 
+##### Provenance & source resolution
+
+A value's provenance is three parts — **`source` (which catalog) · `page` (which page) ·
+`bbox` (where on the page)** — and the DB is **self-describing** via a top-level `sources`
+registry that resolves the `source` code to the actual catalog:
+
+```
+sources = {
+  "wurth_b":      {pdf: "catalogs/wurth-baer-section-b-concealed-hinges.pdf",
+                   label: "Würth Baer — Section B", page_label: "B-{n}"},
+  "wurth_c":      {pdf: "catalogs/Wurth_Baer_Section_C.pdf", …, page_label: "C-{n}"},
+  "grass_tiomos": {pdf: "catalogs/grass-tiomos-catalog.pdf", …, page_label: "p{n}"},
+  "grass_nexis":  {pdf: "catalogs/grass-nexis-catalog.pdf",  …, page_label: "p{n}"},
+}
+```
+
+So the full chain resolves from the JSON alone — nothing implicit in code:
+
+```
+record._source ─▶ sources[code].pdf      (which catalog file)
+record._page   ─▶ pdf page (pdf[_page-1]); display via page_label (e.g. "B-6")
+record._bbox   ─▶ rectangle = bbox × (rendered image w, h)   (the exact region)
+```
+
+Notes: `_page` is **PDF-page-relative** (for `wurth_b`, PDF page N == printed "B-N";
+`page_label` carries that convention). `_bbox` is normalized 0..1 so it overlays at any
+render DPI. This is exactly what a UI needs to open the right page and draw the highlight.
+
 #### Shared product base (all families)
 
 | Field | Type | Notes |
