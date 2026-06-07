@@ -30,6 +30,19 @@ import chart_extract_spike as cx   # noqa: E402  (B2 chart read)
 SECTION_B = [6, 45, 100]
 DB_PATH = os.path.join(os.path.dirname(__file__), "product_db.json")
 
+# Resolve a record's `_source` code -> the actual catalog PDF (makes the DB self-describing:
+# record._source -> SOURCES[code].pdf, + _page + _bbox = a renderable (catalog, page, region)).
+SOURCES = {
+    "wurth_b": {"pdf": "catalogs/wurth-baer-section-b-concealed-hinges.pdf",
+                "label": "Würth Baer — Section B (Concealed Hinges)", "page_label": "B-{n}"},
+    "wurth_c": {"pdf": "catalogs/Wurth_Baer_Section_C.pdf",
+                "label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)", "page_label": "C-{n}"},
+    "grass_tiomos": {"pdf": "catalogs/grass-tiomos-catalog.pdf",
+                     "label": "Grass TIOMOS", "page_label": "p{n}"},
+    "grass_nexis": {"pdf": "catalogs/grass-nexis-catalog.pdf",
+                    "label": "Grass NEXIS", "page_label": "p{n}"},
+}
+
 
 # --- normalization / join ---
 
@@ -191,7 +204,7 @@ def build_db():
             products[pn] = r
     charts = {f"{c['brand']}/{c['series']}": c for c in cx.CHARTS}  # TIOMOS + NEXIS
     return {"products": products, "reference": {"hinges_per_door": charts},
-            "quarantine": quarantine}
+            "quarantine": quarantine, "sources": SOURCES}
 
 
 # --- persistence (build once, query many) ---
@@ -205,6 +218,7 @@ def save_db(db, path=DB_PATH):
             "sources": ["wurth_b:B-6", "wurth_b:B-45", "wurth_b:B-100", "grass_tiomos:p47"],
             "product_count": len(db["products"]),
         },
+        "sources": db["sources"],
         "products": db["products"],
         "reference_tables": db["reference"],
         "quarantine": db["quarantine"],
@@ -218,7 +232,7 @@ def load_db(path=DB_PATH):
     with io.open(path, encoding="utf-8") as f:
         doc = json.load(f)
     return {"products": doc["products"], "reference": doc["reference_tables"],
-            "quarantine": doc.get("quarantine", [])}
+            "quarantine": doc.get("quarantine", []), "sources": doc.get("sources", {})}
 
 
 # --- gap report (the §2.4 gaps queue) ---
