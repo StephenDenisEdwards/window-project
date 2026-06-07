@@ -410,10 +410,15 @@ Now also closed (via the block **title**, now returned by `parse_page`):
 - **`cam_adjustment`** (single/two cam) from the block title → **CC2 now genuinely passes**
   (was only passing by key-sort order); plus Blum `series` ("CLIP top BLUMOTION") from its
   title.
-- **Gap report** (`gap_report.json`, gitignored) — the §2.4 queue: every empty expected
-  field per record, typed **absent** (catalog lacks it: weight, price) vs **extraction**
-  (on the page, not yet pulled) vs **low_confidence** (chart cells). Current run: 335 gaps
-  (236 extraction · 98 absent · 1 low-confidence).
+- **Gap report** (`gap_report.json`, gitignored) — the §2.4 queue, with **conditional
+  per-record expectations** (no demanding fields that don't apply) and each empty field
+  classified by *why*: **absent_in_catalog** (source never has it — price/weight) ·
+  **not_on_page** (printed elsewhere, not on this product's page) · **unparsed** (data *is*
+  on the page, we missed it = the real to-do) · **low_confidence**. Current run: 292 empty
+  fields → 98 absent · 120 not-on-page · **73 actionable (unparsed)** · 1 low-confidence.
+  The 73 actionable collapse to **3 fields**: `compatible_hinge_series` (35),
+  `overlay_max_mm` (22), TIOMOS `opening_angle_deg` (16) — i.e. ~3 small extractor tasks,
+  not 300-odd problems.
 
 Findings still open:
 - **SF1 stays ambiguous** — Blum "110 vs 110+" overlay-mm is in a *block bullet* (not the

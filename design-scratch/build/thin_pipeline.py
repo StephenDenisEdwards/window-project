@@ -192,47 +192,88 @@ def load_db(path=DB_PATH):
 
 GAP_PATH = os.path.join(os.path.dirname(__file__), "gap_report.json")
 
-# fields the catalog genuinely does not carry -> 'absent' (sourcing / should-decline)
-ABSENT_IN_CATALOG = {
-    "concealed_hinge": ["max_door_weight_kg", "price_usd"],
-    "baseplate": ["price_usd"],
-    "accessory": ["price_usd"],
+# Fields the catalog never carries (on ANY page) -> 'absent_in_catalog'.
+ABSENT = {
+    "concealed_hinge": {"max_door_weight_kg", "price_usd"},
+    "baseplate": {"price_usd"},
+    "accessory": {"price_usd"},
 }
-# fields that are on the page (extract when present) -> empty ones are 'extraction' gaps
-EXPECTED = {
-    "concealed_hinge": ["brand", "series", "opening_angle_deg", "overlay_class", "overlay_max_mm",
-                        "fixing", "closing_type", "boring_pattern_mm", "max_door_thickness_mm",
-                        "cup_depth_mm", "certifications", "application", "max_door_weight_kg", "price_usd"],
-    "baseplate": ["brand", "series", "height_mm", "plate_style", "fixing_type", "material",
-                  "cam_adjustment", "compatible_hinge_series", "price_usd"],
-    "accessory": ["brand", "accessory_type", "for_series", "restricts_angle_to_deg", "color", "price_usd"],
+
+# Evidence that a field's data is physically on the page. Lets us split
+# 'not_on_page' (evidence missing on this product's page) from
+# 'unparsed' (evidence present -> data is there, we just didn't pull it = the real to-do).
+EVIDENCE = {
+    "cup_depth_mm": r"cup\s*depth",
+    "certifications": r"ANSI|BIFMA|KCMA|BHMA",
+    "application": r"blind corner|angled|zero protrusion|narrow aluminum",
+    "boring_pattern_mm": r"boring",
+    "max_door_thickness_mm": r"door thickness",
+    "overlay_max_mm": r"overlays?\s+up to\s+\d|\(\d+\s*mm\)",
+    "compatible_hinge_series": r"series\s+[a-z]\b|compatible with all",
+    "opening_angle_deg": r"\b\d{2,3}\s*[°º]",
+    "series": r"BLUMOTION|TIOMOS|NEXIS|CLIP top",
 }
+
+
+def expected_fields(r):
+    """Conditional per-record expectations — don't demand fields that don't apply."""
+    fam = r["family"]
+    if fam == "concealed_hinge":
+        return ["brand", "series", "opening_angle_deg", "overlay_class", "overlay_max_mm",
+                "fixing", "closing_type", "boring_pattern_mm", "max_door_thickness_mm",
+                "cup_depth_mm", "certifications", "application", "max_door_weight_kg", "price_usd"]
+    if fam == "baseplate":
+        return ["brand", "height_mm", "plate_style", "fixing_type", "material",
+                "cam_adjustment", "compatible_hinge_series", "price_usd"]
+    if fam == "accessory":
+        f = ["brand", "accessory_type", "description", "price_usd"]
+        if r.get("accessory_type") == "restriction_clip":   # only clips have a restriction angle
+            f.append("restricts_angle_to_deg")
+        return f
+    return []
+
+
+_PAGE_TEXT = {}
+
+
+def _page_text(source, page):
+    if source != "wurth_b" or page is None:
+        return ""
+    if page not in _PAGE_TEXT:
+        _PAGE_TEXT[page] = fitz.open(tx.PDF)[page - 1].get_text()
+    return _PAGE_TEXT[page]
+
+
+def classify_gap(field, fam, page_text):
+    if field in ABSENT.get(fam, set()):
+        return "absent_in_catalog"          # the source never has it
+    pat = EVIDENCE.get(field)
+    if pat is None:
+        return "unparsed"                    # structural field that should have been filled
+    return "unparsed" if re.search(pat, page_text, re.I) else "not_on_page"
 
 
 def generate_gap_report(db, path=GAP_PATH):
     gaps = []
     for pn, r in db["products"].items():
-        fam = r["family"]
-        absent = set(ABSENT_IN_CATALOG.get(fam, []))
-        for f in EXPECTED.get(fam, []):
+        pt = _page_text(r.get("_source"), r.get("_page"))
+        for f in expected_fields(r):
             if r.get(f) in (None, "", []):
-                gaps.append({
-                    "part_number": pn, "family": fam, "field": f,
-                    "kind": "absent" if f in absent else "extraction",
-                    "cite": citation(r),
-                })
-    # low-confidence reference-table cells
+                gaps.append({"part_number": pn, "family": r["family"], "field": f,
+                             "kind": classify_gap(f, r["family"], pt), "cite": citation(r)})
     if db["reference"]["hinges_per_door"].get("_verify"):
         gaps.append({"part_number": None, "family": "reference:hinges_per_door",
                      "field": "_cells_best_effort", "kind": "low_confidence",
                      "cite": "grass_tiomos:p47"})
     by_kind = collections.Counter(g["kind"] for g in gaps)
-    by_field = collections.Counter(f"{g['family']}.{g['field']}" for g in gaps)
-    doc = {"meta": {"total_gaps": len(gaps), "by_kind": dict(by_kind)},
+    actionable = collections.Counter(
+        f"{g['family']}.{g['field']}" for g in gaps if g["kind"] == "unparsed")
+    doc = {"meta": {"total_gaps": len(gaps), "by_kind": dict(by_kind),
+                    "actionable_unparsed": sum(by_kind[k] for k in ["unparsed"])},
            "gaps": gaps}
     with io.open(path, "w", encoding="utf-8") as f:
         json.dump(doc, f, ensure_ascii=False, indent=2, sort_keys=True)
-    return path, by_kind, by_field
+    return path, by_kind, actionable
 
 
 # --- query layer ---
@@ -336,13 +377,11 @@ def main():
         print(f"  [{status}] {eid:<4} {detail}".encode("ascii", "replace").decode())
     print(f"\n  eval: {npass}/{len(rows)} passed")
 
-    gpath, by_kind, by_field = generate_gap_report(db)
-    print(f"\n  gap report -> {os.path.relpath(gpath)}  ({sum(by_kind.values())} gaps)")
-    print(f"    by kind: {dict(by_kind)}")
-    print("    top extraction gaps:")
-    for name, n in by_field.most_common(8):
-        if name.endswith(".price_usd") or ".max_door_weight_kg" in name:
-            continue
+    gpath, by_kind, actionable = generate_gap_report(db)
+    print(f"\n  gap report -> {os.path.relpath(gpath)}  ({sum(by_kind.values())} fields empty)")
+    print(f"    by reason: {dict(by_kind)}")
+    print(f"    ACTIONABLE (unparsed — on the page, not pulled yet):")
+    for name, n in actionable.most_common():
         print(f"      {name:<40} {n}")
 
 
