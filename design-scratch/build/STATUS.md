@@ -24,6 +24,11 @@ registry** mapping each `_source` code → its catalog PDF, label, and page-labe
 `(catalog, page, region)` from the JSON alone (e.g. `BP71B3580 → …section-b….pdf, B-6, [bbox]`).
 Region-level today; cell-level (per-field) bbox is a later refinement.
 
+**Product photos:** 66/68 products carry a block-level **`_image`** (`{path, source, page,
+bbox, scope:"block"}`) — the representative photo extracted from the page's embedded rasters
+(logo/icons filtered). Saved to `build/images/` (gitignored, reproducible). Per-block, not
+per-SKU; the 2 without are the boring-bit accessories whose block has no photo.
+
 **Reference tables:** `hinges_per_door` for `Grass/TIOMOS` (mm/kg) and `Grass/NEXIS`
 (inches/pounds) — both low-confidence vision reads.
 

@@ -26,6 +26,7 @@ import fitz  # noqa: E402
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "spikes"))
 import table_extract_spike as tx   # noqa: E402  (B1 extraction)
 import chart_extract_spike as cx   # noqa: E402  (B2 chart read)
+import image_extract_spike as ix   # noqa: E402  (product photos)
 
 SECTION_B = [6, 45, 100]
 DB_PATH = os.path.join(os.path.dirname(__file__), "product_db.json")
@@ -142,7 +143,9 @@ def overlay_mm_from_bullets(bullets):
 
 def extract_page(page_no):
     out = []
-    for b in tx.parse_page(page_no):
+    blocks = tx.parse_page(page_no)
+    images = ix.link_images(tx.PDF, page_no, blocks, "wurth_b")   # block_index -> photo
+    for bi, b in enumerate(blocks):
         emit = tx.EMIT.get(b["family"])
         if not emit:
             continue
@@ -150,6 +153,7 @@ def extract_page(page_no):
         title = b.get("title")
         wing = "WING" in (b["banner"] or "").upper()
         cam = cam_from_title(title)
+        img = images.get(bi)                          # representative block photo (or None)
         for cells, sub, bbox in b["rows"]:
             for r in emit(cells, b["cols"], sub, page_no, bbox):
                 if brand:
@@ -168,6 +172,8 @@ def extract_page(page_no):
                         r["plate_style"] = "wing"
                     if cam:                                       # single/two cam from the title
                         r["cam_adjustment"] = cam
+                if img:
+                    r["_image"] = img                             # block-level representative photo
                 out.append(r)
     return out
 

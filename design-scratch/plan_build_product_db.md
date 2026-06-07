@@ -213,6 +213,13 @@ Notes: `_page` is **PDF-page-relative** (for `wurth_b`, PDF page N == printed "B
 `page_label` carries that convention). `_bbox` is normalized 0..1 so it overlays at any
 render DPI. This is exactly what a UI needs to open the right page and draw the highlight.
 
+**Product images.** Records also carry an optional **`_image`**
+(`{path, source, page, bbox, scope}`) — a representative product photo extracted from the
+page's embedded rasters and linked at **block level** (one photo shared by a block's SKUs,
+`scope: "block"`). Images save to `build/images/` (gitignored, reproducible). Per-block, not
+per-SKU; logo/icons are filtered (right-margin + min-size); vector dimension diagrams aren't
+captured (they're not rasters).
+
 #### Shared product base (all families)
 
 | Field | Type | Notes |
