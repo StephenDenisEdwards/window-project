@@ -1,5 +1,17 @@
 # Thin build — status
 
+> **⚠️ RESET (taxonomy-first).** The "913 products" DB was found to be **largely garbage** —
+> the hand-rolled positional table parser only works on uniform spec tables and merges prose
+> into fields on the many non-uniform pages (e.g. the Onyx list put a marketing blurb into a
+> part number). The vanity "eval 11/11" only tested ~11 SKUs on the 3 tuned pages, hiding it.
+> **That DB is discarded.** New backbone: a trustworthy **product-type taxonomy** built from
+> section banners (reliable), not table cells — [`../taxonomy.md`](../taxonomy.md) /
+> `taxonomy.json` (`build/taxonomy.py`). Extraction will be **rebuilt type-by-type with a
+> hard validation gate** (only clean SKUs; curate the rest). The analysis + data model +
+> provenance/UI/curation machinery are kept; the *extraction* is what's being redone. The
+> sections below describe the (now superseded) positional-parser build.
+
+
 > Where the first end-to-end build ([`thin_pipeline.py`](thin_pipeline.py)) currently
 > stands. Companions: [`../plan_build_product_db.md`](../plan_build_product_db.md) (plan),
 > [`../gap_analysis.md`](../gap_analysis.md) (gaps), [`../weight_model.md`](../weight_model.md)
