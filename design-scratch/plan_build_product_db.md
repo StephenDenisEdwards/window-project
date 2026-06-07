@@ -519,11 +519,25 @@ idempotent (re-runs forward when a gap is resolved — ingestion model).
 | Warning | suspicious but usable | flag for review; node stays usable |
 
 #### Gap generation (the queue)
-Consolidate gaps from all phases into one typed queue (kinds from §1: **absent /
-low-confidence / conflict**, plus **reconciliation**; quarantine tracked separately). Each
-gap carries part number, field, reason, source + page, and any candidate value(s).
-- **Absent gaps are generated here** by diffing each node's populated fields against its
-  family schema's expected fields.
+Consolidate gaps from all phases into one typed queue. Each gap carries part number, field,
+reason, source + page, and any candidate value(s). **An empty field must be classified by
+*why* it's empty** — an undifferentiated count is meaningless (the thin build's "335 gaps"
+was ~30% data the catalog can't have, ~40% not-on-this-page, ~15% phantom). The
+build-validated taxonomy ([`gap_analysis.md`](gap_analysis.md)):
+- **absent_in_catalog** — source never carries it (price, per-hinge weight) → sourcing /
+  should-decline.
+- **not_on_page** — real data, but on another page/source, not this product's → defer.
+- **unparsed** — data *is* on this page, not pulled yet → **the real to-do**.
+- **low_confidence** — extracted but uncertain (vision) → human verify. (Plus
+  **conflict** / **reconciliation** from the merge phase; quarantine tracked separately.)
+
+Mechanics:
+- **Conditional per-record expectations** — don't demand fields that don't apply (drill
+  bits have no restriction angle; baseplates no `series`), so no phantom gaps.
+- **Evidence probe** distinguishes `not_on_page` from `unparsed`: does the page text contain
+  the field's marker? present + empty → unparsed; absent → not_on_page.
+- **Absent gaps generated here** by diffing each node's populated fields against its family
+  schema's (conditional) expected fields.
 - **Criticality is set by the consumer** — a field needed by an eval query (§8/§9) or an
   engine rule (§3) is *critical*; cosmetic fields are not.
 - **Prioritized by impact** (refinement #6) — gaps blocking an eval-set query rank first;
