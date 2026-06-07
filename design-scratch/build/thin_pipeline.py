@@ -366,6 +366,10 @@ def run_eval(db):
     ok = bool(r) and "max_door_weight_kg" not in r          # correct = decline
     check("SD1", ok, "no per-hinge kg field present -> correctly declines (honesty)")
 
+    # SD3 — should-decline: no Blum hinges-per-door chart in our catalogs (sourcing gap)
+    n = hinges_for(db, 2000, 25, brand="Blum", series="CLIP top BLUMOTION")
+    check("SD3", n is None, "no Blum chart -> hinges_for returns None -> correctly declines")
+
     return rows
 
 

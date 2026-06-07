@@ -168,6 +168,14 @@
     reason: "catalogs carry no pricing (absent gap)"
   cite: [wurth_b:B-6]
 
+- id: SD3
+  capability: should_decline
+  q: "How many Blum hinges for a 2000mm-tall, 25 kg door?"
+  expect:
+    answer: decline
+    reason: "no Blum hinges-per-door chart in our catalogs (sourcing gap) — only Grass TIOMOS/NEXIS are covered"
+  note: "hinges_for(series='CLIP top BLUMOTION') returns None -> decline, never invent; see weight_model.md"
+
 # --- G. Deferred family (Section C not yet structured) ---
 - id: DF1
   capability: deferred_family

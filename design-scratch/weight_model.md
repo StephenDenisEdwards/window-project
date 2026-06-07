@@ -75,8 +75,33 @@ Four limits to be precise about:
    count doesn't depend on the specific overlay/fixing variant. So "hinges of a certain
    type" means the series/system, which is how hinge-count actually works.
 
-So: **for a Grass TIOMOS door, given height + weight, yes — the DB yields the hinge count,
-at low confidence with edge gaps.** Other brands need their charts extracted first.
+So: **for a Grass TIOMOS or NEXIS door, given height + weight, yes — the DB yields the hinge
+count, at low confidence with edge gaps.** Other brands need their charts extracted first.
+
+## Coverage by series — and the Blum / Salice gap
+
+The hinges-per-door chart **only exists in the manufacturer catalogs**, and we only have
+Grass's. Status per brand:
+
+| Brand / series | Chart? | Source |
+|----------------|:------:|--------|
+| Grass TIOMOS | ✓ extracted | `grass_tiomos` p47 (mm/kg) |
+| Grass NEXIS | ✓ extracted | `grass_nexis` p8 (inches/pounds) |
+| Blum | ✗ | no Blum manufacturer catalog in `catalogs/` |
+| Salice | ✗ | none (only a single AIR figure — below) |
+| Pro (Würth house) | ✗ | distributor catalog carries no load data |
+
+- The **distributor** catalog (Würth Section B) carries **no load data for any brand**, so
+  Blum/Salice hinge-count can't be derived from it.
+- **Blum & Salice are a *sourcing gap*, not an extraction task** — the data simply isn't in
+  the PDFs we have. Answering weight-feasibility for them would mean **inventing** it (the
+  same mistake as the per-hinge weight assumption). The DB correctly **declines**:
+  `hinges_for(series=…)` returns `None` when no chart is keyed for that series. To close it,
+  drop the Blum/Salice manufacturer catalogs into `catalogs/` and extract them the same way.
+- **One Salice exception:** Section B **p99** states, for the **Salice AIR** system only,
+  *"Maximum door weight (2 hinges): 44 lbs."* That's a single per-system figure, **not** a
+  height×weight chart — to be captured (if at all) as a one-off AIR spec, never generalized
+  to Salice hinges at large.
 
 ## Section C — weight/force is handled *differently again* per family
 
