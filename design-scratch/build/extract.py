@@ -73,9 +73,74 @@ def extract_blum_cliptop():
     return products, quarantine
 
 
+def _height_mm(v):
+    m = re.search(r"\d+(?:\.\d+)?", v or "")
+    if not m:
+        return None
+    f = float(m.group())
+    return int(f) if f == int(f) else f
+
+
+def _material(v):
+    v = (v or "").lower()
+    if "die-cast" in v or "die cast" in v:
+        return "zinc_die_cast"
+    if "stamped" in v:
+        return "stamped_steel"
+    return None
+
+
+def _fixing_baseplate(v):
+    v = (v or "").lower()
+    for key, out in (("expando", "expando"), ("inserta", "inserta"), ("dowel", "dowel"),
+                     ("truss", "truss_head_screw"), ("system screw", "system_screw"),
+                     ("pre-mounted", "system_screw"), ("premounted", "system_screw"),
+                     ("wood", "wood_screw")):
+        if key in v:
+            return out
+    return None
+
+
+def extract_blum_baseplate():
+    """Blum CLIP mounting plates — Section B pages 19-21 (Item#/Height/Fixing/Material columns).
+    Strips diagram-callout letters from the Item# cell; the gate drops the drill-bit sub-block.
+    Column semantics differ for the B-20 face-frame sub-table (variant text lands in the Fixing
+    column) — preserved as fixing_raw rather than coerced or dropped."""
+    pages = [19, 20, 21]
+    products, quarantine = [], []
+    for p in pages:
+        for b in tx.parse_page(p):
+            if b["family"] != "baseplate" or "BLUM" not in (b["banner"] or "").upper():
+                continue
+            for cells, sub, bbox in b["rows"]:
+                pn = tx.strip_callout(cells.get("Item #", "") or "")
+                if not clean_sku(pn):
+                    quarantine.append({"page": p, "raw": cells, "bbox": bbox})
+                    continue                       # GATE: only clean BP baseplate SKUs
+                fx_raw = (cells.get("Fixing Type") or "").strip() or None
+                mat_raw = (cells.get("Material") or "").strip() or None
+                prod = {
+                    "part_number": pn, "brand": "Blum", "family": "baseplate",
+                    "product_type": "baseplate", "section": b["banner"], "series": "CLIP",
+                    "plate_style": sub,
+                    "height_mm": _height_mm(cells.get("Height")),
+                    "fixing_type": _fixing_baseplate(fx_raw),
+                    "material": _material(mat_raw),
+                    "inset_recess_in": (cells.get("Inset Recess") or "").strip() or None,
+                    "_source": "wurth_b", "_page": p, "_bbox": bbox,
+                }
+                if fx_raw and prod["fixing_type"] is None:
+                    prod["fixing_raw"] = fx_raw     # preserve real-but-unmapped values
+                if mat_raw and prod["material"] is None:
+                    prod["material_raw"] = mat_raw
+                products.append(prod)
+    return products, quarantine
+
+
 # add a new product type here once its extractor is written & verified
 EXTRACTORS = [
     ("blum_cliptop", extract_blum_cliptop),
+    ("blum_baseplate", extract_blum_baseplate),
 ]
 
 
