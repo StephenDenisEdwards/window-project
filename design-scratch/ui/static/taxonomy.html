@@ -46,6 +46,8 @@
 <script>
 let DATA=null,BYID={},collapsed={},curId=null;const $=s=>document.querySelector(s);
 const idOf=s=>s.catalog+"|"+s.section;
+const OTHERCATS=[["product","Product (in Sections)"],["reference","Other → Reference"],["tooling","Other → Tooling"],["charts","Other → Charts"]];
+const statusOptions=cur=>OTHERCATS.map(([v,l])=>`<option value="${v}" ${v===(cur||"product")?"selected":""}>${l}</option>`).join("");
 async function boot(){ await load(); $("#q").oninput=render; render(); }
 async function load(){
   DATA=await (await fetch("/api/taxonomy")).json();
@@ -65,8 +67,9 @@ function render(){
       html+=`<div class="type" data-ck="${ck}">${open?"▾":"▸"} ${t.product_type} <span class="ct">(${t.sections.length})</span></div>`;
       if(open){ html+=`<div class="kids">`+t.sections.map(s=>{
         const p=s.pages[0]===s.pages[1]?s.pages[0]:`${s.pages[0]}–${s.pages[1]}`;
-        return `<div class="item ${isNot(s)?'notprod':''}" data-id="${idOf(s)}">
-          <div class="nm">${s.section}${isNot(s)&&s.review.note?` <span class="ty flag">${s.review.note}</span>`:""}</div>
+        const note=isOther(s)&&s.review.note?` <span class="ty flag">${s.review.note}</span>`:"";
+        return `<div class="item ${isOther(s)?'notprod':''}" data-id="${idOf(s)}">
+          <div class="nm">${s.section}${note}</div>
           <div class="pg">p${p} · ~${s.approx_skus}</div></div>`;
       }).join("")+`</div>`; }
     });
@@ -75,7 +78,7 @@ function render(){
   document.querySelectorAll(".type").forEach(el=>el.onclick=()=>{collapsed[el.dataset.ck]=!collapsed[el.dataset.ck];render();});
   document.querySelectorAll(".item").forEach(el=>el.onclick=()=>sel(el.dataset.id));
 }
-function isNot(s){ return s.review&&s.review.status==="not_product"; }
+function isOther(s){ return s.review&&s.review.status&&s.review.status!=="product"; }
 function sel(id){
   curId=id;
   document.querySelectorAll(".item").forEach(e=>e.classList.toggle("sel",e.dataset.id===id));
@@ -86,8 +89,8 @@ function sel(id){
   $("#src").innerHTML=`<div class="big">${s.section}</div>
     <div class="cap">auto type <b>${s.product_type}</b> · ${src.label||s.catalog} · ${pl} · ~${s.approx_skus} skus</div>
     <div class="review">
-      <label><input type="checkbox" id="notprod" ${isNot(s)?'checked':''}> <b>Not a product type</b> (reference / info / chart)</label>
-      <input type="text" id="rvnote" placeholder="note — what is it? (e.g. overlay chart)" value="${(rv.note||'').replace(/"/g,'&quot;')}">
+      <div>classify: <select id="rvstatus">${statusOptions(rv.status)}</select></div>
+      <input type="text" id="rvnote" placeholder="note (optional, e.g. overlay chart)" value="${(rv.note||'').replace(/"/g,'&quot;')}">
       <button onclick="saveReview()">save</button>
     </div>
     <div class="cap">yellow box = the banner this section was identified from</div>
@@ -97,7 +100,7 @@ async function saveReview(){
   const s=BYID[curId];
   await fetch("/api/review",{method:"POST",headers:{"Content-Type":"application/json"},
     body:JSON.stringify({catalog:s.catalog, section:s.section,
-      status:$("#notprod").checked?"not_product":"product", note:$("#rvnote").value})});
+      status:$("#rvstatus").value, note:$("#rvnote").value})});
   await load(); render(); if(BYID[curId]) sel(curId);
 }
 boot();

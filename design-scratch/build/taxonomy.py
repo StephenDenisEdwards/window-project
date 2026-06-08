@@ -158,7 +158,9 @@ def grouped(tax):
         by_type.setdefault(t["product_type"], []).append(t)
     sections = {"name": "Sections",
                 "types": [{"product_type": pt, "sections": by_type[pt]} for pt in sorted(by_type)]}
-    other = {"name": "Other", "types": [{"product_type": "Misc", "sections": []}]}
+    # Other = non-product buckets (populated by human review at serve time)
+    other = {"name": "Other",
+             "types": [{"product_type": c, "sections": []} for c in ("Reference", "Tooling", "Charts")]}
     return {"groups": [sections, other]}
 
 

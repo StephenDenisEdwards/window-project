@@ -31,6 +31,7 @@ _CACHE: dict = {}
 
 # human review overlay — durable, committed, separate from the regenerated taxonomy.json
 REVIEW_PATH = os.path.join(BUILD, "taxonomy_review.json")
+OTHER_CATS = ["reference", "tooling", "charts"]   # non-product buckets under "Other"
 
 
 def _key(catalog, section):
@@ -54,16 +55,22 @@ def api_taxonomy():
     Other -> Misc (sections a human flagged as 'not a product type')."""
     rev = load_review()
     secs = [{**s, "review": rev.get(_key(s["catalog"], s["section"]))} for s in TAX]
-    products = [s for s in secs if not (s.get("review") and s["review"]["status"] == "not_product")]
-    other = [s for s in secs if s.get("review") and s["review"]["status"] == "not_product"]
+
+    def cat(s):
+        r = s.get("review")
+        return r["status"] if r and r["status"] in OTHER_CATS else None
+
+    products = [s for s in secs if not cat(s)]
+    other_by = {c: [s for s in secs if cat(s) == c] for c in OTHER_CATS}
     by_type: dict = {}
     for s in products:
         by_type.setdefault(s["product_type"], []).append(s)
     sections_group = {"name": "Sections",
                       "types": [{"product_type": pt, "sections": by_type[pt]} for pt in sorted(by_type)]}
-    other_group = {"name": "Other", "types": [{"product_type": "Misc", "sections": other}]}
+    other_group = {"name": "Other",
+                   "types": [{"product_type": c.capitalize(), "sections": other_by[c]} for c in OTHER_CATS]}
     return {"groups": [sections_group, other_group], "sources": SOURCES,
-            "counts": {"products": len(products), "other": len(other)}}
+            "counts": {"products": len(products), "other": sum(len(v) for v in other_by.values())}}
 
 
 class Review(BaseModel):
