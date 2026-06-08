@@ -1,0 +1,16 @@
+{
+  "_doc": "Durable registry of problematic catalog pages found during extraction. Authored by the assistant when a page can't be extracted cleanly/confidently; surfaced in the taxonomy UI under 'Other > Needs Review' for human review. status: open = needs review/decision; resolved = fixed (see resolution). This file is the shared record both the user and the assistant refer back to.",
+  "issues": [
+    {
+      "id": "tiomos-thick-door-header-variant",
+      "catalog": "wurth_b",
+      "section": "GRASS TIOMOS SOFT-CLOSE / SELF-CLOSE EURO HINGES",
+      "pages": [48, 52],
+      "status": "resolved",
+      "problem": "Pages 48 & 52 ('TIOMOS 95° Hinges for Thick Doors') use variant column headers 'Closing Type'/'Fixing Type' instead of the 'Close Type'/'Fixing' used on the other TIOMOS pages. The first extractor gated on the exact 'Close Type' header and silently dropped all 32 hinges on these two pages — caught only by the page-text-layer cross-check.",
+      "resolution": "Re-gated the TIOMOS extractor on the 'Boring Pattern' column and read cells by header substring; also pulls the 95° opening angle from these titles. Re-verified vs the page text layer: 116 TIOMOS hinges, 0 phantom. (commit fd8ae49)",
+      "noted_by": "claude",
+      "noted_on": "2026-06-08"
+    }
+  ]
+}

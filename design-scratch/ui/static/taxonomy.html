@@ -40,6 +40,9 @@
   .prod .pn{font-family:ui-monospace,Consolas,monospace;color:#bcd;min-width:104px}
   .prod .spec{color:var(--dim);font-size:11px}
   .ploading{color:var(--dim);font-style:italic;padding:4px 8px}
+  .ty.ok{background:#274a2c;color:#bfe6c0}
+  .issuebox{margin:10px 0;padding:10px;border:1px solid #5a3030;border-radius:6px;background:#241a1a;color:#ffd0d0}
+  .issuebox .resol{margin-top:6px;color:#bfe6c0;border-top:1px solid #3a2a2a;padding-top:6px}
   .json{background:#0c1120;border:1px solid var(--line);border-radius:6px;padding:10px;margin:8px 0;
         font:12px/1.45 ui-monospace,Consolas,monospace;color:#cde;white-space:pre;overflow:auto;max-height:360px}
   .json .k{color:#9fdcff}
@@ -60,6 +63,7 @@ let DATA=null,BYID={},collapsed={},expanded={},PRODS={},curId=null;const $=s=>do
 const idOf=s=>s.catalog+"|"+s.section;
 const OTHERCATS=[["product","Product (in Sections)"],["reference","Other → Reference"],["charts","Other → Charts"]];
 const statusOptions=cur=>OTHERCATS.map(([v,l])=>`<option value="${v}" ${v===(cur||"product")?"selected":""}>${l}</option>`).join("");
+const esc=t=>String(t==null?"":t).replace(/&/g,"&amp;").replace(/</g,"&lt;");
 async function boot(){ await load(); $("#q").oninput=render; render(); }
 async function load(){
   DATA=await (await fetch("/api/taxonomy")).json();
@@ -68,7 +72,7 @@ async function load(){
 function matches(s,q){ return !q || s.section.toLowerCase().includes(q)||s.product_type.includes(q)||(s.brand||"").toLowerCase().includes(q); }
 function render(){
   const q=$("#q").value.toLowerCase();
-  $("#count").textContent=`${DATA.counts.products} product sections · ${DATA.counts.other} in Other`;
+  $("#count").textContent=`${DATA.counts.products} product sections · ${DATA.counts.other} in Other · ${DATA.counts.issues||0} issues (${DATA.counts.issues_open||0} open)`;
   let html="";
   DATA.groups.forEach(g=>{
     const types=g.types.map(t=>({...t,sections:t.sections.filter(s=>matches(s,q))})).filter(t=>t.sections.length||(!q&&g.name==="Other"));
@@ -80,11 +84,12 @@ function render(){
       if(open){ html+=`<div class="kids">`+t.sections.map(s=>{
         const p=s.pages[0]===s.pages[1]?s.pages[0]:`${s.pages[0]}–${s.pages[1]}`;
         const note=isOther(s)&&s.review.note?` <span class="ty flag">${s.review.note}</span>`:"";
+        const itag=s._issue?` <span class="ty ${s._issue.status==='resolved'?'ok':'flag'}">${s._issue.status||'open'}</span>`:"";
         const eid=idOf(s), has=s.n_products>0, pop=!!expanded[eid];
         const car=has?`<span class="exp" data-exp="${eid}">${pop?"▾":"▸"}</span> `:`<span class="exp ph"></span> `;
         const badge=has?` <span class="badge">${s.n_products}</span>`:"";
         return `<div class="item ${isOther(s)?'notprod':''}" data-id="${eid}">
-          <div class="nm">${car}${s.section}${note}</div>
+          <div class="nm">${car}${s.section}${note}${itag}</div>
           <div class="pg">p${p}${badge} · ~${s.approx_skus}</div></div>`
           +(has&&pop?`<div class="prodkids">${renderProds(eid)}</div>`:"");
       }).join("")+`</div>`; }
@@ -142,19 +147,24 @@ function jsonBlock(obj,label){
 function sel(id){
   curId=id;
   document.querySelectorAll(".item").forEach(e=>e.classList.toggle("sel",e.dataset.id===id));
-  const s=BYID[id],src=DATA.sources[s.catalog]||{},pl=(src.page_label||"p{n}").replace("{n}",s.page),rv=s.review||{};
+  document.querySelectorAll(".prod").forEach(e=>e.classList.remove("psel"));
+  const s=BYID[id],src=DATA.sources[s.catalog]||{},pl=(src.page_label||"p{n}").replace("{n}",s.page),rv=s.review||{},it=s._issue;
   let hl="";
   if(s.bbox){const[x0,y0,x1,y1]=s.bbox;
     hl=`<div class="hl" style="left:${x0*100}%;top:${y0*100}%;width:${(x1-x0)*100}%;height:${(y1-y0)*100}%"></div>`;}
+  const mid = it
+    ? `<div class="issuebox"><b>⚠ ${(it.status||'open').toUpperCase()}</b> — ${esc(it.problem)}`
+        +(it.resolution?`<div class="resol"><b>Resolution:</b> ${esc(it.resolution)}</div>`:'')+`</div>`
+    : `<div class="review">
+        <div>classify: <select id="rvstatus">${statusOptions(rv.status)}</select></div>
+        <input type="text" id="rvnote" placeholder="note (optional, e.g. overlay chart)" value="${(rv.note||'').replace(/"/g,'&quot;')}">
+        <button onclick="saveReview()">save</button>
+      </div>`;
   $("#src").innerHTML=`<div class="big">${s.section}</div>
-    <div class="cap">auto type <b>${s.product_type}</b> · ${src.label||s.catalog} · ${pl} · ~${s.approx_skus} skus</div>
-    <div class="review">
-      <div>classify: <select id="rvstatus">${statusOptions(rv.status)}</select></div>
-      <input type="text" id="rvnote" placeholder="note (optional, e.g. overlay chart)" value="${(rv.note||'').replace(/"/g,'&quot;')}">
-      <button onclick="saveReview()">save</button>
-    </div>
-    ${jsonBlock(s,"section node (taxonomy.json)")}
-    <div class="cap">yellow box = the banner this section was identified from</div>
+    <div class="cap">${it?'flagged for review':'auto type'} <b>${s.product_type}</b> · ${src.label||s.catalog} · ${pl}${it?'':' · ~'+s.approx_skus+' skus'}</div>
+    ${mid}
+    ${jsonBlock(s, it?"issue (extraction_issues.json)":"section node (taxonomy.json)")}
+    <div class="cap">${it?'the flagged page:':'yellow box = the banner this section was identified from'}</div>
     <div class="stage"><img src="/page/${s.catalog}/${s.page}.png">${hl}</div>`;
 }
 async function saveReview(){
