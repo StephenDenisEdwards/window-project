@@ -225,7 +225,8 @@ def emit_hinge(cells, sub, page_no, bbox=None):
             o["fixing"] = val.lower().replace("-", "_") or None
         elif "clos" in L:
             v = val.lower()
-            o["closing_type"] = "soft" if "soft" in v else ("self" if "self" in v else (v or None))
+            o["closing_type"] = ("soft" if "soft" in v else "self" if "self" in v
+                                 else "free" if "free" in v else (v or None))
     o["_subgroup"] = sub
     return [o]
 
