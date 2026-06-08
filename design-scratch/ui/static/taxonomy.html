@@ -46,7 +46,7 @@
 <script>
 let DATA=null,BYID={},collapsed={},curId=null;const $=s=>document.querySelector(s);
 const idOf=s=>s.catalog+"|"+s.section;
-const OTHERCATS=[["product","Product (in Sections)"],["reference","Other → Reference"],["tooling","Other → Tooling"],["charts","Other → Charts"]];
+const OTHERCATS=[["product","Product (in Sections)"],["reference","Other → Reference"],["charts","Other → Charts"]];
 const statusOptions=cur=>OTHERCATS.map(([v,l])=>`<option value="${v}" ${v===(cur||"product")?"selected":""}>${l}</option>`).join("");
 async function boot(){ await load(); $("#q").oninput=render; render(); }
 async function load(){

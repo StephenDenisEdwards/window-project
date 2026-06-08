@@ -31,7 +31,7 @@ _CACHE: dict = {}
 
 # human review overlay — durable, committed, separate from the regenerated taxonomy.json
 REVIEW_PATH = os.path.join(BUILD, "taxonomy_review.json")
-OTHER_CATS = ["reference", "tooling", "charts"]   # non-product buckets under "Other"
+OTHER_CATS = ["reference", "charts"]   # non-product buckets under "Other" (tooling is a product type)
 
 
 def _key(catalog, section):
