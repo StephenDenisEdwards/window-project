@@ -137,10 +137,95 @@ def extract_blum_baseplate():
     return products, quarantine
 
 
+def clean_gff(pn):
+    """Validation gate for Grass TIOMOS hinge SKUs: GFF + 8-16 digits, no prose."""
+    return bool(pn) and pn == pn.upper() and " " not in pn and bool(re.fullmatch(r"GFF[0-9]{8,16}", pn))
+
+
+def _cell(cells, sub):
+    """Fetch a cell value by header substring (handles header variants e.g.
+    'Close Type' vs 'Closing Type', 'Fixing' vs 'Fixing Type')."""
+    for k, v in cells.items():
+        if sub in k.lower():
+            return v
+    return None
+
+
+def _overlay_tiomos(sub):
+    s = (sub or "").lower()
+    if "inset" in s:
+        return "inset"
+    if "half overlay" in s:
+        return "half"
+    if "overlay" in s:          # 'Full Overlay (Cranking 00)' and 'Overlay (Cranking 03)' are both full-overlay mounting
+        return "full"
+    return None
+
+
+def _fixing_tiomos(v):
+    v = (v or "").lower()
+    if "dowel" in v:
+        return "dowel"
+    if "screw" in v:
+        return "screw_on"
+    if "impresso" in v or "press" in v:
+        return "impresso"
+    return None
+
+
+def _close_tiomos(v):
+    v = (v or "").lower()
+    return "soft" if "soft" in v else "self" if "self" in v else "free" if "free" in v else None
+
+
+def extract_grass_tiomos():
+    """Grass TIOMOS euro hinges — Section B p45-52 (soft-close 45-48, self-close 49-52).
+    Overlay is in the sub-group banner (with Grass 'cranking' + max-overlay mm), not a column.
+    Gates on the hinge table shape (a Close Type column) so the accessory/tool sub-blocks that
+    share the GFF prefix (restriction clip, drill bits) are skipped. Opening angle is a
+    series/diagram property here, not per-row -> left null and flagged."""
+    pages = list(range(45, 53))
+    products, quarantine = [], []
+    for p in pages:
+        for b in tx.parse_page(p):
+            if b["family"] != "concealed_hinge" or "TIOMOS" not in (b["banner"] or "").upper():
+                continue
+            labels = [c["label"].lower() for c in (b.get("cols") or [])]
+            if not any("boring" in l for l in labels):   # only the hinge table has a Boring Pattern column;
+                continue                                 # skips Finish/Box-Qty + Description sub-blocks
+            ang = re.search(r"(\d{2,3})\s*[°º?]", b.get("title") or "")   # 'Tiomos 95° Hinges...' titles
+            for cells, sub, bbox in b["rows"]:
+                pn = tx.strip_callout(cells.get("Item #", "") or "")
+                if not clean_gff(pn):
+                    quarantine.append({"page": p, "raw": cells, "bbox": bbox})
+                    continue                         # GATE: only clean GFF hinge SKUs
+                fx_raw = (_cell(cells, "fixing") or "").strip() or None
+                cr = re.search(r"cranking\s+([0-9.]+)", (sub or "").lower())
+                mo = re.search(r"(\d+)\s*mm", sub or "")
+                prod = {
+                    "part_number": pn, "brand": "Grass", "family": "hinge",
+                    "product_type": "concealed_hinge", "section": b["banner"], "series": "TIOMOS",
+                    "overlay_class": _overlay_tiomos(sub),
+                    "overlay_raw": sub,                       # full Grass sub-group (carries cranking detail)
+                    "cranking": cr.group(1) if cr else None,
+                    "max_overlay_mm": int(mo.group(1)) if mo else None,
+                    "boring_pattern": (_cell(cells, "boring") or "").strip() or None,
+                    "fixing": _fixing_tiomos(fx_raw),
+                    "closing_type": _close_tiomos(_cell(cells, "clos")),
+                    "opening_angle_deg": int(ang.group(1)) if ang else None,
+                    "_source": "wurth_b", "_page": p, "_bbox": bbox,
+                }
+                if fx_raw and prod["fixing"] is None:
+                    prod["fixing_raw"] = fx_raw
+                products.append(prod)
+    return products, quarantine
+
+
 # add a new product type here once its extractor is written & verified
 EXTRACTORS = [
     ("blum_cliptop", extract_blum_cliptop),
     ("blum_baseplate", extract_blum_baseplate),
+    ("grass_tiomos", extract_grass_tiomos),
 ]
 
 
