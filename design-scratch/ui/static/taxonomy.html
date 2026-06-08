@@ -31,6 +31,15 @@
   .review label{display:flex;gap:7px;align-items:center;cursor:pointer}
   .review input[type=text]{width:100%;margin:7px 0}
   .review button{cursor:pointer;background:var(--accent);color:#fff;border:none;border-radius:5px;padding:5px 12px}
+  .exp{display:inline-block;width:12px;color:var(--dim);cursor:pointer;user-select:none}
+  .exp:hover{color:var(--txt)} .exp.ph{cursor:default}
+  .badge{background:#27406a;color:#9fdcff;border-radius:8px;padding:0 6px;font-weight:600}
+  .prodkids{margin:2px 0 8px 24px;border-left:1px solid var(--line);padding-left:8px}
+  .prod{display:flex;gap:10px;align-items:baseline;padding:3px 8px;border-radius:5px;cursor:pointer;border:1px solid transparent}
+  .prod:hover{background:#1d2540} .prod.psel{background:#23304f;border-color:var(--accent)}
+  .prod .pn{font-family:ui-monospace,Consolas,monospace;color:#bcd;min-width:104px}
+  .prod .spec{color:var(--dim);font-size:11px}
+  .ploading{color:var(--dim);font-style:italic;padding:4px 8px}
 </style>
 </head>
 <body>
@@ -44,7 +53,7 @@
   <div class="col" id="src"><p class="cap">Select a section to verify its source.</p></div>
 </div>
 <script>
-let DATA=null,BYID={},collapsed={},curId=null;const $=s=>document.querySelector(s);
+let DATA=null,BYID={},collapsed={},expanded={},PRODS={},curId=null;const $=s=>document.querySelector(s);
 const idOf=s=>s.catalog+"|"+s.section;
 const OTHERCATS=[["product","Product (in Sections)"],["reference","Other → Reference"],["charts","Other → Charts"]];
 const statusOptions=cur=>OTHERCATS.map(([v,l])=>`<option value="${v}" ${v===(cur||"product")?"selected":""}>${l}</option>`).join("");
@@ -68,15 +77,57 @@ function render(){
       if(open){ html+=`<div class="kids">`+t.sections.map(s=>{
         const p=s.pages[0]===s.pages[1]?s.pages[0]:`${s.pages[0]}–${s.pages[1]}`;
         const note=isOther(s)&&s.review.note?` <span class="ty flag">${s.review.note}</span>`:"";
-        return `<div class="item ${isOther(s)?'notprod':''}" data-id="${idOf(s)}">
-          <div class="nm">${s.section}${note}</div>
-          <div class="pg">p${p} · ~${s.approx_skus}</div></div>`;
+        const eid=idOf(s), has=s.n_products>0, pop=!!expanded[eid];
+        const car=has?`<span class="exp" data-exp="${eid}">${pop?"▾":"▸"}</span> `:`<span class="exp ph"></span> `;
+        const badge=has?` <span class="badge">${s.n_products}</span>`:"";
+        return `<div class="item ${isOther(s)?'notprod':''}" data-id="${eid}">
+          <div class="nm">${car}${s.section}${note}</div>
+          <div class="pg">p${p}${badge} · ~${s.approx_skus}</div></div>`
+          +(has&&pop?`<div class="prodkids">${renderProds(eid)}</div>`:"");
       }).join("")+`</div>`; }
     });
   });
   $("#list").innerHTML=html;
   document.querySelectorAll(".type").forEach(el=>el.onclick=()=>{collapsed[el.dataset.ck]=!collapsed[el.dataset.ck];render();});
   document.querySelectorAll(".item").forEach(el=>el.onclick=()=>sel(el.dataset.id));
+  document.querySelectorAll(".exp[data-exp]").forEach(el=>el.onclick=e=>{e.stopPropagation();toggleProds(el.dataset.exp);});
+  document.querySelectorAll(".prod").forEach(el=>el.onclick=e=>{e.stopPropagation();selProduct(el.dataset.eid,+el.dataset.i);});
+}
+function renderProds(eid){
+  const list=PRODS[eid];
+  if(!list) return `<div class="ploading">loading…</div>`;
+  if(!list.length) return `<div class="ploading">no products</div>`;
+  return list.map((p,i)=>{
+    const ov=p.overlay_class||p.overlay_raw||"—";
+    return `<div class="prod" data-eid="${eid}" data-i="${i}">
+      <span class="pn">${p.part_number}</span>
+      <span class="spec">${p.opening_angle_deg}° · ${ov} · ${p.fixing||"—"} · ${p.closing_type||"—"}</span></div>`;
+  }).join("");
+}
+async function toggleProds(eid){
+  expanded[eid]=!expanded[eid];
+  if(expanded[eid] && !PRODS[eid]){
+    render();                                  // show "loading…" immediately
+    const s=BYID[eid];
+    const u=`/api/products?catalog=${encodeURIComponent(s.catalog)}&section=${encodeURIComponent(s.section)}`;
+    PRODS[eid]=(await (await fetch(u)).json()).products;
+  }
+  render();
+}
+function selProduct(eid,i){
+  const p=PRODS[eid][i]; curId=null;
+  document.querySelectorAll(".prod").forEach(e=>e.classList.toggle("psel",e.dataset.eid===eid&&+e.dataset.i===i));
+  document.querySelectorAll(".item").forEach(e=>e.classList.remove("sel"));
+  const src=DATA.sources[p._source]||{}, pl=(src.page_label||"p{n}").replace("{n}",p._page);
+  const ov=p.overlay_class||p.overlay_raw||"—";
+  let hl="";
+  if(p._bbox){const[x0,y0,x1,y1]=p._bbox;
+    hl=`<div class="hl" style="left:${x0*100}%;top:${y0*100}%;width:${(x1-x0)*100}%;height:${(y1-y0)*100}%"></div>`;}
+  $("#src").innerHTML=`<div class="big">${p.part_number}</div>
+    <div class="cap"><b>${p.brand} ${p.series||""}</b> · ${p.product_type} · ${src.label||p._source} · ${pl}</div>
+    <div class="cap">opening ${p.opening_angle_deg}° · overlay ${ov} · fixing ${p.fixing||"—"} · ${p.closing_type||"—"} close</div>
+    <div class="cap">yellow box = this product's row on the page</div>
+    <div class="stage"><img src="/page/${p._source}/${p._page}.png">${hl}</div>`;
 }
 function isOther(s){ return s.review&&s.review.status&&s.review.status!=="product"; }
 function sel(id){
