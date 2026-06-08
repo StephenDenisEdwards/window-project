@@ -40,6 +40,9 @@
   .prod .pn{font-family:ui-monospace,Consolas,monospace;color:#bcd;min-width:104px}
   .prod .spec{color:var(--dim);font-size:11px}
   .ploading{color:var(--dim);font-style:italic;padding:4px 8px}
+  .json{background:#0c1120;border:1px solid var(--line);border-radius:6px;padding:10px;margin:8px 0;
+        font:12px/1.45 ui-monospace,Consolas,monospace;color:#cde;white-space:pre;overflow:auto;max-height:360px}
+  .json .k{color:#9fdcff}
 </style>
 </head>
 <body>
@@ -126,10 +129,16 @@ function selProduct(eid,i){
   $("#src").innerHTML=`<div class="big">${p.part_number}</div>
     <div class="cap"><b>${p.brand} ${p.series||""}</b> · ${p.product_type} · ${src.label||p._source} · ${pl}</div>
     <div class="cap">opening ${p.opening_angle_deg}° · overlay ${ov} · fixing ${p.fixing||"—"} · ${p.closing_type||"—"} close</div>
+    ${jsonBlock(p,"product node (products.json)")}
     <div class="cap">yellow box = this product's row on the page</div>
     <div class="stage"><img src="/page/${p._source}/${p._page}.png">${hl}</div>`;
 }
 function isOther(s){ return s.review&&s.review.status&&s.review.status!=="product"; }
+function jsonBlock(obj,label){
+  const js=JSON.stringify(obj,null,2).replace(/&/g,"&amp;").replace(/</g,"&lt;")
+            .replace(/^(\s*)("[^"]+")(:)/gm,'$1<span class="k">$2</span>$3');
+  return `<div class="cap">${label||"JSON node"}:</div><pre class="json">${js}</pre>`;
+}
 function sel(id){
   curId=id;
   document.querySelectorAll(".item").forEach(e=>e.classList.toggle("sel",e.dataset.id===id));
@@ -144,6 +153,7 @@ function sel(id){
       <input type="text" id="rvnote" placeholder="note (optional, e.g. overlay chart)" value="${(rv.note||'').replace(/"/g,'&quot;')}">
       <button onclick="saveReview()">save</button>
     </div>
+    ${jsonBlock(s,"section node (taxonomy.json)")}
     <div class="cap">yellow box = the banner this section was identified from</div>
     <div class="stage"><img src="/page/${s.catalog}/${s.page}.png">${hl}</div>`;
 }
