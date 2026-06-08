@@ -11,9 +11,12 @@
   .grid{display:grid;grid-template-columns:430px 1fr;height:calc(100vh - 49px)}
   .col{overflow:auto;padding:12px} .col.left{border-right:1px solid var(--line)}
   input,select{background:#10182b;color:var(--txt);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
-  .filters{display:flex;gap:6px;margin-bottom:10px} .filters select{flex:1}
-  .cat{color:var(--dim);text-transform:uppercase;font-size:11px;letter-spacing:.04em;margin:12px 0 4px}
-  .item{padding:6px 8px;border-radius:6px;cursor:pointer;border:1px solid transparent;display:flex;gap:8px;align-items:baseline}
+  .filters{display:flex;gap:6px;margin-bottom:10px}
+  .group{font-size:13px;font-weight:700;margin:14px 0 4px;color:var(--txt)}
+  .type{cursor:pointer;color:var(--dim);font-size:12px;margin:6px 0 2px;user-select:none}
+  .type:hover{color:var(--txt)} .type .ct{color:#667}
+  .kids{margin-left:12px;border-left:1px solid var(--line);padding-left:8px}
+  .item{padding:5px 8px;border-radius:6px;cursor:pointer;border:1px solid transparent;display:flex;gap:8px;align-items:baseline}
   .item:hover{background:#1d2540} .item.sel{background:#23304f;border-color:var(--accent)}
   .item .nm{flex:1} .item .pg{color:var(--dim);font-size:11px;white-space:nowrap}
   .ty{display:inline-block;font-size:10px;padding:1px 6px;border-radius:8px;background:#2a3350;color:#bcd;margin-top:2px}
@@ -35,44 +38,48 @@
   <span class="cap" style="margin-left:auto">click a section → its banner is highlighted on the source page</span></header>
 <div class="grid">
   <div class="col left">
-    <div class="filters">
-      <input id="q" placeholder="search…" style="flex:1">
-      <select id="ty"><option value="">all types</option></select>
-    </div>
+    <div class="filters"><input id="q" placeholder="search…" style="flex:1"></div>
     <div id="list"></div>
   </div>
   <div class="col" id="src"><p class="cap">Select a section to verify its source.</p></div>
 </div>
 <script>
-let DATA=null,curIdx=null;const $=s=>document.querySelector(s);
-async function boot(){ await load();
-  const types=[...new Set(DATA.sections.map(s=>s.product_type))].sort();
-  $("#ty").innerHTML='<option value="">all types</option>'+types.map(t=>`<option>${t}</option>`).join("");
-  $("#q").oninput=render;$("#ty").onchange=render;render();
+let DATA=null,BYID={},collapsed={},curId=null;const $=s=>document.querySelector(s);
+const idOf=s=>s.catalog+"|"+s.section;
+async function boot(){ await load(); $("#q").oninput=render; render(); }
+async function load(){
+  DATA=await (await fetch("/api/taxonomy")).json();
+  BYID={}; DATA.groups.forEach(g=>g.types.forEach(t=>t.sections.forEach(s=>BYID[idOf(s)]=s)));
 }
-async function load(){ DATA=await (await fetch("/api/taxonomy")).json(); }
-function isNot(s){ return s.review&&s.review.status==="not_product"; }
+function matches(s,q){ return !q || s.section.toLowerCase().includes(q)||s.product_type.includes(q)||(s.brand||"").toLowerCase().includes(q); }
 function render(){
-  const q=$("#q").value.toLowerCase(),ty=$("#ty").value;
-  const rows=DATA.sections.filter(s=>(!ty||s.product_type===ty)&&
-    (s.section.toLowerCase().includes(q)||s.product_type.includes(q)||(s.brand||"").toLowerCase().includes(q)));
-  const flagged=DATA.sections.filter(isNot).length;
-  $("#count").textContent=`${rows.length} sections · ${flagged} flagged not-a-product`;
-  let html="",cat=null;
-  rows.forEach(s=>{
-    if(s.catalog_label!==cat){cat=s.catalog_label;html+=`<div class="cat">${cat}</div>`;}
-    const p=s.pages[0]===s.pages[1]?s.pages[0]:`${s.pages[0]}–${s.pages[1]}`;
-    const tag=isNot(s)?`<span class="ty flag">not a product</span>`:`<span class="ty">${s.product_type}</span>`;
-    html+=`<div class="item ${isNot(s)?'notprod':''}" data-i="${DATA.sections.indexOf(s)}">
-      <div class="nm">${s.section}<br>${tag}</div><div class="pg">p${p} · ~${s.approx_skus}</div></div>`;
+  const q=$("#q").value.toLowerCase();
+  $("#count").textContent=`${DATA.counts.products} product sections · ${DATA.counts.other} in Other`;
+  let html="";
+  DATA.groups.forEach(g=>{
+    const types=g.types.map(t=>({...t,sections:t.sections.filter(s=>matches(s,q))})).filter(t=>t.sections.length||(!q&&g.name==="Other"));
+    if(!types.length) return;
+    html+=`<div class="group">${g.name}</div>`;
+    types.forEach(t=>{
+      const ck="t_"+g.name+"_"+t.product_type, open=q||!collapsed[ck];
+      html+=`<div class="type" data-ck="${ck}">${open?"▾":"▸"} ${t.product_type} <span class="ct">(${t.sections.length})</span></div>`;
+      if(open){ html+=`<div class="kids">`+t.sections.map(s=>{
+        const p=s.pages[0]===s.pages[1]?s.pages[0]:`${s.pages[0]}–${s.pages[1]}`;
+        return `<div class="item ${isNot(s)?'notprod':''}" data-id="${idOf(s)}">
+          <div class="nm">${s.section}${isNot(s)&&s.review.note?` <span class="ty flag">${s.review.note}</span>`:""}</div>
+          <div class="pg">p${p} · ~${s.approx_skus}</div></div>`;
+      }).join("")+`</div>`; }
+    });
   });
   $("#list").innerHTML=html;
-  document.querySelectorAll(".item").forEach(el=>el.onclick=()=>sel(+el.dataset.i));
+  document.querySelectorAll(".type").forEach(el=>el.onclick=()=>{collapsed[el.dataset.ck]=!collapsed[el.dataset.ck];render();});
+  document.querySelectorAll(".item").forEach(el=>el.onclick=()=>sel(el.dataset.id));
 }
-function sel(i){
-  curIdx=i;
-  document.querySelectorAll(".item").forEach(e=>e.classList.toggle("sel",+e.dataset.i===i));
-  const s=DATA.sections[i],src=DATA.sources[s.catalog]||{},pl=(src.page_label||"p{n}").replace("{n}",s.page),rv=s.review||{};
+function isNot(s){ return s.review&&s.review.status==="not_product"; }
+function sel(id){
+  curId=id;
+  document.querySelectorAll(".item").forEach(e=>e.classList.toggle("sel",e.dataset.id===id));
+  const s=BYID[id],src=DATA.sources[s.catalog]||{},pl=(src.page_label||"p{n}").replace("{n}",s.page),rv=s.review||{};
   let hl="";
   if(s.bbox){const[x0,y0,x1,y1]=s.bbox;
     hl=`<div class="hl" style="left:${x0*100}%;top:${y0*100}%;width:${(x1-x0)*100}%;height:${(y1-y0)*100}%"></div>`;}
@@ -87,11 +94,11 @@ function sel(i){
     <div class="stage"><img src="/page/${s.catalog}/${s.page}.png">${hl}</div>`;
 }
 async function saveReview(){
-  const s=DATA.sections[curIdx];
+  const s=BYID[curId];
   await fetch("/api/review",{method:"POST",headers:{"Content-Type":"application/json"},
     body:JSON.stringify({catalog:s.catalog, section:s.section,
       status:$("#notprod").checked?"not_product":"product", note:$("#rvnote").value})});
-  await load(); render(); sel(curIdx);
+  await load(); render(); if(BYID[curId]) sel(curId);
 }
 boot();
 </script>

@@ -1,1682 +1,1803 @@
-[
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "PRO SELF-CLOSE & SOFT-CLOSE EURO HINGES",
-    "product_type": "concealed_hinge",
-    "family": "concealed_hinge",
-    "brand": "Pro",
-    "pages": [
-      2,
-      2
-    ],
-    "page": 2,
-    "bbox": [
-      0.07,
-      0.115,
-      0.578,
-      0.1463
-    ],
-    "approx_skus": 15
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "PRO EURO HINGE BASEPLATES",
-    "product_type": "baseplate",
-    "family": "baseplate",
-    "brand": "Pro",
-    "pages": [
-      3,
-      3
-    ],
-    "page": 3,
-    "bbox": [
-      0.0809,
-      0.1151,
-      0.4287,
-      0.1463
-    ],
-    "approx_skus": 20
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "PRO VALUE EUROPEAN HINGE OVERLAY CHARTS",
-    "product_type": "hinge_tool",
-    "family": "tool",
-    "brand": "Pro",
-    "pages": [
-      4,
-      4
-    ],
-    "page": 4,
-    "bbox": [
-      0.0718,
-      0.1156,
-      0.625,
-      0.1469
-    ],
-    "approx_skus": 13
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "PRO SELF-CLOSE & SOFT-CLOSE FACE FRAME HINGES",
-    "product_type": "face_frame_hinge",
-    "family": "concealed_hinge",
-    "brand": "Pro",
-    "pages": [
-      5,
-      5
-    ],
-    "page": 5,
-    "bbox": [
-      0.0796,
-      0.1152,
-      0.667,
-      0.1465
-    ],
-    "approx_skus": 12
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "BLUM SOFT-CLOSE EURO HINGES",
-    "product_type": "concealed_hinge",
-    "family": "concealed_hinge",
-    "brand": "Blum",
-    "pages": [
-      6,
-      7
-    ],
-    "page": 6,
-    "bbox": [
-      0.0687,
-      0.115,
-      0.4442,
-      0.1463
-    ],
-    "approx_skus": 24
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "BLUM ZERO PROTRUSION SOFT-CLOSE EURO HINGES",
-    "product_type": "concealed_hinge",
-    "family": "concealed_hinge",
-    "brand": "Blum",
-    "pages": [
-      8,
-      8
-    ],
-    "page": 8,
-    "bbox": [
-      0.0711,
-      0.1141,
-      0.6749,
-      0.1454
-    ],
-    "approx_skus": 10
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "BLUM SOFT-CLOSE SPECIALTY EURO HINGES",
-    "product_type": "concealed_hinge",
-    "family": "concealed_hinge",
-    "brand": "Blum",
-    "pages": [
-      9,
-      9
-    ],
-    "page": 9,
-    "bbox": [
-      0.0774,
-      0.1142,
-      0.5794,
-      0.1455
-    ],
-    "approx_skus": 5
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "BLUM SELF-CLOSE CLIP EURO HINGES",
-    "product_type": "concealed_hinge",
-    "family": "concealed_hinge",
-    "brand": "Blum",
-    "pages": [
-      10,
-      10
-    ],
-    "page": 10,
-    "bbox": [
-      0.0727,
-      0.1162,
-      0.4995,
-      0.1475
-    ],
-    "approx_skus": 10
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "BLUM SELF-CLOSE CLIP TOP EURO HINGES",
-    "product_type": "concealed_hinge",
-    "family": "concealed_hinge",
-    "brand": "Blum",
-    "pages": [
-      11,
-      13
-    ],
-    "page": 11,
-    "bbox": [
-      0.078,
-      0.1154,
-      0.5615,
-      0.1467
-    ],
-    "approx_skus": 51
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "BLUM SELF-CLOSE SPECIALTY EURO HINGES",
-    "product_type": "concealed_hinge",
-    "family": "concealed_hinge",
-    "brand": "Blum",
-    "pages": [
-      14,
-      15
-    ],
-    "page": 14,
-    "bbox": [
-      0.0726,
-      0.1145,
-      0.5698,
-      0.1457
-    ],
-    "approx_skus": 18
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "BLUM ANGLED HINGES",
-    "product_type": "concealed_hinge",
-    "family": "concealed_hinge",
-    "brand": "Blum",
-    "pages": [
-      16,
-      17
-    ],
-    "page": 16,
-    "bbox": [
-      0.0705,
-      0.1143,
-      0.3384,
-      0.1456
-    ],
-    "approx_skus": 30
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "BLUM ONYX BLACK EURO HINGES",
-    "product_type": "concealed_hinge",
-    "family": "concealed_hinge",
-    "brand": "Blum",
-    "pages": [
-      18,
-      18
-    ],
-    "page": 18,
-    "bbox": [
-      0.0709,
-      0.1144,
-      0.4598,
-      0.1457
-    ],
-    "approx_skus": 35
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "BLUM CLIP MOUNTING PLATES",
-    "product_type": "baseplate",
-    "family": "baseplate",
-    "brand": "Blum",
-    "pages": [
-      19,
-      20
-    ],
-    "page": 19,
-    "bbox": [
-      0.081,
-      0.1155,
-      0.4338,
-      0.1468
-    ],
-    "approx_skus": 41
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "BLUM CAM ADJUSTABLE MOUNTING PLATES",
-    "product_type": "baseplate",
-    "family": "baseplate",
-    "brand": "Blum",
-    "pages": [
-      21,
-      21
-    ],
-    "page": 21,
-    "bbox": [
-      0.0789,
-      0.1146,
-      0.5872,
-      0.1459
-    ],
-    "approx_skus": 8
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "BLUM EURO HINGE ACCESSORIES",
-    "product_type": "hinge_accessory",
-    "family": "accessory",
-    "brand": "Blum",
-    "pages": [
-      22,
-      23
-    ],
-    "page": 22,
-    "bbox": [
-      0.0731,
-      0.1143,
-      0.4566,
-      0.1456
-    ],
-    "approx_skus": 12
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "BLUM EURO HINGE ANGLE RESTRICTION CLIPS",
-    "product_type": "hinge_accessory",
-    "family": "accessory",
-    "brand": "Blum",
-    "pages": [
-      24,
-      24
-    ],
-    "page": 24,
-    "bbox": [
-      0.0707,
-      0.1143,
-      0.6139,
-      0.1456
-    ],
-    "approx_skus": 5
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "BLUMOTION SOFT-CLOSE DEVICES FOR BLUM EURO HINGES",
-    "product_type": "hinge_accessory",
-    "family": "accessory",
-    "brand": "Blum",
-    "pages": [
-      25,
-      27
-    ],
-    "page": 25,
-    "bbox": [
-      0.081,
-      0.1149,
-      0.7593,
-      0.1462
-    ],
-    "approx_skus": 11
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "BLUM TIP-ON FOR DOORS",
-    "product_type": "push_mechanism",
-    "family": "accessory",
-    "brand": "Blum",
-    "pages": [
-      28,
-      29
-    ],
-    "page": 28,
-    "bbox": [
-      0.0697,
-      0.1154,
-      0.3711,
-      0.1467
-    ],
-    "approx_skus": 18
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "BLUM COMPACT SOFT-CLOSE FACE FRAME HINGES",
-    "product_type": "face_frame_hinge",
-    "family": "concealed_hinge",
-    "brand": "Blum",
-    "pages": [
-      30,
-      31
-    ],
-    "page": 30,
-    "bbox": [
-      0.0694,
-      0.1156,
-      0.6723,
-      0.1468
-    ],
-    "approx_skus": 24
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "BLUM COMPACT SOFT-CLOSE HINGE ACCESSORIES",
-    "product_type": "hinge_accessory",
-    "family": "accessory",
-    "brand": "Blum",
-    "pages": [
-      32,
-      32
-    ],
-    "page": 32,
-    "bbox": [
-      0.0726,
-      0.1158,
-      0.6419,
-      0.1471
-    ],
-    "approx_skus": 7
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "BLUM COMPACT SELF-CLOSE FACE FRAME HINGES",
-    "product_type": "face_frame_hinge",
-    "family": "concealed_hinge",
-    "brand": "Blum",
-    "pages": [
-      33,
-      35
-    ],
-    "page": 33,
-    "bbox": [
-      0.0822,
-      0.115,
-      0.6515,
-      0.1463
-    ],
-    "approx_skus": 36
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "BLUM COMPACT SELF-CLOSE FACE FRAME HINGE ACCESSORIES",
-    "product_type": "hinge_accessory",
-    "family": "accessory",
-    "brand": "Blum",
-    "pages": [
-      36,
-      36
-    ],
-    "page": 36,
-    "bbox": [
-      0.0711,
-      0.1151,
-      0.7934,
-      0.1464
-    ],
-    "approx_skus": 7
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "BLUM HINGE MACHINES",
-    "product_type": "hinge_tool",
-    "family": "tool",
-    "brand": "Blum",
-    "pages": [
-      37,
-      38
-    ],
-    "page": 37,
-    "bbox": [
-      0.081,
-      0.1147,
-      0.3663,
-      0.146
-    ],
-    "approx_skus": 9
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "BLUM HINGE MACHINE ACCESSORIES",
-    "product_type": "hinge_tool",
-    "family": "tool",
-    "brand": "Blum",
-    "pages": [
-      39,
-      40
-    ],
-    "page": 39,
-    "bbox": [
-      0.081,
-      0.1154,
-      0.5112,
-      0.1467
-    ],
-    "approx_skus": 27
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "BLUM HINGE ASSEMBLY AIDS",
-    "product_type": "hinge_tool",
-    "family": "tool",
-    "brand": "Blum",
-    "pages": [
-      41,
-      44
-    ],
-    "page": 41,
-    "bbox": [
-      0.0814,
-      0.1143,
-      0.4257,
-      0.1456
-    ],
-    "approx_skus": 38
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "GRASS TIOMOS SOFT-CLOSE EURO HINGES",
-    "product_type": "concealed_hinge",
-    "family": "concealed_hinge",
-    "brand": "Grass",
-    "pages": [
-      45,
-      48
-    ],
-    "page": 45,
-    "bbox": [
-      0.0809,
-      0.1153,
-      0.5567,
-      0.1465
-    ],
-    "approx_skus": 68
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "GRASS TIOMOS SELF-CLOSE EURO HINGES",
-    "product_type": "concealed_hinge",
-    "family": "concealed_hinge",
-    "brand": "Grass",
-    "pages": [
-      49,
-      52
-    ],
-    "page": 49,
-    "bbox": [
-      0.0788,
-      0.1141,
-      0.5498,
-      0.1454
-    ],
-    "approx_skus": 72
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "GRASS TIOMOS SELF-CLOSE & SOFT-CLOSE SPECIALTY HINGES",
-    "product_type": "concealed_hinge",
-    "family": "concealed_hinge",
-    "brand": "Grass",
-    "pages": [
-      53,
-      57
-    ],
-    "page": 53,
-    "bbox": [
-      0.0788,
-      0.1162,
-      0.8011,
-      0.1474
-    ],
-    "approx_skus": 48
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "GRASS TIOMOS SELF-CLOSE SPECIALTY HINGES",
-    "product_type": "concealed_hinge",
-    "family": "concealed_hinge",
-    "brand": "Grass",
-    "pages": [
-      58,
-      58
-    ],
-    "page": 58,
-    "bbox": [
-      0.0814,
-      0.1143,
-      0.6246,
-      0.1456
-    ],
-    "approx_skus": 6
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "GRASS TIOMOS SOFT-CLOSE SPECIALTY HINGES",
-    "product_type": "specialty_hinge",
-    "family": "concealed_hinge",
-    "brand": "Grass",
-    "pages": [
-      59,
-      59
-    ],
-    "page": 59,
-    "bbox": [
-      0.0788,
-      0.1154,
-      0.622,
-      0.1467
-    ],
-    "approx_skus": 2
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "GRASS TIOMOS WING BASE PLATES",
-    "product_type": "baseplate",
-    "family": "baseplate",
-    "brand": "Grass",
-    "pages": [
-      60,
-      60
-    ],
-    "page": 60,
-    "bbox": [
-      0.0708,
-      0.1153,
-      0.4733,
-      0.1465
-    ],
-    "approx_skus": 26
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "GRASS TIOMOS THICK & INLINE BASEPLATES",
-    "product_type": "baseplate",
-    "family": "baseplate",
-    "brand": "Grass",
-    "pages": [
-      61,
-      61
-    ],
-    "page": 61,
-    "bbox": [
-      0.0812,
-      0.1158,
-      0.5878,
-      0.1471
-    ],
-    "approx_skus": 17
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "GRASS TIOMOS FACE FRAME ADAPTER PLATES",
-    "product_type": "baseplate",
-    "family": "baseplate",
-    "brand": "Grass",
-    "pages": [
-      62,
-      62
-    ],
-    "page": 62,
-    "bbox": [
-      0.0724,
-      0.1153,
-      0.5995,
-      0.1465
-    ],
-    "approx_skus": 26
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "GRASS TIOMOS HINGE ACCESSORIES",
-    "product_type": "hinge_accessory",
-    "family": "accessory",
-    "brand": "Grass",
-    "pages": [
-      63,
-      64
-    ],
-    "page": 63,
-    "bbox": [
-      0.0813,
-      0.1141,
-      0.5051,
-      0.1454
-    ],
-    "approx_skus": 15
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "GRASS TIOMOS TIPMATIC",
-    "product_type": "push_mechanism",
-    "family": "accessory",
-    "brand": "Grass",
-    "pages": [
-      65,
-      66
-    ],
-    "page": 65,
-    "bbox": [
-      0.0819,
-      0.1145,
-      0.3811,
-      0.1458
-    ],
-    "approx_skus": 9
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "GRASS NEXIS SELF-CLOSE AND FREE SWING EURO HINGES",
-    "product_type": "concealed_hinge",
-    "family": "concealed_hinge",
-    "brand": "Grass",
-    "pages": [
-      67,
-      70
-    ],
-    "page": 67,
-    "bbox": [
-      0.0821,
-      0.1154,
-      0.7447,
-      0.1467
-    ],
-    "approx_skus": 4
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "GRASS NEXIS SPECIALTY HINGES",
-    "product_type": "specialty_hinge",
-    "family": "concealed_hinge",
-    "brand": "Grass",
-    "pages": [
-      71,
-      73
-    ],
-    "page": 71,
-    "bbox": [
-      0.081,
-      0.1154,
-      0.4569,
-      0.1467
-    ],
-    "approx_skus": 5
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "SOFT-CLOSE ADAPTERS FOR NEXIS HINGES",
-    "product_type": "hinge_accessory",
-    "family": "accessory",
-    "brand": null,
-    "pages": [
-      78,
-      79
-    ],
-    "page": 78,
-    "bbox": [
-      0.0689,
-      0.115,
-      0.5516,
-      0.1463
-    ],
-    "approx_skus": 1
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "GRASS NEXIS HINGE ACCESSORIES",
-    "product_type": "hinge_accessory",
-    "family": "accessory",
-    "brand": "Grass",
-    "pages": [
-      80,
-      80
-    ],
-    "page": 80,
-    "bbox": [
-      0.0716,
-      0.1154,
-      0.4953,
-      0.1467
-    ],
-    "approx_skus": 1
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "GRASS TIPMATIC FOR HANDLE-FREE WOODEN DOORS",
-    "product_type": "push_mechanism",
-    "family": "accessory",
-    "brand": "Grass",
-    "pages": [
-      81,
-      81
-    ],
-    "page": 81,
-    "bbox": [
-      0.081,
-      0.1154,
-      0.6894,
-      0.1467
-    ],
-    "approx_skus": 3
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "GRASS TEC SOFT-CLOSE HINGES",
-    "product_type": "concealed_hinge",
-    "family": "concealed_hinge",
-    "brand": "Grass",
-    "pages": [
-      82,
-      83
-    ],
-    "page": 82,
-    "bbox": [
-      0.0705,
-      0.1141,
-      0.4346,
-      0.1454
-    ],
-    "approx_skus": 34
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "GRASS TEC SOFT-CLOSE & SELF-CLOSE FACE MOUNT HINGES",
-    "product_type": "face_mount_hinge",
-    "family": "face_mount_hinge",
-    "brand": "Grass",
-    "pages": [
-      84,
-      84
-    ],
-    "page": 84,
-    "bbox": [
-      0.073,
-      0.1141,
-      0.7435,
-      0.1454
-    ],
-    "approx_skus": 7
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "GRASS TEC SELF-CLOSE HINGES",
-    "product_type": "concealed_hinge",
-    "family": "concealed_hinge",
-    "brand": "Grass",
-    "pages": [
-      85,
-      86
-    ],
-    "page": 85,
-    "bbox": [
-      0.081,
-      0.1154,
-      0.4451,
-      0.1467
-    ],
-    "approx_skus": 44
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "GRASS TEC 861 SELF-CLOSE HINGES",
-    "product_type": "concealed_hinge",
-    "family": "concealed_hinge",
-    "brand": "Grass",
-    "pages": [
-      87,
-      87
-    ],
-    "page": 87,
-    "bbox": [
-      0.0804,
-      0.115,
-      0.5042,
-      0.1463
-    ],
-    "approx_skus": 4
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "GRASS TEC 861 SELF-CLOSE HINGES FOR MDF FRAME MATERIAL",
-    "product_type": "concealed_hinge",
-    "family": "concealed_hinge",
-    "brand": "Grass",
-    "pages": [
-      88,
-      88
-    ],
-    "page": 88,
-    "bbox": [
-      0.0698,
-      0.1154,
-      0.8039,
-      0.1467
-    ],
-    "approx_skus": 5
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "GRASS TEC 872 SELF-CLOSE HINGES & SOFT-CLOSE ADAPTERS",
-    "product_type": "hinge_accessory",
-    "family": "accessory",
-    "brand": "Grass",
-    "pages": [
-      89,
-      89
-    ],
-    "page": 89,
-    "bbox": [
-      0.081,
-      0.1154,
-      0.7724,
-      0.1467
-    ],
-    "approx_skus": 9
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "GRASS HINGE MACHINES & ACCESSORIES",
-    "product_type": "hinge_tool",
-    "family": "tool",
-    "brand": "Grass",
-    "pages": [
-      90,
-      90
-    ],
-    "page": 90,
-    "bbox": [
-      0.0715,
-      0.1143,
-      0.5549,
-      0.1456
-    ],
-    "approx_skus": 8
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "GRASS HINGE ACCESSORIES & ASSEMBLY HARDWARE",
-    "product_type": "hinge_accessory",
-    "family": "accessory",
-    "brand": "Grass",
-    "pages": [
-      91,
-      91
-    ],
-    "page": 91,
-    "bbox": [
-      0.0815,
-      0.1154,
-      0.6921,
-      0.1467
-    ],
-    "approx_skus": 21
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "SALICE SOFT-CLOSE EURO HINGES",
-    "product_type": "concealed_hinge",
-    "family": "concealed_hinge",
-    "brand": "Salice",
-    "pages": [
-      92,
-      94
-    ],
-    "page": 92,
-    "bbox": [
-      0.073,
-      0.1154,
-      0.4554,
-      0.1467
-    ],
-    "approx_skus": 43
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "SALICE SELF-CLOSE EURO HINGES",
-    "product_type": "concealed_hinge",
-    "family": "concealed_hinge",
-    "brand": "Salice",
-    "pages": [
-      95,
-      97
-    ],
-    "page": 95,
-    "bbox": [
-      0.0809,
-      0.1152,
-      0.4526,
-      0.1465
-    ],
-    "approx_skus": 60
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "SALICE SPECIALTY HINGES",
-    "product_type": "specialty_hinge",
-    "family": "concealed_hinge",
-    "brand": "Salice",
-    "pages": [
-      98,
-      98
-    ],
-    "page": 98,
-    "bbox": [
-      0.0715,
-      0.1151,
-      0.3673,
-      0.1464
-    ],
-    "approx_skus": 21
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "SALICE AIR HINGE SYSTEM",
-    "product_type": "concealed_hinge",
-    "family": "concealed_hinge",
-    "brand": "Salice",
-    "pages": [
-      99,
-      99
-    ],
-    "page": 99,
-    "bbox": [
-      0.0812,
-      0.1142,
-      0.382,
-      0.1454
-    ],
-    "approx_skus": 4
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "SALICE WING BASEPLATES",
-    "product_type": "baseplate",
-    "family": "baseplate",
-    "brand": "Salice",
-    "pages": [
-      100,
-      100
-    ],
-    "page": 100,
-    "bbox": [
-      0.07,
-      0.114,
-      0.3673,
-      0.1453
-    ],
-    "approx_skus": 35
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "SALICE FACE FRAME ADAPTER MOUNTING PLATES",
-    "product_type": "baseplate",
-    "family": "baseplate",
-    "brand": "Salice",
-    "pages": [
-      101,
-      101
-    ],
-    "page": 101,
-    "bbox": [
-      0.0815,
-      0.1152,
-      0.6483,
-      0.1464
-    ],
-    "approx_skus": 11
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "HINGE SOFT-CLOSE ADAPTERS",
-    "product_type": "hinge_accessory",
-    "family": "accessory",
-    "brand": null,
-    "pages": [
-      102,
-      102
-    ],
-    "page": 102,
-    "bbox": [
-      0.0722,
-      0.1147,
-      0.4095,
-      0.146
-    ],
-    "approx_skus": 7
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "SALICE SOFT-CLOSE FACE FRAME HINGES",
-    "product_type": "face_frame_hinge",
-    "family": "concealed_hinge",
-    "brand": "Salice",
-    "pages": [
-      103,
-      103
-    ],
-    "page": 103,
-    "bbox": [
-      0.0809,
-      0.1144,
-      0.5367,
-      0.1457
-    ],
-    "approx_skus": 34
-  },
-  {
-    "catalog": "wurth_b",
-    "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
-    "section": "SALICE SELF-CLOSE FACE FRAME HINGES",
-    "product_type": "face_frame_hinge",
-    "family": "concealed_hinge",
-    "brand": "Salice",
-    "pages": [
-      104,
-      104
-    ],
-    "page": 104,
-    "bbox": [
-      0.0704,
-      0.1141,
-      0.5214,
-      0.1453
-    ],
-    "approx_skus": 46
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "BLUM AVENTOS LIFT SYSTEMS",
-    "product_type": "lift_system",
-    "family": "lift_system",
-    "brand": "Blum",
-    "pages": [
-      2,
-      10
-    ],
-    "page": 2,
-    "bbox": [
-      0.0704,
-      0.114,
-      0.4239,
-      0.1453
-    ],
-    "approx_skus": 87
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "BLUM AVENTOS ACCESSORIES",
-    "product_type": "hinge_accessory",
-    "family": "accessory",
-    "brand": "Blum",
-    "pages": [
-      11,
-      14
-    ],
-    "page": 11,
-    "bbox": [
-      0.0801,
-      0.1145,
-      0.4441,
-      0.1457
-    ],
-    "approx_skus": 18
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "BLUM SERVO-DRIVE FOR AVENTOS",
-    "product_type": "lift_accessory",
-    "family": "accessory",
-    "brand": "Blum",
-    "pages": [
-      15,
-      18
-    ],
-    "page": 15,
-    "bbox": [
-      0.0814,
-      0.1147,
-      0.4756,
-      0.146
-    ],
-    "approx_skus": 13
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "BLUM SERVO-DRIVE FOR AVENTOS ELECTRICAL COMPONENTS",
-    "product_type": "lift_accessory",
-    "family": "accessory",
-    "brand": "Blum",
-    "pages": [
-      19,
-      19
-    ],
-    "page": 19,
-    "bbox": [
-      0.08,
-      0.1145,
-      0.8023,
-      0.1457
-    ],
-    "approx_skus": 4
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "BLUM AVENTOS ASSEMBLY AIDS",
-    "product_type": "hinge_tool",
-    "family": "tool",
-    "brand": "Blum",
-    "pages": [
-      20,
-      21
-    ],
-    "page": 20,
-    "bbox": [
-      0.0693,
-      0.1143,
-      0.4454,
-      0.1456
-    ],
-    "approx_skus": 9
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "GRASS KINVARO LIFTER SYSTEMS",
-    "product_type": "lift_system",
-    "family": "lift_system",
-    "brand": "Grass",
-    "pages": [
-      22,
-      29
-    ],
-    "page": 22,
-    "bbox": [
-      0.0703,
-      0.115,
-      0.4519,
-      0.1463
-    ],
-    "approx_skus": 39
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "GRASS TIOMOS FLAP HINGES",
-    "product_type": "flap_hinge",
-    "family": "flap_hinge",
-    "brand": "Grass",
-    "pages": [
-      30,
-      30
-    ],
-    "page": 30,
-    "bbox": [
-      0.0702,
-      0.1151,
-      0.4343,
-      0.1463
-    ],
-    "approx_skus": 10
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "SALICE WIND LIFT SYSTEM",
-    "product_type": "lift_system",
-    "family": "lift_system",
-    "brand": "Salice",
-    "pages": [
-      31,
-      31
-    ],
-    "page": 31,
-    "bbox": [
-      0.0798,
-      0.1138,
-      0.3758,
-      0.1451
-    ],
-    "approx_skus": 17
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "SALICE PACTA HINGES",
-    "product_type": "flap_hinge",
-    "family": "flap_hinge",
-    "brand": "Salice",
-    "pages": [
-      32,
-      32
-    ],
-    "page": 32,
-    "bbox": [
-      0.0705,
-      0.1144,
-      0.3192,
-      0.1456
-    ],
-    "approx_skus": 14
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "LID SUPPORTS & UP STAYS (CHEST STYLE)",
-    "product_type": "lid_stay",
-    "family": "lid_stay",
-    "brand": null,
-    "pages": [
-      33,
-      34
-    ],
-    "page": 33,
-    "bbox": [
-      0.0803,
-      0.115,
-      0.5521,
-      0.1463
-    ],
-    "approx_skus": 9
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "LID SUPPORTS & UP STAYS",
-    "product_type": "lid_stay",
-    "family": "lid_stay",
-    "brand": null,
-    "pages": [
-      35,
-      36
-    ],
-    "page": 35,
-    "bbox": [
-      0.0807,
-      0.1137,
-      0.384,
-      0.145
-    ],
-    "approx_skus": 11
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "LID SUPPORTS, DOWN STAYS & UP STAYS",
-    "product_type": "lid_stay",
-    "family": "lid_stay",
-    "brand": null,
-    "pages": [
-      37,
-      37
-    ],
-    "page": 37,
-    "bbox": [
-      0.0786,
-      0.1141,
-      0.547,
-      0.1453
-    ],
-    "approx_skus": 5
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "COUNTERBALANCE LIFTS",
-    "product_type": "counterbalance_lift",
-    "family": "lift_system",
-    "brand": null,
-    "pages": [
-      38,
-      38
-    ],
-    "page": 38,
-    "bbox": [
-      0.0713,
-      0.115,
-      0.3506,
-      0.1463
-    ],
-    "approx_skus": 11
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "INSTITUTIONAL HINGES",
-    "product_type": "institutional_hinge",
-    "family": "institutional_hinge",
-    "brand": null,
-    "pages": [
-      39,
-      40
-    ],
-    "page": 39,
-    "bbox": [
-      0.0803,
-      0.1152,
-      0.347,
-      0.1465
-    ],
-    "approx_skus": 35
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "INSTITUTIONAL HINGES",
-    "product_type": "institutional_hinge",
-    "family": "institutional_hinge",
-    "brand": null,
-    "pages": [
-      42,
-      42
-    ],
-    "page": 42,
-    "bbox": [
-      0.0713,
-      0.1154,
-      0.338,
-      0.1466
-    ],
-    "approx_skus": 10
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "CONTINUOUS PIANO HINGES",
-    "product_type": "piano_hinge",
-    "family": "piano_hinge",
-    "brand": null,
-    "pages": [
-      43,
-      43
-    ],
-    "page": 43,
-    "bbox": [
-      0.0808,
-      0.1148,
-      0.4093,
-      0.1461
-    ],
-    "approx_skus": 24
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "SOSS INVISIBLE HINGES",
-    "product_type": "invisible_hinge",
-    "family": "invisible_hinge",
-    "brand": "Soss",
-    "pages": [
-      44,
-      45
-    ],
-    "page": 44,
-    "bbox": [
-      0.0791,
-      0.1149,
-      0.3475,
-      0.1462
-    ],
-    "approx_skus": 28
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "3-D ADJUSTABLE HINGES",
-    "product_type": "adjustable_3d_hinge",
-    "family": "specialty_hinge",
-    "brand": null,
-    "pages": [
-      46,
-      46
-    ],
-    "page": 46,
-    "bbox": [
-      0.0718,
-      0.1151,
-      0.3555,
-      0.1463
-    ],
-    "approx_skus": 13
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "SELF-CLOSING WRAP & DEMOUNTABLE HINGES",
-    "product_type": "wrap_demountable_hinge",
-    "family": "specialty_hinge",
-    "brand": null,
-    "pages": [
-      47,
-      47
-    ],
-    "page": 47,
-    "bbox": [
-      0.0823,
-      0.1142,
-      0.6193,
-      0.1454
-    ],
-    "approx_skus": 24
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "SELF-CLOSING FACE MOUNT HINGES",
-    "product_type": "face_mount_hinge",
-    "family": "face_mount_hinge",
-    "brand": null,
-    "pages": [
-      48,
-      48
-    ],
-    "page": 48,
-    "bbox": [
-      0.0704,
-      0.1148,
-      0.4763,
-      0.146
-    ],
-    "approx_skus": 17
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "SELF-CLOSING & FREE SWINGING FACE MOUNT HINGES",
-    "product_type": "face_mount_hinge",
-    "family": "face_mount_hinge",
-    "brand": null,
-    "pages": [
-      49,
-      49
-    ],
-    "page": 49,
-    "bbox": [
-      0.0793,
-      0.1145,
-      0.7026,
-      0.1457
-    ],
-    "approx_skus": 11
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "FREE SWINGING FULL INSET HINGES",
-    "product_type": "full_inset_hinge",
-    "family": "specialty_hinge",
-    "brand": null,
-    "pages": [
-      50,
-      50
-    ],
-    "page": 50,
-    "bbox": [
-      0.0697,
-      0.1144,
-      0.4766,
-      0.1457
-    ],
-    "approx_skus": 14
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "PIVOT HINGES",
-    "product_type": "pivot_hinge",
-    "family": "pivot_hinge",
-    "brand": null,
-    "pages": [
-      53,
-      53
-    ],
-    "page": 53,
-    "bbox": [
-      0.0819,
-      0.1143,
-      0.2449,
-      0.1456
-    ],
-    "approx_skus": 3
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "PIVOT & BUTT HINGES",
-    "product_type": "pivot_hinge",
-    "family": "pivot_hinge",
-    "brand": null,
-    "pages": [
-      54,
-      54
-    ],
-    "page": 54,
-    "bbox": [
-      0.0787,
-      0.1142,
-      0.3313,
-      0.1455
-    ],
-    "approx_skus": 2
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "GLASS DOOR HINGES",
-    "product_type": "glass_door_hinge",
-    "family": "glass_door_hinge",
-    "brand": null,
-    "pages": [
-      55,
-      55
-    ],
-    "page": 55,
-    "bbox": [
-      0.0801,
-      0.1149,
-      0.3203,
-      0.1462
-    ],
-    "approx_skus": 7
-  },
-  {
-    "catalog": "wurth_c",
-    "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
-    "section": "SPECIALTY HINGES",
-    "product_type": "specialty_hinge",
-    "family": "concealed_hinge",
-    "brand": null,
-    "pages": [
-      56,
-      56
-    ],
-    "page": 56,
-    "bbox": [
-      0.0705,
-      0.1144,
-      0.2839,
-      0.1457
-    ],
-    "approx_skus": 4
-  },
-  {
-    "catalog": "grass_nexis",
-    "catalog_label": "Grass NEXIS (manufacturer)",
-    "section": "INSTITUTIONAL & SPECIALTY HINGE ITEMS",
-    "product_type": "institutional_hinge",
-    "family": "institutional_hinge",
-    "brand": null,
-    "pages": [
-      40,
-      40
-    ],
-    "page": 40,
-    "bbox": [
-      0.3325,
-      0.4534,
-      0.8687,
-      0.4807
-    ],
-    "approx_skus": 0
-  }
-]
+{
+  "groups": [
+    {
+      "name": "Sections",
+      "types": [
+        {
+          "product_type": "adjustable_3d_hinge",
+          "sections": [
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "3-D ADJUSTABLE HINGES",
+              "product_type": "adjustable_3d_hinge",
+              "family": "specialty_hinge",
+              "brand": null,
+              "pages": [
+                46,
+                46
+              ],
+              "page": 46,
+              "bbox": [
+                0.0718,
+                0.1151,
+                0.3555,
+                0.1463
+              ],
+              "approx_skus": 13
+            }
+          ]
+        },
+        {
+          "product_type": "baseplate",
+          "sections": [
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "PRO EURO HINGE BASEPLATES",
+              "product_type": "baseplate",
+              "family": "baseplate",
+              "brand": "Pro",
+              "pages": [
+                3,
+                3
+              ],
+              "page": 3,
+              "bbox": [
+                0.0809,
+                0.1151,
+                0.4287,
+                0.1463
+              ],
+              "approx_skus": 20
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "BLUM CLIP MOUNTING PLATES",
+              "product_type": "baseplate",
+              "family": "baseplate",
+              "brand": "Blum",
+              "pages": [
+                19,
+                20
+              ],
+              "page": 19,
+              "bbox": [
+                0.081,
+                0.1155,
+                0.4338,
+                0.1468
+              ],
+              "approx_skus": 41
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "BLUM CAM ADJUSTABLE MOUNTING PLATES",
+              "product_type": "baseplate",
+              "family": "baseplate",
+              "brand": "Blum",
+              "pages": [
+                21,
+                21
+              ],
+              "page": 21,
+              "bbox": [
+                0.0789,
+                0.1146,
+                0.5872,
+                0.1459
+              ],
+              "approx_skus": 8
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "GRASS TIOMOS WING BASE PLATES",
+              "product_type": "baseplate",
+              "family": "baseplate",
+              "brand": "Grass",
+              "pages": [
+                60,
+                60
+              ],
+              "page": 60,
+              "bbox": [
+                0.0708,
+                0.1153,
+                0.4733,
+                0.1465
+              ],
+              "approx_skus": 26
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "GRASS TIOMOS THICK & INLINE BASEPLATES",
+              "product_type": "baseplate",
+              "family": "baseplate",
+              "brand": "Grass",
+              "pages": [
+                61,
+                61
+              ],
+              "page": 61,
+              "bbox": [
+                0.0812,
+                0.1158,
+                0.5878,
+                0.1471
+              ],
+              "approx_skus": 17
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "GRASS TIOMOS FACE FRAME ADAPTER PLATES",
+              "product_type": "baseplate",
+              "family": "baseplate",
+              "brand": "Grass",
+              "pages": [
+                62,
+                62
+              ],
+              "page": 62,
+              "bbox": [
+                0.0724,
+                0.1153,
+                0.5995,
+                0.1465
+              ],
+              "approx_skus": 26
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "SALICE WING BASEPLATES",
+              "product_type": "baseplate",
+              "family": "baseplate",
+              "brand": "Salice",
+              "pages": [
+                100,
+                100
+              ],
+              "page": 100,
+              "bbox": [
+                0.07,
+                0.114,
+                0.3673,
+                0.1453
+              ],
+              "approx_skus": 35
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "SALICE FACE FRAME ADAPTER MOUNTING PLATES",
+              "product_type": "baseplate",
+              "family": "baseplate",
+              "brand": "Salice",
+              "pages": [
+                101,
+                101
+              ],
+              "page": 101,
+              "bbox": [
+                0.0815,
+                0.1152,
+                0.6483,
+                0.1464
+              ],
+              "approx_skus": 11
+            }
+          ]
+        },
+        {
+          "product_type": "concealed_hinge",
+          "sections": [
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "PRO SELF-CLOSE & SOFT-CLOSE EURO HINGES",
+              "product_type": "concealed_hinge",
+              "family": "concealed_hinge",
+              "brand": "Pro",
+              "pages": [
+                2,
+                2
+              ],
+              "page": 2,
+              "bbox": [
+                0.07,
+                0.115,
+                0.578,
+                0.1463
+              ],
+              "approx_skus": 15
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "BLUM SOFT-CLOSE EURO HINGES",
+              "product_type": "concealed_hinge",
+              "family": "concealed_hinge",
+              "brand": "Blum",
+              "pages": [
+                6,
+                7
+              ],
+              "page": 6,
+              "bbox": [
+                0.0687,
+                0.115,
+                0.4442,
+                0.1463
+              ],
+              "approx_skus": 24
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "BLUM ZERO PROTRUSION SOFT-CLOSE EURO HINGES",
+              "product_type": "concealed_hinge",
+              "family": "concealed_hinge",
+              "brand": "Blum",
+              "pages": [
+                8,
+                8
+              ],
+              "page": 8,
+              "bbox": [
+                0.0711,
+                0.1141,
+                0.6749,
+                0.1454
+              ],
+              "approx_skus": 10
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "BLUM SOFT-CLOSE SPECIALTY EURO HINGES",
+              "product_type": "concealed_hinge",
+              "family": "concealed_hinge",
+              "brand": "Blum",
+              "pages": [
+                9,
+                9
+              ],
+              "page": 9,
+              "bbox": [
+                0.0774,
+                0.1142,
+                0.5794,
+                0.1455
+              ],
+              "approx_skus": 5
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "BLUM SELF-CLOSE CLIP EURO HINGES",
+              "product_type": "concealed_hinge",
+              "family": "concealed_hinge",
+              "brand": "Blum",
+              "pages": [
+                10,
+                10
+              ],
+              "page": 10,
+              "bbox": [
+                0.0727,
+                0.1162,
+                0.4995,
+                0.1475
+              ],
+              "approx_skus": 10
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "BLUM SELF-CLOSE CLIP TOP EURO HINGES",
+              "product_type": "concealed_hinge",
+              "family": "concealed_hinge",
+              "brand": "Blum",
+              "pages": [
+                11,
+                13
+              ],
+              "page": 11,
+              "bbox": [
+                0.078,
+                0.1154,
+                0.5615,
+                0.1467
+              ],
+              "approx_skus": 51
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "BLUM SELF-CLOSE SPECIALTY EURO HINGES",
+              "product_type": "concealed_hinge",
+              "family": "concealed_hinge",
+              "brand": "Blum",
+              "pages": [
+                14,
+                15
+              ],
+              "page": 14,
+              "bbox": [
+                0.0726,
+                0.1145,
+                0.5698,
+                0.1457
+              ],
+              "approx_skus": 18
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "BLUM ANGLED HINGES",
+              "product_type": "concealed_hinge",
+              "family": "concealed_hinge",
+              "brand": "Blum",
+              "pages": [
+                16,
+                17
+              ],
+              "page": 16,
+              "bbox": [
+                0.0705,
+                0.1143,
+                0.3384,
+                0.1456
+              ],
+              "approx_skus": 30
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "BLUM ONYX BLACK EURO HINGES",
+              "product_type": "concealed_hinge",
+              "family": "concealed_hinge",
+              "brand": "Blum",
+              "pages": [
+                18,
+                18
+              ],
+              "page": 18,
+              "bbox": [
+                0.0709,
+                0.1144,
+                0.4598,
+                0.1457
+              ],
+              "approx_skus": 35
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "GRASS TIOMOS SOFT-CLOSE EURO HINGES",
+              "product_type": "concealed_hinge",
+              "family": "concealed_hinge",
+              "brand": "Grass",
+              "pages": [
+                45,
+                48
+              ],
+              "page": 45,
+              "bbox": [
+                0.0809,
+                0.1153,
+                0.5567,
+                0.1465
+              ],
+              "approx_skus": 68
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "GRASS TIOMOS SELF-CLOSE EURO HINGES",
+              "product_type": "concealed_hinge",
+              "family": "concealed_hinge",
+              "brand": "Grass",
+              "pages": [
+                49,
+                52
+              ],
+              "page": 49,
+              "bbox": [
+                0.0788,
+                0.1141,
+                0.5498,
+                0.1454
+              ],
+              "approx_skus": 72
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "GRASS TIOMOS SELF-CLOSE & SOFT-CLOSE SPECIALTY HINGES",
+              "product_type": "concealed_hinge",
+              "family": "concealed_hinge",
+              "brand": "Grass",
+              "pages": [
+                53,
+                57
+              ],
+              "page": 53,
+              "bbox": [
+                0.0788,
+                0.1162,
+                0.8011,
+                0.1474
+              ],
+              "approx_skus": 48
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "GRASS TIOMOS SELF-CLOSE SPECIALTY HINGES",
+              "product_type": "concealed_hinge",
+              "family": "concealed_hinge",
+              "brand": "Grass",
+              "pages": [
+                58,
+                58
+              ],
+              "page": 58,
+              "bbox": [
+                0.0814,
+                0.1143,
+                0.6246,
+                0.1456
+              ],
+              "approx_skus": 6
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "GRASS NEXIS SELF-CLOSE AND FREE SWING EURO HINGES",
+              "product_type": "concealed_hinge",
+              "family": "concealed_hinge",
+              "brand": "Grass",
+              "pages": [
+                67,
+                70
+              ],
+              "page": 67,
+              "bbox": [
+                0.0821,
+                0.1154,
+                0.7447,
+                0.1467
+              ],
+              "approx_skus": 4
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "GRASS TEC SOFT-CLOSE HINGES",
+              "product_type": "concealed_hinge",
+              "family": "concealed_hinge",
+              "brand": "Grass",
+              "pages": [
+                82,
+                83
+              ],
+              "page": 82,
+              "bbox": [
+                0.0705,
+                0.1141,
+                0.4346,
+                0.1454
+              ],
+              "approx_skus": 34
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "GRASS TEC SELF-CLOSE HINGES",
+              "product_type": "concealed_hinge",
+              "family": "concealed_hinge",
+              "brand": "Grass",
+              "pages": [
+                85,
+                86
+              ],
+              "page": 85,
+              "bbox": [
+                0.081,
+                0.1154,
+                0.4451,
+                0.1467
+              ],
+              "approx_skus": 44
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "GRASS TEC 861 SELF-CLOSE HINGES",
+              "product_type": "concealed_hinge",
+              "family": "concealed_hinge",
+              "brand": "Grass",
+              "pages": [
+                87,
+                87
+              ],
+              "page": 87,
+              "bbox": [
+                0.0804,
+                0.115,
+                0.5042,
+                0.1463
+              ],
+              "approx_skus": 4
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "GRASS TEC 861 SELF-CLOSE HINGES FOR MDF FRAME MATERIAL",
+              "product_type": "concealed_hinge",
+              "family": "concealed_hinge",
+              "brand": "Grass",
+              "pages": [
+                88,
+                88
+              ],
+              "page": 88,
+              "bbox": [
+                0.0698,
+                0.1154,
+                0.8039,
+                0.1467
+              ],
+              "approx_skus": 5
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "SALICE SOFT-CLOSE EURO HINGES",
+              "product_type": "concealed_hinge",
+              "family": "concealed_hinge",
+              "brand": "Salice",
+              "pages": [
+                92,
+                94
+              ],
+              "page": 92,
+              "bbox": [
+                0.073,
+                0.1154,
+                0.4554,
+                0.1467
+              ],
+              "approx_skus": 43
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "SALICE SELF-CLOSE EURO HINGES",
+              "product_type": "concealed_hinge",
+              "family": "concealed_hinge",
+              "brand": "Salice",
+              "pages": [
+                95,
+                97
+              ],
+              "page": 95,
+              "bbox": [
+                0.0809,
+                0.1152,
+                0.4526,
+                0.1465
+              ],
+              "approx_skus": 60
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "SALICE AIR HINGE SYSTEM",
+              "product_type": "concealed_hinge",
+              "family": "concealed_hinge",
+              "brand": "Salice",
+              "pages": [
+                99,
+                99
+              ],
+              "page": 99,
+              "bbox": [
+                0.0812,
+                0.1142,
+                0.382,
+                0.1454
+              ],
+              "approx_skus": 4
+            }
+          ]
+        },
+        {
+          "product_type": "counterbalance_lift",
+          "sections": [
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "COUNTERBALANCE LIFTS",
+              "product_type": "counterbalance_lift",
+              "family": "lift_system",
+              "brand": null,
+              "pages": [
+                38,
+                38
+              ],
+              "page": 38,
+              "bbox": [
+                0.0713,
+                0.115,
+                0.3506,
+                0.1463
+              ],
+              "approx_skus": 11
+            }
+          ]
+        },
+        {
+          "product_type": "face_frame_hinge",
+          "sections": [
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "PRO SELF-CLOSE & SOFT-CLOSE FACE FRAME HINGES",
+              "product_type": "face_frame_hinge",
+              "family": "concealed_hinge",
+              "brand": "Pro",
+              "pages": [
+                5,
+                5
+              ],
+              "page": 5,
+              "bbox": [
+                0.0796,
+                0.1152,
+                0.667,
+                0.1465
+              ],
+              "approx_skus": 12
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "BLUM COMPACT SOFT-CLOSE FACE FRAME HINGES",
+              "product_type": "face_frame_hinge",
+              "family": "concealed_hinge",
+              "brand": "Blum",
+              "pages": [
+                30,
+                31
+              ],
+              "page": 30,
+              "bbox": [
+                0.0694,
+                0.1156,
+                0.6723,
+                0.1468
+              ],
+              "approx_skus": 24
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "BLUM COMPACT SELF-CLOSE FACE FRAME HINGES",
+              "product_type": "face_frame_hinge",
+              "family": "concealed_hinge",
+              "brand": "Blum",
+              "pages": [
+                33,
+                35
+              ],
+              "page": 33,
+              "bbox": [
+                0.0822,
+                0.115,
+                0.6515,
+                0.1463
+              ],
+              "approx_skus": 36
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "SALICE SOFT-CLOSE FACE FRAME HINGES",
+              "product_type": "face_frame_hinge",
+              "family": "concealed_hinge",
+              "brand": "Salice",
+              "pages": [
+                103,
+                103
+              ],
+              "page": 103,
+              "bbox": [
+                0.0809,
+                0.1144,
+                0.5367,
+                0.1457
+              ],
+              "approx_skus": 34
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "SALICE SELF-CLOSE FACE FRAME HINGES",
+              "product_type": "face_frame_hinge",
+              "family": "concealed_hinge",
+              "brand": "Salice",
+              "pages": [
+                104,
+                104
+              ],
+              "page": 104,
+              "bbox": [
+                0.0704,
+                0.1141,
+                0.5214,
+                0.1453
+              ],
+              "approx_skus": 46
+            }
+          ]
+        },
+        {
+          "product_type": "face_mount_hinge",
+          "sections": [
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "GRASS TEC SOFT-CLOSE & SELF-CLOSE FACE MOUNT HINGES",
+              "product_type": "face_mount_hinge",
+              "family": "face_mount_hinge",
+              "brand": "Grass",
+              "pages": [
+                84,
+                84
+              ],
+              "page": 84,
+              "bbox": [
+                0.073,
+                0.1141,
+                0.7435,
+                0.1454
+              ],
+              "approx_skus": 7
+            },
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "SELF-CLOSING FACE MOUNT HINGES",
+              "product_type": "face_mount_hinge",
+              "family": "face_mount_hinge",
+              "brand": null,
+              "pages": [
+                48,
+                48
+              ],
+              "page": 48,
+              "bbox": [
+                0.0704,
+                0.1148,
+                0.4763,
+                0.146
+              ],
+              "approx_skus": 17
+            },
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "SELF-CLOSING & FREE SWINGING FACE MOUNT HINGES",
+              "product_type": "face_mount_hinge",
+              "family": "face_mount_hinge",
+              "brand": null,
+              "pages": [
+                49,
+                49
+              ],
+              "page": 49,
+              "bbox": [
+                0.0793,
+                0.1145,
+                0.7026,
+                0.1457
+              ],
+              "approx_skus": 11
+            }
+          ]
+        },
+        {
+          "product_type": "flap_hinge",
+          "sections": [
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "GRASS TIOMOS FLAP HINGES",
+              "product_type": "flap_hinge",
+              "family": "flap_hinge",
+              "brand": "Grass",
+              "pages": [
+                30,
+                30
+              ],
+              "page": 30,
+              "bbox": [
+                0.0702,
+                0.1151,
+                0.4343,
+                0.1463
+              ],
+              "approx_skus": 10
+            },
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "SALICE PACTA HINGES",
+              "product_type": "flap_hinge",
+              "family": "flap_hinge",
+              "brand": "Salice",
+              "pages": [
+                32,
+                32
+              ],
+              "page": 32,
+              "bbox": [
+                0.0705,
+                0.1144,
+                0.3192,
+                0.1456
+              ],
+              "approx_skus": 14
+            }
+          ]
+        },
+        {
+          "product_type": "full_inset_hinge",
+          "sections": [
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "FREE SWINGING FULL INSET HINGES",
+              "product_type": "full_inset_hinge",
+              "family": "specialty_hinge",
+              "brand": null,
+              "pages": [
+                50,
+                50
+              ],
+              "page": 50,
+              "bbox": [
+                0.0697,
+                0.1144,
+                0.4766,
+                0.1457
+              ],
+              "approx_skus": 14
+            }
+          ]
+        },
+        {
+          "product_type": "glass_door_hinge",
+          "sections": [
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "GLASS DOOR HINGES",
+              "product_type": "glass_door_hinge",
+              "family": "glass_door_hinge",
+              "brand": null,
+              "pages": [
+                55,
+                55
+              ],
+              "page": 55,
+              "bbox": [
+                0.0801,
+                0.1149,
+                0.3203,
+                0.1462
+              ],
+              "approx_skus": 7
+            }
+          ]
+        },
+        {
+          "product_type": "hinge_accessory",
+          "sections": [
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "BLUM EURO HINGE ACCESSORIES",
+              "product_type": "hinge_accessory",
+              "family": "accessory",
+              "brand": "Blum",
+              "pages": [
+                22,
+                23
+              ],
+              "page": 22,
+              "bbox": [
+                0.0731,
+                0.1143,
+                0.4566,
+                0.1456
+              ],
+              "approx_skus": 12
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "BLUM EURO HINGE ANGLE RESTRICTION CLIPS",
+              "product_type": "hinge_accessory",
+              "family": "accessory",
+              "brand": "Blum",
+              "pages": [
+                24,
+                24
+              ],
+              "page": 24,
+              "bbox": [
+                0.0707,
+                0.1143,
+                0.6139,
+                0.1456
+              ],
+              "approx_skus": 5
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "BLUMOTION SOFT-CLOSE DEVICES FOR BLUM EURO HINGES",
+              "product_type": "hinge_accessory",
+              "family": "accessory",
+              "brand": "Blum",
+              "pages": [
+                25,
+                27
+              ],
+              "page": 25,
+              "bbox": [
+                0.081,
+                0.1149,
+                0.7593,
+                0.1462
+              ],
+              "approx_skus": 11
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "BLUM COMPACT SOFT-CLOSE HINGE ACCESSORIES",
+              "product_type": "hinge_accessory",
+              "family": "accessory",
+              "brand": "Blum",
+              "pages": [
+                32,
+                32
+              ],
+              "page": 32,
+              "bbox": [
+                0.0726,
+                0.1158,
+                0.6419,
+                0.1471
+              ],
+              "approx_skus": 7
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "BLUM COMPACT SELF-CLOSE FACE FRAME HINGE ACCESSORIES",
+              "product_type": "hinge_accessory",
+              "family": "accessory",
+              "brand": "Blum",
+              "pages": [
+                36,
+                36
+              ],
+              "page": 36,
+              "bbox": [
+                0.0711,
+                0.1151,
+                0.7934,
+                0.1464
+              ],
+              "approx_skus": 7
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "GRASS TIOMOS HINGE ACCESSORIES",
+              "product_type": "hinge_accessory",
+              "family": "accessory",
+              "brand": "Grass",
+              "pages": [
+                63,
+                64
+              ],
+              "page": 63,
+              "bbox": [
+                0.0813,
+                0.1141,
+                0.5051,
+                0.1454
+              ],
+              "approx_skus": 15
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "SOFT-CLOSE ADAPTERS FOR NEXIS HINGES",
+              "product_type": "hinge_accessory",
+              "family": "accessory",
+              "brand": null,
+              "pages": [
+                78,
+                79
+              ],
+              "page": 78,
+              "bbox": [
+                0.0689,
+                0.115,
+                0.5516,
+                0.1463
+              ],
+              "approx_skus": 1
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "GRASS NEXIS HINGE ACCESSORIES",
+              "product_type": "hinge_accessory",
+              "family": "accessory",
+              "brand": "Grass",
+              "pages": [
+                80,
+                80
+              ],
+              "page": 80,
+              "bbox": [
+                0.0716,
+                0.1154,
+                0.4953,
+                0.1467
+              ],
+              "approx_skus": 1
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "GRASS TEC 872 SELF-CLOSE HINGES & SOFT-CLOSE ADAPTERS",
+              "product_type": "hinge_accessory",
+              "family": "accessory",
+              "brand": "Grass",
+              "pages": [
+                89,
+                89
+              ],
+              "page": 89,
+              "bbox": [
+                0.081,
+                0.1154,
+                0.7724,
+                0.1467
+              ],
+              "approx_skus": 9
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "GRASS HINGE ACCESSORIES & ASSEMBLY HARDWARE",
+              "product_type": "hinge_accessory",
+              "family": "accessory",
+              "brand": "Grass",
+              "pages": [
+                91,
+                91
+              ],
+              "page": 91,
+              "bbox": [
+                0.0815,
+                0.1154,
+                0.6921,
+                0.1467
+              ],
+              "approx_skus": 21
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "HINGE SOFT-CLOSE ADAPTERS",
+              "product_type": "hinge_accessory",
+              "family": "accessory",
+              "brand": null,
+              "pages": [
+                102,
+                102
+              ],
+              "page": 102,
+              "bbox": [
+                0.0722,
+                0.1147,
+                0.4095,
+                0.146
+              ],
+              "approx_skus": 7
+            },
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "BLUM AVENTOS ACCESSORIES",
+              "product_type": "hinge_accessory",
+              "family": "accessory",
+              "brand": "Blum",
+              "pages": [
+                11,
+                14
+              ],
+              "page": 11,
+              "bbox": [
+                0.0801,
+                0.1145,
+                0.4441,
+                0.1457
+              ],
+              "approx_skus": 18
+            }
+          ]
+        },
+        {
+          "product_type": "hinge_tool",
+          "sections": [
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "PRO VALUE EUROPEAN HINGE OVERLAY CHARTS",
+              "product_type": "hinge_tool",
+              "family": "tool",
+              "brand": "Pro",
+              "pages": [
+                4,
+                4
+              ],
+              "page": 4,
+              "bbox": [
+                0.0718,
+                0.1156,
+                0.625,
+                0.1469
+              ],
+              "approx_skus": 13
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "BLUM HINGE MACHINES",
+              "product_type": "hinge_tool",
+              "family": "tool",
+              "brand": "Blum",
+              "pages": [
+                37,
+                38
+              ],
+              "page": 37,
+              "bbox": [
+                0.081,
+                0.1147,
+                0.3663,
+                0.146
+              ],
+              "approx_skus": 9
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "BLUM HINGE MACHINE ACCESSORIES",
+              "product_type": "hinge_tool",
+              "family": "tool",
+              "brand": "Blum",
+              "pages": [
+                39,
+                40
+              ],
+              "page": 39,
+              "bbox": [
+                0.081,
+                0.1154,
+                0.5112,
+                0.1467
+              ],
+              "approx_skus": 27
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "BLUM HINGE ASSEMBLY AIDS",
+              "product_type": "hinge_tool",
+              "family": "tool",
+              "brand": "Blum",
+              "pages": [
+                41,
+                44
+              ],
+              "page": 41,
+              "bbox": [
+                0.0814,
+                0.1143,
+                0.4257,
+                0.1456
+              ],
+              "approx_skus": 38
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "GRASS HINGE MACHINES & ACCESSORIES",
+              "product_type": "hinge_tool",
+              "family": "tool",
+              "brand": "Grass",
+              "pages": [
+                90,
+                90
+              ],
+              "page": 90,
+              "bbox": [
+                0.0715,
+                0.1143,
+                0.5549,
+                0.1456
+              ],
+              "approx_skus": 8
+            },
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "BLUM AVENTOS ASSEMBLY AIDS",
+              "product_type": "hinge_tool",
+              "family": "tool",
+              "brand": "Blum",
+              "pages": [
+                20,
+                21
+              ],
+              "page": 20,
+              "bbox": [
+                0.0693,
+                0.1143,
+                0.4454,
+                0.1456
+              ],
+              "approx_skus": 9
+            }
+          ]
+        },
+        {
+          "product_type": "institutional_hinge",
+          "sections": [
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "INSTITUTIONAL HINGES",
+              "product_type": "institutional_hinge",
+              "family": "institutional_hinge",
+              "brand": null,
+              "pages": [
+                39,
+                40
+              ],
+              "page": 39,
+              "bbox": [
+                0.0803,
+                0.1152,
+                0.347,
+                0.1465
+              ],
+              "approx_skus": 35
+            },
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "INSTITUTIONAL HINGES",
+              "product_type": "institutional_hinge",
+              "family": "institutional_hinge",
+              "brand": null,
+              "pages": [
+                42,
+                42
+              ],
+              "page": 42,
+              "bbox": [
+                0.0713,
+                0.1154,
+                0.338,
+                0.1466
+              ],
+              "approx_skus": 10
+            },
+            {
+              "catalog": "grass_nexis",
+              "catalog_label": "Grass NEXIS (manufacturer)",
+              "section": "INSTITUTIONAL & SPECIALTY HINGE ITEMS",
+              "product_type": "institutional_hinge",
+              "family": "institutional_hinge",
+              "brand": null,
+              "pages": [
+                40,
+                40
+              ],
+              "page": 40,
+              "bbox": [
+                0.3325,
+                0.4534,
+                0.8687,
+                0.4807
+              ],
+              "approx_skus": 0
+            }
+          ]
+        },
+        {
+          "product_type": "invisible_hinge",
+          "sections": [
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "SOSS INVISIBLE HINGES",
+              "product_type": "invisible_hinge",
+              "family": "invisible_hinge",
+              "brand": "Soss",
+              "pages": [
+                44,
+                45
+              ],
+              "page": 44,
+              "bbox": [
+                0.0791,
+                0.1149,
+                0.3475,
+                0.1462
+              ],
+              "approx_skus": 28
+            }
+          ]
+        },
+        {
+          "product_type": "lid_stay",
+          "sections": [
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "LID SUPPORTS & UP STAYS (CHEST STYLE)",
+              "product_type": "lid_stay",
+              "family": "lid_stay",
+              "brand": null,
+              "pages": [
+                33,
+                34
+              ],
+              "page": 33,
+              "bbox": [
+                0.0803,
+                0.115,
+                0.5521,
+                0.1463
+              ],
+              "approx_skus": 9
+            },
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "LID SUPPORTS & UP STAYS",
+              "product_type": "lid_stay",
+              "family": "lid_stay",
+              "brand": null,
+              "pages": [
+                35,
+                36
+              ],
+              "page": 35,
+              "bbox": [
+                0.0807,
+                0.1137,
+                0.384,
+                0.145
+              ],
+              "approx_skus": 11
+            },
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "LID SUPPORTS, DOWN STAYS & UP STAYS",
+              "product_type": "lid_stay",
+              "family": "lid_stay",
+              "brand": null,
+              "pages": [
+                37,
+                37
+              ],
+              "page": 37,
+              "bbox": [
+                0.0786,
+                0.1141,
+                0.547,
+                0.1453
+              ],
+              "approx_skus": 5
+            }
+          ]
+        },
+        {
+          "product_type": "lift_accessory",
+          "sections": [
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "BLUM SERVO-DRIVE FOR AVENTOS",
+              "product_type": "lift_accessory",
+              "family": "accessory",
+              "brand": "Blum",
+              "pages": [
+                15,
+                18
+              ],
+              "page": 15,
+              "bbox": [
+                0.0814,
+                0.1147,
+                0.4756,
+                0.146
+              ],
+              "approx_skus": 13
+            },
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "BLUM SERVO-DRIVE FOR AVENTOS ELECTRICAL COMPONENTS",
+              "product_type": "lift_accessory",
+              "family": "accessory",
+              "brand": "Blum",
+              "pages": [
+                19,
+                19
+              ],
+              "page": 19,
+              "bbox": [
+                0.08,
+                0.1145,
+                0.8023,
+                0.1457
+              ],
+              "approx_skus": 4
+            }
+          ]
+        },
+        {
+          "product_type": "lift_system",
+          "sections": [
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "BLUM AVENTOS LIFT SYSTEMS",
+              "product_type": "lift_system",
+              "family": "lift_system",
+              "brand": "Blum",
+              "pages": [
+                2,
+                10
+              ],
+              "page": 2,
+              "bbox": [
+                0.0704,
+                0.114,
+                0.4239,
+                0.1453
+              ],
+              "approx_skus": 87
+            },
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "GRASS KINVARO LIFTER SYSTEMS",
+              "product_type": "lift_system",
+              "family": "lift_system",
+              "brand": "Grass",
+              "pages": [
+                22,
+                29
+              ],
+              "page": 22,
+              "bbox": [
+                0.0703,
+                0.115,
+                0.4519,
+                0.1463
+              ],
+              "approx_skus": 39
+            },
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "SALICE WIND LIFT SYSTEM",
+              "product_type": "lift_system",
+              "family": "lift_system",
+              "brand": "Salice",
+              "pages": [
+                31,
+                31
+              ],
+              "page": 31,
+              "bbox": [
+                0.0798,
+                0.1138,
+                0.3758,
+                0.1451
+              ],
+              "approx_skus": 17
+            }
+          ]
+        },
+        {
+          "product_type": "piano_hinge",
+          "sections": [
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "CONTINUOUS PIANO HINGES",
+              "product_type": "piano_hinge",
+              "family": "piano_hinge",
+              "brand": null,
+              "pages": [
+                43,
+                43
+              ],
+              "page": 43,
+              "bbox": [
+                0.0808,
+                0.1148,
+                0.4093,
+                0.1461
+              ],
+              "approx_skus": 24
+            }
+          ]
+        },
+        {
+          "product_type": "pivot_hinge",
+          "sections": [
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "PIVOT HINGES",
+              "product_type": "pivot_hinge",
+              "family": "pivot_hinge",
+              "brand": null,
+              "pages": [
+                53,
+                53
+              ],
+              "page": 53,
+              "bbox": [
+                0.0819,
+                0.1143,
+                0.2449,
+                0.1456
+              ],
+              "approx_skus": 3
+            },
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "PIVOT & BUTT HINGES",
+              "product_type": "pivot_hinge",
+              "family": "pivot_hinge",
+              "brand": null,
+              "pages": [
+                54,
+                54
+              ],
+              "page": 54,
+              "bbox": [
+                0.0787,
+                0.1142,
+                0.3313,
+                0.1455
+              ],
+              "approx_skus": 2
+            }
+          ]
+        },
+        {
+          "product_type": "push_mechanism",
+          "sections": [
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "BLUM TIP-ON FOR DOORS",
+              "product_type": "push_mechanism",
+              "family": "accessory",
+              "brand": "Blum",
+              "pages": [
+                28,
+                29
+              ],
+              "page": 28,
+              "bbox": [
+                0.0697,
+                0.1154,
+                0.3711,
+                0.1467
+              ],
+              "approx_skus": 18
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "GRASS TIOMOS TIPMATIC",
+              "product_type": "push_mechanism",
+              "family": "accessory",
+              "brand": "Grass",
+              "pages": [
+                65,
+                66
+              ],
+              "page": 65,
+              "bbox": [
+                0.0819,
+                0.1145,
+                0.3811,
+                0.1458
+              ],
+              "approx_skus": 9
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "GRASS TIPMATIC FOR HANDLE-FREE WOODEN DOORS",
+              "product_type": "push_mechanism",
+              "family": "accessory",
+              "brand": "Grass",
+              "pages": [
+                81,
+                81
+              ],
+              "page": 81,
+              "bbox": [
+                0.081,
+                0.1154,
+                0.6894,
+                0.1467
+              ],
+              "approx_skus": 3
+            }
+          ]
+        },
+        {
+          "product_type": "specialty_hinge",
+          "sections": [
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "GRASS TIOMOS SOFT-CLOSE SPECIALTY HINGES",
+              "product_type": "specialty_hinge",
+              "family": "concealed_hinge",
+              "brand": "Grass",
+              "pages": [
+                59,
+                59
+              ],
+              "page": 59,
+              "bbox": [
+                0.0788,
+                0.1154,
+                0.622,
+                0.1467
+              ],
+              "approx_skus": 2
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "GRASS NEXIS SPECIALTY HINGES",
+              "product_type": "specialty_hinge",
+              "family": "concealed_hinge",
+              "brand": "Grass",
+              "pages": [
+                71,
+                73
+              ],
+              "page": 71,
+              "bbox": [
+                0.081,
+                0.1154,
+                0.4569,
+                0.1467
+              ],
+              "approx_skus": 5
+            },
+            {
+              "catalog": "wurth_b",
+              "catalog_label": "Würth Baer — Section B (Concealed Hinges)",
+              "section": "SALICE SPECIALTY HINGES",
+              "product_type": "specialty_hinge",
+              "family": "concealed_hinge",
+              "brand": "Salice",
+              "pages": [
+                98,
+                98
+              ],
+              "page": 98,
+              "bbox": [
+                0.0715,
+                0.1151,
+                0.3673,
+                0.1464
+              ],
+              "approx_skus": 21
+            },
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "SPECIALTY HINGES",
+              "product_type": "specialty_hinge",
+              "family": "concealed_hinge",
+              "brand": null,
+              "pages": [
+                56,
+                56
+              ],
+              "page": 56,
+              "bbox": [
+                0.0705,
+                0.1144,
+                0.2839,
+                0.1457
+              ],
+              "approx_skus": 4
+            }
+          ]
+        },
+        {
+          "product_type": "wrap_demountable_hinge",
+          "sections": [
+            {
+              "catalog": "wurth_c",
+              "catalog_label": "Würth Baer — Section C (Lift Systems & Semi-Concealed)",
+              "section": "SELF-CLOSING WRAP & DEMOUNTABLE HINGES",
+              "product_type": "wrap_demountable_hinge",
+              "family": "specialty_hinge",
+              "brand": null,
+              "pages": [
+                47,
+                47
+              ],
+              "page": 47,
+              "bbox": [
+                0.0823,
+                0.1142,
+                0.6193,
+                0.1454
+              ],
+              "approx_skus": 24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Other",
+      "types": [
+        {
+          "product_type": "Misc",
+          "sections": []
+        }
+      ]
+    }
+  ]
+}

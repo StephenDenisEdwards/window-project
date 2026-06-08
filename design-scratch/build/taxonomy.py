@@ -150,13 +150,25 @@ def write_md(tax):
         f.write("\n".join(lines) + "\n")
 
 
+def grouped(tax):
+    """Hierarchical view: Sections -> product_type -> [sections]; Other -> Misc (review moves
+    flagged sections here at serve time)."""
+    by_type = {}
+    for t in tax:
+        by_type.setdefault(t["product_type"], []).append(t)
+    sections = {"name": "Sections",
+                "types": [{"product_type": pt, "sections": by_type[pt]} for pt in sorted(by_type)]}
+    other = {"name": "Other", "types": [{"product_type": "Misc", "sections": []}]}
+    return {"groups": [sections, other]}
+
+
 def main():
     tax = build()
     with io.open(OUT_JSON, "w", encoding="utf-8") as f:
-        json.dump(tax, f, ensure_ascii=False, indent=2)
+        json.dump(grouped(tax), f, ensure_ascii=False, indent=2)
     write_md(tax)
     types = sorted(set(t["product_type"] for t in tax))
-    print(f"taxonomy: {len(tax)} sections, {len(types)} product types -> taxonomy.json + taxonomy.md")
+    print(f"taxonomy: {len(tax)} sections, {len(types)} product types -> taxonomy.json (grouped) + taxonomy.md")
     print("product types:", ", ".join(types))
 
 

@@ -22,7 +22,9 @@ BUILD = os.path.join(HERE, "..", "build")
 sys.path.insert(0, BUILD)
 import thin_pipeline as tp  # noqa: E402  (only for the SOURCES registry — no DB build)
 
-TAX = json.load(io.open(os.path.join(HERE, "..", "taxonomy.json"), encoding="utf-8"))
+_TAXDOC = json.load(io.open(os.path.join(HERE, "..", "taxonomy.json"), encoding="utf-8"))
+# flatten the grouped taxonomy.json back to a section list (each section keeps its product_type)
+TAX = [s for g in _TAXDOC["groups"] for t in g["types"] for s in t["sections"]]
 SOURCES = tp.SOURCES
 app = FastAPI(title="Taxonomy verifier")
 _CACHE: dict = {}
@@ -48,9 +50,20 @@ def save_review(data):
 
 @app.get("/api/taxonomy")
 def api_taxonomy():
+    """Hierarchical tree: Sections -> product_type -> sections (those not flagged), and
+    Other -> Misc (sections a human flagged as 'not a product type')."""
     rev = load_review()
     secs = [{**s, "review": rev.get(_key(s["catalog"], s["section"]))} for s in TAX]
-    return {"sections": secs, "sources": SOURCES}
+    products = [s for s in secs if not (s.get("review") and s["review"]["status"] == "not_product")]
+    other = [s for s in secs if s.get("review") and s["review"]["status"] == "not_product"]
+    by_type: dict = {}
+    for s in products:
+        by_type.setdefault(s["product_type"], []).append(s)
+    sections_group = {"name": "Sections",
+                      "types": [{"product_type": pt, "sections": by_type[pt]} for pt in sorted(by_type)]}
+    other_group = {"name": "Other", "types": [{"product_type": "Misc", "sections": other}]}
+    return {"groups": [sections_group, other_group], "sources": SOURCES,
+            "counts": {"products": len(products), "other": len(other)}}
 
 
 class Review(BaseModel):
