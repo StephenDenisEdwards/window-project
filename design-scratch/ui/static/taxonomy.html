@@ -22,6 +22,12 @@
   .hl{position:absolute;border:2px solid #ffcc33;background:rgba(255,204,51,.22);box-shadow:0 0 0 9999px rgba(8,10,18,.5)}
   .cap{color:var(--dim);margin:6px 0}
   .big{font-size:16px;color:var(--txt)}
+  .item.notprod .nm{color:var(--dim);text-decoration:line-through}
+  .flag{background:#5a3030;color:#ffb4b4}
+  .review{margin:10px 0;padding:10px;border:1px solid var(--line);border-radius:6px;background:var(--panel)}
+  .review label{display:flex;gap:7px;align-items:center;cursor:pointer}
+  .review input[type=text]{width:100%;margin:7px 0}
+  .review button{cursor:pointer;background:var(--accent);color:#fff;border:none;border-radius:5px;padding:5px 12px}
 </style>
 </head>
 <body>
@@ -38,39 +44,54 @@
   <div class="col" id="src"><p class="cap">Select a section to verify its source.</p></div>
 </div>
 <script>
-let DATA=null;const $=s=>document.querySelector(s);
-async function boot(){
-  DATA=await (await fetch("/api/taxonomy")).json();
+let DATA=null,curIdx=null;const $=s=>document.querySelector(s);
+async function boot(){ await load();
   const types=[...new Set(DATA.sections.map(s=>s.product_type))].sort();
   $("#ty").innerHTML='<option value="">all types</option>'+types.map(t=>`<option>${t}</option>`).join("");
   $("#q").oninput=render;$("#ty").onchange=render;render();
 }
+async function load(){ DATA=await (await fetch("/api/taxonomy")).json(); }
+function isNot(s){ return s.review&&s.review.status==="not_product"; }
 function render(){
   const q=$("#q").value.toLowerCase(),ty=$("#ty").value;
   const rows=DATA.sections.filter(s=>(!ty||s.product_type===ty)&&
     (s.section.toLowerCase().includes(q)||s.product_type.includes(q)||(s.brand||"").toLowerCase().includes(q)));
-  $("#count").textContent=rows.length+" sections";
+  const flagged=DATA.sections.filter(isNot).length;
+  $("#count").textContent=`${rows.length} sections · ${flagged} flagged not-a-product`;
   let html="",cat=null;
-  rows.forEach((s,idx)=>{
+  rows.forEach(s=>{
     if(s.catalog_label!==cat){cat=s.catalog_label;html+=`<div class="cat">${cat}</div>`;}
     const p=s.pages[0]===s.pages[1]?s.pages[0]:`${s.pages[0]}–${s.pages[1]}`;
-    html+=`<div class="item" data-i="${DATA.sections.indexOf(s)}">
-      <div class="nm">${s.section}<br><span class="ty">${s.product_type}</span></div>
-      <div class="pg">p${p} · ~${s.approx_skus}</div></div>`;
+    const tag=isNot(s)?`<span class="ty flag">not a product</span>`:`<span class="ty">${s.product_type}</span>`;
+    html+=`<div class="item ${isNot(s)?'notprod':''}" data-i="${DATA.sections.indexOf(s)}">
+      <div class="nm">${s.section}<br>${tag}</div><div class="pg">p${p} · ~${s.approx_skus}</div></div>`;
   });
   $("#list").innerHTML=html;
-  document.querySelectorAll(".item").forEach(el=>el.onclick=()=>sel(+el.dataset.i,el));
+  document.querySelectorAll(".item").forEach(el=>el.onclick=()=>sel(+el.dataset.i));
 }
-function sel(i,el){
-  document.querySelectorAll(".item").forEach(e=>e.classList.remove("sel"));el.classList.add("sel");
-  const s=DATA.sections[i],src=DATA.sources[s.catalog]||{},pl=(src.page_label||"p{n}").replace("{n}",s.page);
+function sel(i){
+  curIdx=i;
+  document.querySelectorAll(".item").forEach(e=>e.classList.toggle("sel",+e.dataset.i===i));
+  const s=DATA.sections[i],src=DATA.sources[s.catalog]||{},pl=(src.page_label||"p{n}").replace("{n}",s.page),rv=s.review||{};
   let hl="";
   if(s.bbox){const[x0,y0,x1,y1]=s.bbox;
     hl=`<div class="hl" style="left:${x0*100}%;top:${y0*100}%;width:${(x1-x0)*100}%;height:${(y1-y0)*100}%"></div>`;}
   $("#src").innerHTML=`<div class="big">${s.section}</div>
-    <div class="cap">type <b>${s.product_type}</b> · ${src.label||s.catalog} · ${pl} · ~${s.approx_skus} skus</div>
+    <div class="cap">auto type <b>${s.product_type}</b> · ${src.label||s.catalog} · ${pl} · ~${s.approx_skus} skus</div>
+    <div class="review">
+      <label><input type="checkbox" id="notprod" ${isNot(s)?'checked':''}> <b>Not a product type</b> (reference / info / chart)</label>
+      <input type="text" id="rvnote" placeholder="note — what is it? (e.g. overlay chart)" value="${(rv.note||'').replace(/"/g,'&quot;')}">
+      <button onclick="saveReview()">save</button>
+    </div>
     <div class="cap">yellow box = the banner this section was identified from</div>
     <div class="stage"><img src="/page/${s.catalog}/${s.page}.png">${hl}</div>`;
+}
+async function saveReview(){
+  const s=DATA.sections[curIdx];
+  await fetch("/api/review",{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({catalog:s.catalog, section:s.section,
+      status:$("#notprod").checked?"not_product":"product", note:$("#rvnote").value})});
+  await load(); render(); sel(curIdx);
 }
 boot();
 </script>

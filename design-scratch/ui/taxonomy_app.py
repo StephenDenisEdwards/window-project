@@ -15,6 +15,7 @@ import fitz  # pymupdf
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse, HTMLResponse, Response
+from pydantic import BaseModel
 
 HERE = os.path.dirname(__file__)
 BUILD = os.path.join(HERE, "..", "build")
@@ -26,10 +27,49 @@ SOURCES = tp.SOURCES
 app = FastAPI(title="Taxonomy verifier")
 _CACHE: dict = {}
 
+# human review overlay — durable, committed, separate from the regenerated taxonomy.json
+REVIEW_PATH = os.path.join(BUILD, "taxonomy_review.json")
+
+
+def _key(catalog, section):
+    return f"{catalog}|{section}"
+
+
+def load_review():
+    if os.path.exists(REVIEW_PATH):
+        return json.load(io.open(REVIEW_PATH, encoding="utf-8"))
+    return {}
+
+
+def save_review(data):
+    with io.open(REVIEW_PATH, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2, sort_keys=True)
+
 
 @app.get("/api/taxonomy")
 def api_taxonomy():
-    return {"sections": TAX, "sources": SOURCES}
+    rev = load_review()
+    secs = [{**s, "review": rev.get(_key(s["catalog"], s["section"]))} for s in TAX]
+    return {"sections": secs, "sources": SOURCES}
+
+
+class Review(BaseModel):
+    catalog: str
+    section: str
+    status: str          # "product" (clears the flag) | "not_product"
+    note: str = ""
+
+
+@app.post("/api/review")
+def review(r: Review):
+    data = load_review()
+    k = _key(r.catalog, r.section)
+    if r.status == "product":
+        data.pop(k, None)                 # un-mark
+    else:
+        data[k] = {"status": r.status, "note": r.note, "by": "ui"}
+    save_review(data)
+    return {"ok": True, "review": data.get(k)}
 
 
 @app.get("/page/{source}/{page}.png")
