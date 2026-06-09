@@ -11,6 +11,17 @@
       "resolution": "Re-gated the TIOMOS extractor on the 'Boring Pattern' column and read cells by header substring; also pulls the 95° opening angle from these titles. Re-verified vs the page text layer: 116 TIOMOS hinges, 0 phantom. (commit fd8ae49)",
       "noted_by": "claude",
       "noted_on": "2026-06-08"
+    },
+    {
+      "id": "tec-side-by-side-collision",
+      "catalog": "wurth_b",
+      "section": "GRASS TEC SOFT-CLOSE / SELF-CLOSE / FACE-MOUNT HINGES",
+      "pages": [82, 83, 84, 85, 86],
+      "status": "resolved",
+      "problem": "TEC hinge pages are two side-by-side tables in one block (e.g. Side-Mount 45mm | Side-Mount 42mm). The cell parser keys cells by header name, so the duplicated columns collide and the right-column SKUs are silently lost: B-85 had 25 hinge SKUs in the page text but only 7 in the parsed cells (18 lost); ~56 lost across the 5 pages. Counts alone looked fine — only the page-text cross-check exposed it.",
+      "resolution": "Wrote a positional TEC extractor (extract_grass_tec) that reads SKUs from the word layer within each block's column x-bands instead of by header name, binding overlay/fixing/mount/closing and the section-level opening angle. Re-verified vs page text: all 84 TEC hinges, 0 missed / 0 phantom / 0 dup on all 7 pages; both columns confirmed boxed on the render.",
+      "noted_by": "claude",
+      "noted_on": "2026-06-09"
     }
   ]
 }

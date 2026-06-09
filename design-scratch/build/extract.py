@@ -16,6 +16,8 @@ import os
 import re
 import sys
 
+import fitz  # pymupdf — TEC pages need positional (word-level) reading
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "spikes"))
 import table_extract_spike as tx  # noqa: E402
 
@@ -258,12 +260,96 @@ def extract_grass_tiomos_baseplate():
     return products, quarantine
 
 
+TEC_SKU = re.compile(r"GF\d{4,7}[A-Z]?-1[456]")   # TEC hinge: GF<digits><opt letter>-14/15/16 (-42 = accessory)
+
+
+def _mount_of(label):
+    l = (label or "").lower()
+    return "wrap_around" if "wrap" in l else "face_mount" if "face" in l else "side_mount" if "side" in l else None
+
+
+def _fixing_tec(v):
+    v = (v or "").lower()
+    return "dowel" if "dowel" in v else "screw_on" if "screw" in v else None
+
+
+def extract_grass_tec():
+    """Grass TEC hinges — Section B p82-88. These are side-by-side dual tables: the cell parser
+    keys cells by header name, so the duplicated columns collide and the right-column SKUs are
+    LOST (e.g. B-85: 25 in the page, 7 in cells). So read positionally instead: each block's
+    `cols` give exact x-bands; recover every SKU from the word layer within those bands and bind
+    overlay/fixing/mount/closing/angle. Column-triplet blocks only -> 2-col accessory blocks
+    (restriction clip, spacer, screws) skip automatically. Closing comes from the column header
+    when it names it (B-84 face-mount Soft/Self columns), else from the banner."""
+    pages = [82, 83, 84, 85, 86, 87, 88]
+    products, quarantine = [], []
+    doc = fitz.open(tx.PDF)
+    blocks_by_page = {p: tx.parse_page(p) for p in pages}
+    section_ang = {}                                       # 'NNN Opening Angle' header is section-wide
+    for bl in blocks_by_page.values():
+        for bb in bl:
+            m = re.search(r"(\d{2,3})\s*[°º?]?\s*opening", (bb.get("title") or "").lower())
+            if m:
+                section_ang.setdefault(bb["banner"], int(m.group(1)))
+    for p in pages:
+        page = doc[p - 1]
+        W, H = page.rect.width, page.rect.height
+        words = [w for w in page.get_text("words") if w[4].strip()]
+        for b in blocks_by_page[p]:
+            cols = b.get("cols") or []
+            if b["family"] != "concealed_hinge" or "TEC" not in (b["banner"] or "").upper() \
+                    or len(cols) < 3 or len(cols) % 3 != 0:
+                continue                                   # hinge column-triplet tables only
+            ys = [(r[2][1], r[2][3]) for r in b["rows"] if r[2]]
+            if not ys:
+                continue
+            y0 = min(a for a, _ in ys) * H - 8
+            y1 = max(z for _, z in ys) * H + 8
+            ang = section_ang.get(b["banner"])
+            close_banner = _close_tiomos(b["banner"])      # SOFT/SELF/FREE from the banner
+            win = [w for w in words if y0 <= (w[1] + w[3]) / 2 <= y1]
+
+            def near(col, yc):                              # value word in col's x-band at row yc
+                best = None
+                for w in win:
+                    if col["lo"] - 22 <= (w[0] + w[2]) / 2 <= col["hi"] + 22 and abs((w[1] + w[3]) / 2 - yc) <= 5:
+                        d = abs((w[1] + w[3]) / 2 - yc)
+                        if best is None or d < best[0]:
+                            best = (d, w[4])
+                return best[1] if best else None
+
+            for g in range(len(cols) // 3):
+                c0, c1, c2 = cols[3 * g], cols[3 * g + 1], cols[3 * g + 2]
+                mount = _mount_of(c0["label"])
+                bm = re.search(r"(\d{2})\s*mm", (c0["label"] + " " + c1["label"]).lower())
+                boring = int(bm.group(1)) if bm else None
+                close_hdr = _close_tiomos(c2["label"])     # B-84: closing is in the column header
+                for w in win:
+                    if not TEC_SKU.fullmatch(w[4]) or not (c0["lo"] - 22 <= (w[0] + w[2]) / 2 <= c0["hi"] + 22):
+                        continue
+                    yc = (w[1] + w[3]) / 2
+                    fx = near(c2, yc)
+                    products.append({
+                        "part_number": w[4], "brand": "Grass", "family": "hinge",
+                        "product_type": "concealed_hinge", "section": b["banner"], "series": "TEC",
+                        "mount_type": mount, "boring_pattern_mm": boring,
+                        "overlay_in": (near(c1, yc) or "").strip() or None,
+                        "fixing": _fixing_tec(fx), "fixing_raw": (fx or "").strip() or None,
+                        "closing_type": close_hdr or close_banner,
+                        "opening_angle_deg": ang,
+                        "_source": "wurth_b", "_page": p,
+                        "_bbox": [round(w[0] / W, 4), round(w[1] / H, 4), round(w[2] / W, 4), round(w[3] / H, 4)],
+                    })
+    return products, quarantine
+
+
 # add a new product type here once its extractor is written & verified
 EXTRACTORS = [
     ("blum_cliptop", extract_blum_cliptop),
     ("blum_baseplate", extract_blum_baseplate),
     ("grass_tiomos", extract_grass_tiomos),
     ("grass_tiomos_baseplate", extract_grass_tiomos_baseplate),
+    ("grass_tec", extract_grass_tec),
 ]
 
 
