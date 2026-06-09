@@ -95,7 +95,7 @@ def _fixing_baseplate(v):
     for key, out in (("expando", "expando"), ("inserta", "inserta"), ("dowel", "dowel"),
                      ("truss", "truss_head_screw"), ("system screw", "system_screw"),
                      ("pre-mounted", "system_screw"), ("premounted", "system_screw"),
-                     ("wood", "wood_screw")):
+                     ("wood", "wood_screw"), ("euro", "euro_screw")):   # bare 'Euro Screws' (loose); pre-mounted handled above
         if key in v:
             return out
     return None
@@ -221,11 +221,49 @@ def extract_grass_tiomos():
     return products, quarantine
 
 
+def extract_grass_tiomos_baseplate():
+    """Grass TIOMOS mounting plates — Section B p60-62 (wing 60, thick/inline 61, face-frame 62).
+    Tables: Item#/Height/Fixing Type/# of Fixing Points, GFF058139... SKUs. Each page also has
+    drill-bit (Item#/Description) and screw (Length x Gauge...) sub-tables — excluded by gating on
+    the Height column (only the baseplate table has it). Callout letters stripped from Item#.
+    No Material column in these tables (left null). Fixing text carries extra detail (Euro/with
+    Flange), so fixing_raw is always kept alongside the normalized fixing_type."""
+    pages = [60, 61, 62]
+    products, quarantine = [], []
+    for p in pages:
+        for b in tx.parse_page(p):
+            if b["family"] != "baseplate" or "TIOMOS" not in (b["banner"] or "").upper():
+                continue
+            labels = " ".join(c["label"].lower() for c in (b.get("cols") or []))
+            if "height" not in labels:                 # baseplate table has Height; skips bit/screw tables
+                continue
+            for cells, sub, bbox in b["rows"]:
+                pn = tx.strip_callout(cells.get("Item #", "") or "")
+                if not clean_gff(pn):
+                    quarantine.append({"page": p, "raw": cells, "bbox": bbox})
+                    continue                           # GATE: only clean GFF baseplate SKUs
+                fx_raw = (_cell(cells, "fixing type") or "").strip() or None
+                pts = (_cell(cells, "point") or "").strip()
+                products.append({
+                    "part_number": pn, "brand": "Grass", "family": "baseplate",
+                    "product_type": "baseplate", "section": b["banner"], "series": "TIOMOS",
+                    "plate_style": sub,
+                    "height_mm": _height_mm(_cell(cells, "height")),
+                    "fixing_type": _fixing_baseplate(fx_raw),
+                    "fixing_raw": fx_raw,
+                    "fixing_points": int(pts) if pts.isdigit() else None,
+                    "material": None,                  # not listed in TIOMOS baseplate tables
+                    "_source": "wurth_b", "_page": p, "_bbox": bbox,
+                })
+    return products, quarantine
+
+
 # add a new product type here once its extractor is written & verified
 EXTRACTORS = [
     ("blum_cliptop", extract_blum_cliptop),
     ("blum_baseplate", extract_blum_baseplate),
     ("grass_tiomos", extract_grass_tiomos),
+    ("grass_tiomos_baseplate", extract_grass_tiomos_baseplate),
 ]
 
 
