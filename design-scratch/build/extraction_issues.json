@@ -28,9 +28,9 @@
       "catalog": "wurth_b",
       "section": "GRASS TIOMOS SELF-CLOSE & SOFT-CLOSE SPECIALTY HINGES",
       "pages": [53, 54, 55, 56, 57, 58],
-      "status": "open",
+      "status": "resolved",
       "problem": "Core specs (SKU / boring / fixing / closing) for all 33 specialty hinges are extracted and verified 0-loss vs the page text. BUT the specialty sub-type and opening angle live in multi-line block headers (e.g. 'Tiomos 110/45A - (+45° Angle Corner Cabinet Hinges for Overlay Doors)') that parse_page truncates to fragments ('Cabinet Hinges for Overlay Doors)', 'Door Thicknesses', '(laminate), chipboard...'). So variant_raw is unreliable and opening_angle is only 6/33. The hinge records are usable; the specialty *type* labelling (angle-corner / blind-corner / pie-cut) and angle need review.",
-      "resolution": "",
+      "resolution": "Added _tiomos_specialty_titles: reads the full 'Tiomos ...' header positionally from the word layer (joins wrapped continuation lines, strips stray callout letters) and the 'NNN° opening angle' bullet, assigning each row by y-position. Now variant 33/33 clean (11 distinct: blind-corner, +30/+45/-15/-45 angle-corner overlay/inset, M9/M0 thick/thin-door, pie-cut) and opening_angle 30/33 (the 3 nulls are the Pie-Cut, which states no opening angle). Recovered variants confirmed against the page headers on the B-53 render.",
       "fix_options": "Positional header recovery (read the full title line above each table from the word layer, like the TEC fix), or human review to assign clean variant labels.",
       "noted_by": "claude",
       "noted_on": "2026-06-09"

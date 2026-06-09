@@ -407,39 +407,83 @@ def extract_salice_baseplate():
     return products, quarantine
 
 
+def _tiomos_specialty_titles(page):
+    """Recover the full multi-line table headers positionally (parse_page truncates them).
+    Returns [(y_norm, variant, opening_angle)] — variant joins the 'Tiomos ...' line with its
+    wrapped continuation; angle from the 'NNN° opening angle' bullet, else the title number."""
+    H = page.rect.height
+    lines = []
+    for blk in page.get_text("dict")["blocks"]:
+        for ln in blk.get("lines", []):
+            t = "".join(s["text"] for s in ln["spans"]).strip()
+            if t:
+                lines.append((ln["bbox"][1], t))
+    lines.sort(key=lambda x: x[0])
+    anchors = [i for i, (y, t) in enumerate(lines) if t.lower().startswith("tiomos")]
+    out = []
+    for k, i in enumerate(anchors):
+        y = lines[i][0]
+        end = lines[anchors[k + 1]][0] if k + 1 < len(anchors) else 1e9
+        parts, lasty = [lines[i][1]], y
+        for yy, tt in lines[i + 1:]:                        # join wrapped continuation lines
+            if yy >= end or yy - lasty > 20 or len(parts) >= 3 or not (tt[0].isalnum() or tt[0] == "("):
+                break
+            parts.append(tt)
+            lasty = yy
+        variant = re.sub(r"\s+", " ", re.sub(r"[^\x20-\x7e]", " ", " ".join(parts))).strip()
+        variant = " ".join(w for w in variant.split()    # drop stray single-letter diagram callouts (A,B,C..)
+                           if not (len(w) == 1 and w.isalpha() and w.isupper()))
+        ang = None
+        for yy, tt in lines:
+            if y <= yy < end:
+                m = re.search(r"(\d{2,3})\s*[°º?]\s*opening", re.sub(r"[^\x20-\x7e]", " ", tt).lower())
+                if m:
+                    ang = int(m.group(1))
+                    break
+        if ang is None:
+            m = re.search(r"tiomos\s+(?:m\d+\s+)?(\d{2,3})", variant.lower())
+            ang = int(m.group(1)) if m else None
+        out.append((y / H, variant, ang))
+    return out
+
+
 def extract_grass_tiomos_specialty():
-    """Grass TIOMOS specialty hinges — Section B p53-58 (blind-corner, pie-cut corner, thick-door,
-    overlay/inset specialty). Same clean single-column shape as the TIOMOS euro hinges
-    (Item#/Boring/Fixing/Close), so reuse that binding and gate on the Boring column (excludes the
-    Finish/Box-Qty cover-cap + Description spacer blocks). The specialty *sub-type* lives in the
-    block titles, which the parser extracts unreliably here -> kept as variant_raw, not a clean
-    field (flagged in extraction_issues.json)."""
+    """Grass TIOMOS specialty hinges — Section B p53-58 (blind-corner, angle-corner, pie-cut,
+    thick/thin-door). Same clean single-column shape as the TIOMOS euro hinges (Item#/Boring/
+    Fixing/Close); gate on the Boring column (excludes the cover-cap Finish/Box-Qty + spacer
+    Description blocks). The specialty sub-type + opening angle live in multi-line headers that
+    parse_page truncates, so recover them positionally (_tiomos_specialty_titles) and assign by
+    each row's y-position."""
     pages = range(53, 59)
     products, quarantine = [], []
+    doc = fitz.open(tx.PDF)
     for p in pages:
+        titles = _tiomos_specialty_titles(doc[p - 1])
         for b in tx.parse_page(p):
             if b["family"] != "concealed_hinge" or "TIOMOS" not in (b["banner"] or "").upper():
                 continue
             labels = [c["label"].lower() for c in (b.get("cols") or [])]
             if not any("boring" in l for l in labels):     # hinge tables only
                 continue
-            title = (b.get("title") or "").strip() or None
-            am = re.search(r"(\d{2,3})\s*[°º?]", title or "")
             for cells, sub, bbox in b["rows"]:
                 pn = tx.strip_callout(cells.get("Item #", "") or "")
                 if not clean_gff(pn):
                     quarantine.append({"page": p, "raw": cells, "bbox": bbox})
                     continue
+                variant, ang = None, None                  # header whose y is just above this row
+                for ty, var, ta in titles:
+                    if ty <= bbox[1] + 0.001 and (variant is None or ty > best_y):
+                        variant, ang, best_y = var, ta, ty
                 fx_raw = (_cell(cells, "fixing") or "").strip() or None
                 prod = {
                     "part_number": pn, "brand": "Grass", "family": "hinge",
                     "product_type": "concealed_hinge", "section": b["banner"], "series": "TIOMOS",
-                    "variant_raw": title,                  # specialty sub-type (from noisy titles; unverified)
+                    "variant": variant,                    # full specialty header (recovered positionally)
                     "overlay_class": None,                 # specialty: not a simple full/half/inset class
                     "boring_pattern": (_cell(cells, "boring") or "").strip() or None,
                     "fixing": _fixing_tiomos(fx_raw),
                     "closing_type": _close_tiomos(_cell(cells, "clos")),
-                    "opening_angle_deg": int(am.group(1)) if am else None,
+                    "opening_angle_deg": ang,
                     "_source": "wurth_b", "_page": p, "_bbox": bbox,
                 }
                 if fx_raw and prod["fixing"] is None:
