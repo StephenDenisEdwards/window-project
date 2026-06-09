@@ -22,6 +22,18 @@
       "resolution": "Wrote a positional TEC extractor (extract_grass_tec) that reads SKUs from the word layer within each block's column x-bands instead of by header name, binding overlay/fixing/mount/closing and the section-level opening angle. Re-verified vs page text: all 84 TEC hinges, 0 missed / 0 phantom / 0 dup on all 7 pages; both columns confirmed boxed on the render.",
       "noted_by": "claude",
       "noted_on": "2026-06-09"
+    },
+    {
+      "id": "tiomos-specialty-variant-titles",
+      "catalog": "wurth_b",
+      "section": "GRASS TIOMOS SELF-CLOSE & SOFT-CLOSE SPECIALTY HINGES",
+      "pages": [53, 54, 55, 56, 57, 58],
+      "status": "open",
+      "problem": "Core specs (SKU / boring / fixing / closing) for all 33 specialty hinges are extracted and verified 0-loss vs the page text. BUT the specialty sub-type and opening angle live in multi-line block headers (e.g. 'Tiomos 110/45A - (+45° Angle Corner Cabinet Hinges for Overlay Doors)') that parse_page truncates to fragments ('Cabinet Hinges for Overlay Doors)', 'Door Thicknesses', '(laminate), chipboard...'). So variant_raw is unreliable and opening_angle is only 6/33. The hinge records are usable; the specialty *type* labelling (angle-corner / blind-corner / pie-cut) and angle need review.",
+      "resolution": "",
+      "fix_options": "Positional header recovery (read the full title line above each table from the word layer, like the TEC fix), or human review to assign clean variant labels.",
+      "noted_by": "claude",
+      "noted_on": "2026-06-09"
     }
   ]
 }

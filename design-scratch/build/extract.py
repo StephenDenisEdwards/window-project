@@ -407,6 +407,47 @@ def extract_salice_baseplate():
     return products, quarantine
 
 
+def extract_grass_tiomos_specialty():
+    """Grass TIOMOS specialty hinges — Section B p53-58 (blind-corner, pie-cut corner, thick-door,
+    overlay/inset specialty). Same clean single-column shape as the TIOMOS euro hinges
+    (Item#/Boring/Fixing/Close), so reuse that binding and gate on the Boring column (excludes the
+    Finish/Box-Qty cover-cap + Description spacer blocks). The specialty *sub-type* lives in the
+    block titles, which the parser extracts unreliably here -> kept as variant_raw, not a clean
+    field (flagged in extraction_issues.json)."""
+    pages = range(53, 59)
+    products, quarantine = [], []
+    for p in pages:
+        for b in tx.parse_page(p):
+            if b["family"] != "concealed_hinge" or "TIOMOS" not in (b["banner"] or "").upper():
+                continue
+            labels = [c["label"].lower() for c in (b.get("cols") or [])]
+            if not any("boring" in l for l in labels):     # hinge tables only
+                continue
+            title = (b.get("title") or "").strip() or None
+            am = re.search(r"(\d{2,3})\s*[°º?]", title or "")
+            for cells, sub, bbox in b["rows"]:
+                pn = tx.strip_callout(cells.get("Item #", "") or "")
+                if not clean_gff(pn):
+                    quarantine.append({"page": p, "raw": cells, "bbox": bbox})
+                    continue
+                fx_raw = (_cell(cells, "fixing") or "").strip() or None
+                prod = {
+                    "part_number": pn, "brand": "Grass", "family": "hinge",
+                    "product_type": "concealed_hinge", "section": b["banner"], "series": "TIOMOS",
+                    "variant_raw": title,                  # specialty sub-type (from noisy titles; unverified)
+                    "overlay_class": None,                 # specialty: not a simple full/half/inset class
+                    "boring_pattern": (_cell(cells, "boring") or "").strip() or None,
+                    "fixing": _fixing_tiomos(fx_raw),
+                    "closing_type": _close_tiomos(_cell(cells, "clos")),
+                    "opening_angle_deg": int(am.group(1)) if am else None,
+                    "_source": "wurth_b", "_page": p, "_bbox": bbox,
+                }
+                if fx_raw and prod["fixing"] is None:
+                    prod["fixing_raw"] = fx_raw
+                products.append(prod)
+    return products, quarantine
+
+
 # add a new product type here once its extractor is written & verified
 EXTRACTORS = [
     ("blum_cliptop", extract_blum_cliptop),
@@ -415,6 +456,7 @@ EXTRACTORS = [
     ("grass_tiomos_baseplate", extract_grass_tiomos_baseplate),
     ("grass_tec", extract_grass_tec),
     ("salice_baseplate", extract_salice_baseplate),
+    ("grass_tiomos_specialty", extract_grass_tiomos_specialty),
 ]
 
 
