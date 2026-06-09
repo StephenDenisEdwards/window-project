@@ -343,6 +343,70 @@ def extract_grass_tec():
     return products, quarantine
 
 
+SALICE_SKU = re.compile(r"UBBA[0-9A-Z]{4,12}")
+
+
+def clean_salice(pn):
+    """Validation gate for Salice baseplate SKUs: UBBA + 4-12 alnum, no prose."""
+    return bool(pn) and pn == pn.upper() and " " not in pn and bool(SALICE_SKU.fullmatch(pn))
+
+
+def _salice_material(sub):
+    s = (sub or "").lower()
+    return "die_cast_steel" if "die" in s else "stamped_steel" if "stamp" in s else None
+
+
+def _adjustment(t):
+    t = (t or "").lower()
+    return "two_cam" if "two cam" in t else "single_cam" if "single cam" in t else None
+
+
+def extract_salice_baseplate():
+    """Salice baseplates — Section B p100-101. Two shapes:
+    B-100 (wing) is a SKU MATRIX: each row has a Plate Height then one SKU per attachment column
+    (Wood / Pre-Mounted Euro / Expanding Dowels) -> explode to one product per non-empty cell,
+    fixing from the column header, material from the sub-group, adjustment from the title.
+    B-101 (face frame) is a simple Plate Height/Adjustment/Application/Item# table.
+    Gates on a Height column (excludes the drill-bit Item#/Description block)."""
+    pages = [100, 101]
+    products, quarantine = [], []
+    for p in pages:
+        for b in tx.parse_page(p):
+            if b["family"] != "baseplate" or "SALICE" not in (b["banner"] or "").upper():
+                continue
+            labels = [c["label"] for c in (b.get("cols") or [])]
+            height_col = next((l for l in labels if "height" in l.lower()), None)
+            if not height_col:                          # excludes the Item#/Description drill block
+                continue
+            item_col = next((l for l in labels if "item" in l.lower()), None)
+            adj_title = _adjustment(b.get("title"))
+            for cells, sub, bbox in b["rows"]:
+                material = _salice_material(sub)
+                height = _height_mm(cells.get(height_col))
+                if item_col:                            # SIMPLE (B-101): one SKU per row
+                    emit = [(tx.strip_callout(cells.get(item_col, "") or ""), None)]
+                    adjustment = _adjustment(_cell(cells, "adjust")) or adj_title
+                    application = (_cell(cells, "applicat") or "").strip().lower() or None
+                else:                                   # MATRIX (B-100): one SKU per attachment column
+                    emit = [(tx.strip_callout(cells.get(l, "") or ""), l) for l in labels if l != height_col]
+                    adjustment, application = adj_title, None
+                for pn, fixing_hdr in emit:
+                    if not clean_salice(pn):
+                        if pn and pn not in ("", "-"):
+                            quarantine.append({"page": p, "raw": pn, "bbox": bbox})
+                        continue                        # empty matrix cells are absent products, not errors
+                    products.append({
+                        "part_number": pn, "brand": "Salice", "family": "baseplate",
+                        "product_type": "baseplate", "section": b["banner"],
+                        "height_mm": height, "material": material,
+                        "adjustment": adjustment, "application": application,
+                        "fixing_type": _fixing_baseplate(fixing_hdr) if fixing_hdr else None,
+                        "fixing_raw": fixing_hdr,
+                        "_source": "wurth_b", "_page": p, "_bbox": bbox,
+                    })
+    return products, quarantine
+
+
 # add a new product type here once its extractor is written & verified
 EXTRACTORS = [
     ("blum_cliptop", extract_blum_cliptop),
@@ -350,6 +414,7 @@ EXTRACTORS = [
     ("grass_tiomos", extract_grass_tiomos),
     ("grass_tiomos_baseplate", extract_grass_tiomos_baseplate),
     ("grass_tec", extract_grass_tec),
+    ("salice_baseplate", extract_salice_baseplate),
 ]
 
 
