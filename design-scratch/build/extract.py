@@ -492,6 +492,47 @@ def extract_grass_tiomos_specialty():
     return products, quarantine
 
 
+PRO_SKU = re.compile(r"DSPRO-[0-9A-Z]+")
+
+
+def clean_pro(pn):
+    """Validation gate for Pro baseplate SKUs: DSPRO-<alnum>, no prose."""
+    return bool(pn) and pn == pn.upper() and " " not in pn and bool(PRO_SKU.fullmatch(pn))
+
+
+def _pro_material(sub):
+    s = (sub or "").lower()
+    return "die_cast_steel" if ("diecast" in s or "die-cast" in s) else "steel" if "steel" in s else None
+
+
+def extract_pro_baseplate():
+    """Pro (house-brand) euro hinge baseplates — Section B p3. Simple Item#/Height/Fixing Type
+    table with a plate-style sub-group (the face-frame sub-groups also encode Steel/Diecast).
+    DSPRO- SKUs with callout letters to strip; gate on the Height column (excludes the drill block)."""
+    products, quarantine = [], []
+    for b in tx.parse_page(3):
+        if b["family"] != "baseplate" or "PRO EURO" not in (b["banner"] or "").upper():
+            continue
+        labels = " ".join(c["label"].lower() for c in (b.get("cols") or []))
+        if "height" not in labels:                      # excludes the Item#/Description drill block
+            continue
+        for cells, sub, bbox in b["rows"]:
+            pn = tx.strip_callout(cells.get("Item #", "") or "")
+            if not clean_pro(pn):
+                quarantine.append({"page": 3, "raw": cells, "bbox": bbox})
+                continue
+            fx_raw = (_cell(cells, "fixing") or "").strip() or None
+            products.append({
+                "part_number": pn, "brand": "Pro", "family": "baseplate",
+                "product_type": "baseplate", "section": b["banner"], "plate_style": sub,
+                "height_mm": _height_mm(_cell(cells, "height")),
+                "fixing_type": _fixing_baseplate(fx_raw), "fixing_raw": fx_raw,
+                "material": _pro_material(sub),
+                "_source": "wurth_b", "_page": 3, "_bbox": bbox,
+            })
+    return products, quarantine
+
+
 # add a new product type here once its extractor is written & verified
 EXTRACTORS = [
     ("blum_cliptop", extract_blum_cliptop),
@@ -501,6 +542,7 @@ EXTRACTORS = [
     ("grass_tec", extract_grass_tec),
     ("salice_baseplate", extract_salice_baseplate),
     ("grass_tiomos_specialty", extract_grass_tiomos_specialty),
+    ("pro_baseplate", extract_pro_baseplate),
 ]
 
 
