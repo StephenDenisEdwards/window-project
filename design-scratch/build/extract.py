@@ -533,6 +533,85 @@ def extract_pro_baseplate():
     return products, quarantine
 
 
+NEXIS_SKU = re.compile(r"GF\d+\.\d+\.\d+\.\d+")        # NEXIS SKUs are dot-separated (parser can't read them)
+_BORING = re.compile(r"^\d+(?:/\d+)?mm$")
+
+
+def _nexis_close(t):
+    t = t.lower()
+    return "self" if "self-close" in t else "free" if "free-swing" in t else "soft" if "soft-close" in t else None
+
+
+def _nexis_fixing(t):
+    t = t.lower()
+    return "dowel" if "dowel" in t else "impresso" if "impresso" in t else \
+        "screw_on" if "screw-on" in t or "screw on" in t else None
+
+
+def extract_grass_nexis():
+    """Grass NEXIS hinges — Section B p67-70. NEXIS SKUs are dot-separated (GF138.322.73.0015),
+    which parse_page's is_sku rejects, so it returns 0 rows. Read positionally instead: find each
+    NEXIS SKU in the word layer and read its row (boring / fixing / close / box-qty). The gate is
+    'has a boring pattern AND a close type' -> the box-qty-only accessory rows (GF514./GF641.
+    cover caps & clips) are skipped. Opening angle comes from the section header (NNN° Hinges),
+    assigned by row y-position."""
+    products, quarantine = [], []
+    doc = fitz.open(tx.PDF)
+    for p in range(67, 71):
+        page = doc[p - 1]
+        W, H = page.rect.width, page.rect.height
+        banner = next((b["banner"] for b in tx.parse_page(p)), "GRASS NEXIS SELF-CLOSE AND FREE SWING EURO HINGES")
+        angles, overlays = [], []                      # (y_norm, angle) ; (y_norm, overlay_class, cranking)
+        for blk in page.get_text("dict")["blocks"]:
+            for ln in blk.get("lines", []):
+                t = re.sub(r"[^\x20-\x7e]", " ", "".join(s["text"] for s in ln["spans"])).lower()
+                y = ln["bbox"][1] / H
+                m = re.search(r"(\d{2,3})\s+hinges", t)            # page header 'NNN Hinges'
+                if m and 90 <= int(m.group(1)) <= 180:
+                    angles.append((y, int(m.group(1))))
+                m2 = re.search(r"opening angle\s+(\d{2,3})", t)    # per-band override (e.g. inset 100)
+                if m2 and 80 <= int(m2.group(1)) <= 180:
+                    angles.append((y, int(m2.group(1))))
+                ov = "full" if "full overlay" in t else "half" if "half overlay" in t \
+                    else "inset" if "inset hinge" in t else None
+                if ov:
+                    cr = re.search(r"cranking\s+([\d.]+)", t)
+                    overlays.append((y, ov, cr.group(1) if cr else None))
+
+        def nearest(lst, y0n):                         # the band/header just above this row
+            best, by = None, -1.0
+            for it in lst:
+                if it[0] <= y0n + 0.005 and it[0] > by:
+                    best, by = it, it[0]
+            return best
+
+        words = [w for w in page.get_text("words") if w[4].strip()]
+        for w in words:
+            if not NEXIS_SKU.fullmatch(w[4]):
+                continue
+            yc = (w[1] + w[3]) / 2
+            row = [x for x in words if abs((x[1] + x[3]) / 2 - yc) <= 5]
+            rowtext = " ".join(x[4] for x in sorted(row, key=lambda x: x[0]))
+            boring = next((x[4] for x in row if _BORING.match(x[4])), None)
+            close = _nexis_close(rowtext)
+            if not boring or not close:                # box-qty-only rows are accessories, not hinges
+                continue
+            y0n = w[1] / H
+            a = nearest(angles, y0n)
+            o = nearest(overlays, y0n)
+            qty = next((x[4] for x in row if x[4].isdigit() and len(x[4]) >= 2), None)
+            products.append({
+                "part_number": w[4], "brand": "Grass", "family": "hinge",
+                "product_type": "concealed_hinge", "section": banner, "series": "NEXIS",
+                "overlay_class": o[1] if o else None, "cranking": o[2] if o else None,
+                "boring_pattern": boring, "fixing": _nexis_fixing(rowtext), "closing_type": close,
+                "opening_angle_deg": a[1] if a else None, "box_qty": int(qty) if qty else None,
+                "_source": "wurth_b", "_page": p,
+                "_bbox": [round(w[0] / W, 4), round(w[1] / H, 4), round(w[2] / W, 4), round(w[3] / H, 4)],
+            })
+    return products, quarantine
+
+
 # add a new product type here once its extractor is written & verified
 EXTRACTORS = [
     ("blum_cliptop", extract_blum_cliptop),
@@ -543,6 +622,7 @@ EXTRACTORS = [
     ("salice_baseplate", extract_salice_baseplate),
     ("grass_tiomos_specialty", extract_grass_tiomos_specialty),
     ("pro_baseplate", extract_pro_baseplate),
+    ("grass_nexis", extract_grass_nexis),
 ]
 
 
