@@ -97,6 +97,100 @@ def extract_blum_euro():
     return products, quarantine
 
 
+def _fixing_blum(v):
+    fxn = (v or "").lower().replace("-", "_").replace(" ", "_")
+    return fxn if fxn in FIXINGS else None
+
+
+def extract_blum_angled():
+    """Blum angled hinges — Section B p16-17. Item#/Degree/[Overlay]/Fixing/Close-Type/Box Qty;
+    'Degree' is the angled-application angle (+15/-30, or 95), 'Close Type' carries the series
+    (CLIP top BLUMOTION = soft-close, CLIP top = self-close). p17 also has a Thickness/Degree
+    shim sub-table. Gate on the Degree column."""
+    products, quarantine = [], []
+    for p in (16, 17):
+        for b in tx.parse_page(p):
+            if b["family"] != "concealed_hinge" or "BLUM" not in (b["banner"] or "").upper():
+                continue
+            if not any("degree" in c["label"].lower() for c in (b.get("cols") or [])):
+                continue
+            for cells, sub, bbox in b["rows"]:
+                mk = re.search(r"BP[0-9A-Z]+", cells.get("Item #", "") or "")   # SKU may carry a 1/A callout
+                pn = mk.group(0) if mk else ""
+                if not clean_sku(pn):
+                    quarantine.append({"page": p, "raw": cells, "bbox": bbox})
+                    continue
+                series = (_cell(cells, "clos") or "").strip() or None
+                ov = (_cell(cells, "overlay") or "").strip().lower() or None
+                qty = (_cell(cells, "box") or "").strip()
+                prod = {
+                    "part_number": pn, "brand": "Blum", "family": "hinge",
+                    "product_type": "concealed_hinge", "section": _section_for(p) or b["banner"],
+                    "series": series,
+                    "degree": re.sub(r"[^0-9+\-]", "", _cell(cells, "degree") or "") or None,
+                    "overlay_class": ov if ov in OVERLAYS else None,
+                    "fixing": _fixing_blum(_cell(cells, "fixing")),
+                    "closing_type": "soft" if series and "blumotion" in series.lower()
+                    else ("self" if series else None),
+                    "thickness_mm": _height_mm(_cell(cells, "thick")),
+                    "box_qty": int(qty) if qty.isdigit() else None,
+                    "_source": "wurth_b", "_page": p, "_bbox": bbox,
+                }
+                if ov and ov not in OVERLAYS:
+                    prod["overlay_raw"] = ov
+                products.append(prod)
+    return products, quarantine
+
+
+ONYX_SKU = re.compile(r"BP[0-9A-Z]+-ONYX")
+
+
+def extract_blum_onyx():
+    """Blum Onyx (black finish) — Section B p18. A finish-variant LIST (Item#/Description) with
+    SKUs embedded in prose, mixing hinges, baseplates and cover caps. Pull the -ONYX SKU by regex,
+    classify by description, and parse opening/overlay/fixing for hinges. finish='onyx' on every
+    record. Cover caps (accessories) are deferred to the accessories pass (bucket C)."""
+    products, quarantine, capsskipped = [], [], 0
+    for b in tx.parse_page(18):
+        if "description" not in " ".join(c["label"].lower() for c in (b.get("cols") or [])):
+            continue
+        for cells, sub, bbox in b["rows"]:
+            m = ONYX_SKU.search(cells.get("Item #", "") or "")
+            if not m:
+                quarantine.append({"page": 18, "raw": cells, "bbox": bbox})
+                continue
+            pn = m.group(0)
+            desc = (cells.get("Description") or "").strip()
+            d = (desc + " " + (sub or "")).lower()
+            if "cover cap" in d:
+                capsskipped += 1
+                continue                                # accessory — deferred to bucket C
+            is_plate = "plate" in d
+            op = re.search(r"(\d{2,3})", desc)
+            ov = "full" if "full overlay" in d else "half" if "half overlay" in d \
+                else "inset" if "inset" in d else None
+            fx = next((f for k, f in (("screw-on", "screw_on"), ("dowel", "dowel"),
+                                      ("inserta", "inserta"), ("expando", "expando")) if k in d), None)
+            prod = {
+                "part_number": pn, "brand": "Blum",
+                "family": "baseplate" if is_plate else "hinge",
+                "product_type": "baseplate" if is_plate else "concealed_hinge",
+                "section": _section_for(18) or b["banner"], "finish": "onyx",
+                "fixing": fx, "description": desc,
+                "_source": "wurth_b", "_page": 18, "_bbox": bbox,
+            }
+            if is_plate:
+                prod["height_mm"] = _height_mm(desc)
+            else:
+                prod["opening_angle_deg"] = int(op.group(1)) if op else None
+                prod["overlay_class"] = ov
+                prod["closing_type"] = "soft" if "blumotion" in d else "self"
+            products.append(prod)
+    if capsskipped:
+        print(f"  (blum_onyx: {capsskipped} onyx cover caps skipped — accessories, deferred to bucket C)")
+    return products, quarantine
+
+
 def _height_mm(v):
     m = re.search(r"\d+(?:\.\d+)?", v or "")
     if not m:
@@ -637,6 +731,8 @@ def extract_grass_nexis():
 # add a new product type here once its extractor is written & verified
 EXTRACTORS = [
     ("blum_euro", extract_blum_euro),
+    ("blum_angled", extract_blum_angled),
+    ("blum_onyx", extract_blum_onyx),
     ("blum_baseplate", extract_blum_baseplate),
     ("grass_tiomos", extract_grass_tiomos),
     ("grass_tiomos_baseplate", extract_grass_tiomos_baseplate),
