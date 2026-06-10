@@ -40,6 +40,8 @@ PRODUCTS_PATH = os.path.join(BUILD, "products.json")
 ISSUES_PATH = os.path.join(BUILD, "extraction_issues.json")
 # manufacturer 'hinges per door' load charts (committed); shown under a Load charts group
 LOAD_CHARTS_PATH = os.path.join(BUILD, "load_charts.json")
+# required-but-missing data that must be sourced (committed); shown under Other > Data Sourcing Required
+SOURCING_PATH = os.path.join(BUILD, "data_sourcing.json")
 
 
 def load_products():
@@ -69,6 +71,25 @@ def _loadchart_nodes():
             "product_type": c["brand"], "pages": [c["page"], c["page"]], "page": c["page"],
             "bbox": c.get("bbox"), "approx_skus": 0, "brand": c["brand"],
             "n_products": 0, "review": None, "_loadchart": c,
+        })
+    return nodes
+
+
+def load_sourcing():
+    if os.path.exists(SOURCING_PATH):
+        return json.load(io.open(SOURCING_PATH, encoding="utf-8")).get("items", [])
+    return []
+
+
+def _sourcing_nodes():
+    """Required-but-missing data, placed under Other > Data Sourcing Required (no source page)."""
+    nodes = []
+    for it in load_sourcing():
+        nodes.append({
+            "catalog": None, "section": it.get("what", it.get("id", "?")),
+            "product_type": "Data Sourcing Required", "pages": [None, None], "page": None,
+            "bbox": None, "approx_skus": 0, "brand": it.get("scope"),
+            "n_products": 0, "review": None, "_sourcing": it,
         })
     return nodes
 
@@ -129,6 +150,10 @@ def api_taxonomy():
     other_group["types"].append({"product_type": "Needs Review", "sections": issue_nodes})
     open_issues = sum(1 for n in issue_nodes if (n["_issue"].get("status") or "open") != "resolved")
 
+    sourcing_nodes = _sourcing_nodes()
+    other_group["types"].append({"product_type": "Data Sourcing Required", "sections": sourcing_nodes})
+    open_sourcing = sum(1 for n in sourcing_nodes if (n["_sourcing"].get("status") or "open") != "sourced")
+
     chart_nodes = _loadchart_nodes()
     by_brand: dict = {}
     for n in chart_nodes:
@@ -141,7 +166,8 @@ def api_taxonomy():
         groups.append(charts_group)
     return {"groups": groups, "sources": SOURCES,
             "counts": {"products": len(products), "other": sum(len(v) for v in other_by.values()),
-                       "issues": len(issue_nodes), "issues_open": open_issues, "charts": len(chart_nodes)}}
+                       "issues": len(issue_nodes), "issues_open": open_issues, "charts": len(chart_nodes),
+                       "sourcing": len(sourcing_nodes), "sourcing_open": open_sourcing}}
 
 
 @app.get("/api/products")

@@ -1,0 +1,25 @@
+{
+  "_doc": "Data we KNOW is required (an engine rule or feature needs it) but cannot find in the catalogs we hold — it must be sourced. Surfaced in the UI under Other > Data Sourcing Required. Add an entry here whenever a required data input can't be located in hand. Distinct from extraction_issues.json (which is for pages we HAVE but couldn't extract cleanly).",
+  "items": [
+    {
+      "id": "blum-load-chart",
+      "what": "Blum 'hinges per door' / load chart",
+      "scope": "Blum — all hinge series (CLIP top, CLIP top BLUMOTION, COMPACT)",
+      "needed_for": "engine hinge-count derivation (ENGINE_V2_FIT.md §7 / R007) — how many hinges a door needs for a given height + weight",
+      "where": "Blum manufacturer technical data (not in catalogs/ — only Würth distributor + Grass manufacturer catalogs are held)",
+      "status": "open",
+      "noted_by": "claude",
+      "noted_on": "2026-06-10"
+    },
+    {
+      "id": "salice-load-chart",
+      "what": "Salice 'hinges per door' / load chart",
+      "scope": "Salice — all hinge series (Series 700, Silentia, Air)",
+      "needed_for": "engine hinge-count derivation (ENGINE_V2_FIT.md §7 / R007)",
+      "where": "Salice manufacturer technical data (not in catalogs/)",
+      "status": "open",
+      "noted_by": "claude",
+      "noted_on": "2026-06-10"
+    }
+  ]
+}

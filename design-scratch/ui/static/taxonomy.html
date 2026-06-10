@@ -87,13 +87,16 @@ function render(){
       if(open){ html+=`<div class="kids">`+t.sections.map(s=>{
         const p=s.pages[0]===s.pages[1]?s.pages[0]:`${s.pages[0]}–${s.pages[1]}`;
         const note=isOther(s)&&s.review.note?` <span class="ty flag">${s.review.note}</span>`:"";
-        const itag=s._issue?` <span class="ty ${s._issue.status==='resolved'?'ok':'flag'}">${s._issue.status||'open'}</span>`:s._loadchart?` <span class="ty flag">${(s._loadchart.status||'').replace('_',' ')}</span>`:"";
+        const itag=s._issue?` <span class="ty ${s._issue.status==='resolved'?'ok':'flag'}">${s._issue.status||'open'}</span>`
+          :s._loadchart?` <span class="ty flag">${(s._loadchart.status||'').replace('_',' ')}</span>`
+          :s._sourcing?` <span class="ty flag">${s._sourcing.status||'open'}</span>`:"";
         const eid=idOf(s), has=s.n_products>0, pop=!!expanded[eid];
         const car=has?`<span class="exp" data-exp="${eid}">${pop?"▾":"▸"}</span> `:`<span class="exp ph"></span> `;
         const badge=has?` <span class="badge">${s.n_products}</span>`:"";
+        const pg=s._sourcing?"needs sourcing":`p${p}${badge} · ~${s.approx_skus}`;
         return `<div class="item ${isOther(s)?'notprod':''}" data-id="${eid}">
           <div class="nm">${car}${s.section}${note}${itag}</div>
-          <div class="pg">p${p}${badge} · ~${s.approx_skus}</div></div>`
+          <div class="pg">${pg}</div></div>`
           +(has&&pop?`<div class="prodkids">${renderProds(eid)}</div>`:"");
       }).join("")+`</div>`; }
     });
@@ -162,6 +165,15 @@ function loadChartView(lc){
     +(lc.worked_example?`<div class="cap">worked example: ${esc(lc.worked_example)}</div>`:"")
     +(lc.note?`<div class="cap">${esc(lc.note)}</div>`:"");
 }
+function sourcingView(sc){
+  return `<div class="issuebox"><b>⚠ DATA SOURCING REQUIRED · ${esc((sc.status||'open').toUpperCase())}</b><br>${esc(sc.what)}</div>`
+    +`<table class="lct"><tbody>`
+    +`<tr><th>scope</th><td>${esc(sc.scope||'—')}</td></tr>`
+    +`<tr><th>needed for</th><td>${esc(sc.needed_for||'—')}</td></tr>`
+    +`<tr><th>where to source</th><td>${esc(sc.where||'—')}</td></tr>`
+    +`</tbody></table>`
+    +`<div class="cap">We don't hold a catalog with this data — it must be sourced, then it can be extracted like the Grass charts.</div>`;
+}
 function jsonBlock(obj,label){
   const js=JSON.stringify(obj,null,2).replace(/&/g,"&amp;").replace(/</g,"&lt;")
             .replace(/^(\s*)("[^"]+")(:)/gm,'$1<span class="k">$2</span>$3');
@@ -171,11 +183,12 @@ function sel(id){
   curId=id;
   document.querySelectorAll(".item").forEach(e=>e.classList.toggle("sel",e.dataset.id===id));
   document.querySelectorAll(".prod").forEach(e=>e.classList.remove("psel"));
-  const s=BYID[id],src=DATA.sources[s.catalog]||{},pl=(src.page_label||"p{n}").replace("{n}",s.page),rv=s.review||{},it=s._issue,lc=s._loadchart;
+  const s=BYID[id],src=DATA.sources[s.catalog]||{},pl=(src.page_label||"p{n}").replace("{n}",s.page),rv=s.review||{},it=s._issue,lc=s._loadchart,sc=s._sourcing;
   let hl="";
   if(s.bbox){const[x0,y0,x1,y1]=s.bbox;
     hl=`<div class="hl" style="left:${x0*100}%;top:${y0*100}%;width:${(x1-x0)*100}%;height:${(y1-y0)*100}%"></div>`;}
-  const mid = lc ? loadChartView(lc)
+  const mid = sc ? sourcingView(sc)
+    : lc ? loadChartView(lc)
     : it ? `<div class="issuebox"><b>⚠ ${(it.status||'open').toUpperCase()}</b> — ${esc(it.problem)}`
         +(it.resolution?`<div class="resol"><b>Resolution:</b> ${esc(it.resolution)}</div>`:'')+`</div>`
     : `<div class="review">
@@ -183,15 +196,15 @@ function sel(id){
         <input type="text" id="rvnote" placeholder="note (optional, e.g. overlay chart)" value="${(rv.note||'').replace(/"/g,'&quot;')}">
         <button onclick="saveReview()">save</button>
       </div>`;
-  const jlabel = lc?"load chart (load_charts.json)" : it?"issue (extraction_issues.json)":"section node (taxonomy.json)";
-  const meta = lc?`load chart · ${src.label||s.catalog} · ${pl}` : `${it?'flagged for review':'auto type'} <b>${s.product_type}</b> · ${src.label||s.catalog} · ${pl}${it?'':' · ~'+s.approx_skus+' skus'}`;
+  const jlabel = sc?"data sourcing (data_sourcing.json)" : lc?"load chart (load_charts.json)" : it?"issue (extraction_issues.json)":"section node (taxonomy.json)";
+  const meta = sc?"data sourcing required" : lc?`load chart · ${src.label||s.catalog} · ${pl}` : `${it?'flagged for review':'auto type'} <b>${s.product_type}</b> · ${src.label||s.catalog} · ${pl}${it?'':' · ~'+s.approx_skus+' skus'}`;
   const imgcap = lc?'yellow box = the chart on the page' : it?'the flagged page:' : 'yellow box = the banner this section was identified from';
+  const hasPage = s.page!=null && s.catalog;
   $("#src").innerHTML=`<div class="big">${s.section}</div>
     <div class="cap">${meta}</div>
     ${mid}
     ${jsonBlock(s, jlabel)}
-    <div class="cap">${imgcap}</div>
-    <div class="stage"><img src="/page/${s.catalog}/${s.page}.png">${hl}</div>`;
+    ${hasPage?`<div class="cap">${imgcap}</div><div class="stage"><img src="/page/${s.catalog}/${s.page}.png">${hl}</div>`:""}`;
 }
 async function saveReview(){
   const s=BYID[curId];
