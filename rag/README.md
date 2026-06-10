@@ -157,6 +157,7 @@ Generated artifacts (gitignored, all under `rag/`):
 | `blum-tandem-plus-blumotion.pdf` | Blum TANDEM plus BLUMOTION concealed drawer runners |
 | `grass-dynapro-catalog.pdf` | Grass Dynapro concealed undermount drawer slide system |
 | `hafele-loox5-catalog.pdf` | Häfele Loox 5 LED lighting system (light bars, drivers, dimmers) |
+| `kv-drawer-slides-brochure.pdf` | Knape & Vogt drawer slides overview (ball-bearing, undermount, specialty, roller) |
 
 ## Documentation
 
