@@ -828,6 +828,103 @@ def extract_salice_hinge():
     return products, quarantine
 
 
+def extract_grass_misc_specialty():
+    """Small Grass specialty hinge sections: TIOMOS H hidden (B-59, Item#/Description GFF),
+    NEXIS pie-cut corner (B-71, GFNX-PCC boring/fixing/close) and the NEXIS 975 VZ pie-cut kit
+    (B-73, GF#####-## Item#/Description/Finish)."""
+    products, quarantine = [], []
+    gfnx = re.compile(r"GFNX[0-9A-Z\-]+")
+    # B-59 TIOMOS H hidden hinges
+    for b in tx.parse_page(59):
+        if b["family"] != "concealed_hinge" or "description" not in " ".join(c["label"].lower() for c in b.get("cols") or []):
+            continue
+        am = re.search(r"(\d{2,3})\s*[°º?]", b.get("title") or "")
+        for cells, sub, bbox in b["rows"]:
+            pn = tx.strip_callout(cells.get("Item #", "") or "")
+            if not clean_gff(pn):
+                continue
+            d = (cells.get("Description") or "").lower()
+            products.append({
+                "part_number": pn, "brand": "Grass", "family": "hinge", "product_type": "concealed_hinge",
+                "section": _section_for(59) or b["banner"], "series": "TIOMOS", "variant": b.get("title"),
+                "fixing": "screw_on" if "screw" in d else "dowel" if "dowel" in d else None,
+                "closing_type": "soft", "opening_angle_deg": int(am.group(1)) if am else None,
+                "description": (cells.get("Description") or "").strip(),
+                "_source": "wurth_b", "_page": 59, "_bbox": bbox,
+            })
+    # B-71 NEXIS pie-cut corner (GFNX-PCC)
+    for b in tx.parse_page(71):
+        if b["family"] != "concealed_hinge" or not any("boring" in c["label"].lower() for c in b.get("cols") or []):
+            continue
+        for cells, sub, bbox in b["rows"]:
+            pn = (cells.get("Item #", "") or "").strip()
+            if not gfnx.fullmatch(pn):
+                continue
+            fx_raw = (_cell(cells, "fixing") or "").strip() or None
+            products.append({
+                "part_number": pn, "brand": "Grass", "family": "hinge", "product_type": "concealed_hinge",
+                "section": _section_for(71) or b["banner"], "series": "NEXIS", "variant": b.get("title"),
+                "boring_pattern": (_cell(cells, "boring") or "").strip() or None,
+                "fixing": _nexis_fixing(fx_raw), "closing_type": _close_tiomos(_cell(cells, "clos")),
+                "_source": "wurth_b", "_page": 71, "_bbox": bbox,
+            })
+    # B-73 NEXIS 975 VZ pie-cut kit
+    for b in tx.parse_page(73):
+        labels = " ".join(c["label"].lower() for c in b.get("cols") or [])
+        if b["family"] != "concealed_hinge" or "description" not in labels or "finish" not in labels:
+            continue
+        for cells, sub, bbox in b["rows"]:
+            pn = tx.strip_callout(cells.get("Item #", "") or "")
+            if not re.fullmatch(r"GF[0-9]+-[0-9]+", pn):
+                continue
+            products.append({
+                "part_number": pn, "brand": "Grass", "family": "hinge", "product_type": "concealed_hinge",
+                "section": _section_for(73) or b["banner"], "series": "NEXIS", "variant": b.get("title"),
+                "finish": (_cell(cells, "finish") or "").strip() or None,
+                "description": (_cell(cells, "descr") or "").strip(),
+                "_source": "wurth_b", "_page": 73, "_bbox": bbox,
+            })
+    return products, quarantine
+
+
+def extract_salice_specialty():
+    """Salice specialty (B-98, a 4-fixing-column SKU matrix x hinge-type rows) and Salice Air
+    (B-99, Item#/Type/Finish)."""
+    products, quarantine = [], []
+    fixcol = {"screw-on": "screw_on", "dowel": "dowel", "rapido": "rapido", "logica": "logica"}
+    for b in tx.parse_page(98):
+        cols = [c["label"] for c in b.get("cols") or []]
+        if sum("item" in c.lower() for c in cols) < 2:        # the matrix block
+            continue
+        for cells, sub, bbox in b["rows"]:
+            for lab in cols:
+                v = (cells.get(lab) or "").strip()
+                if not v or v == "---" or " " in v or not (v == v.upper() and v.startswith("UBC")):
+                    continue
+                products.append({
+                    "part_number": v, "brand": "Salice", "family": "hinge", "product_type": "concealed_hinge",
+                    "section": _section_for(98) or b["banner"], "variant": sub,
+                    "fixing": next((f for k, f in fixcol.items() if k in lab.lower()), None),
+                    "_source": "wurth_b", "_page": 98, "_bbox": bbox,
+                })
+    for b in tx.parse_page(99):
+        if b["family"] != "concealed_hinge" or "type" not in " ".join(c["label"].lower() for c in b.get("cols") or []):
+            continue
+        for cells, sub, bbox in b["rows"]:
+            pn = tx.strip_callout(cells.get("Item #", "") or "")
+            if not (pn == pn.upper() and " " not in pn and pn.startswith("UBC")):
+                continue
+            typ = (_cell(cells, "type") or "").lower()
+            products.append({
+                "part_number": pn, "brand": "Salice", "family": "hinge", "product_type": "concealed_hinge",
+                "section": _section_for(99) or b["banner"], "series": "Air",
+                "closing_type": "soft" if "soft" in typ else "push_to_open" if "push" in typ else None,
+                "finish": (_cell(cells, "finish") or "").strip() or None,
+                "_source": "wurth_b", "_page": 99, "_bbox": bbox,
+            })
+    return products, quarantine
+
+
 # add a new product type here once its extractor is written & verified
 EXTRACTORS = [
     ("blum_euro", extract_blum_euro),
@@ -843,6 +940,8 @@ EXTRACTORS = [
     ("grass_nexis", extract_grass_nexis),
     ("pro_hinge", extract_pro_hinge),
     ("salice_hinge", extract_salice_hinge),
+    ("grass_misc_specialty", extract_grass_misc_specialty),
+    ("salice_specialty", extract_salice_specialty),
 ]
 
 
