@@ -32,6 +32,8 @@ queryable for compatibility.
 | `build/products.json` | The product database (gitignored — regenerable). One flat list, each record tagged `product_type` + `section` + provenance (`_source/_page/_bbox`). |
 | `build/coverage.py` | Stock-take: taxonomy vs extracted. Run anytime to see done/remaining. |
 | `build/extraction_issues.json` | Durable registry of problematic pages (committed). Surfaces in the UI under *Other › Needs Review*. |
+| `build/data_sourcing.json` | Required-but-missing data to source (committed). Surfaces under *Other › Data Sourcing Required*. Distinct from issues (= pages we have but couldn't extract). |
+| `build/load_charts.json` | Manufacturer hinges-per-door load charts (committed) — axes confirmed, cells flagged `needs_verification`. Surfaces under the *Load charts* group; feeds the engine hinge-count derivation. |
 | `build/taxonomy_review.json` | Human curation overlay (committed). Currently: B-4 overlay charts → *Other › Charts*. |
 | `taxonomy.json` / `taxonomy.md` | The product-type taxonomy (84 sections). Built by `build/taxonomy.py`. |
 | `ui/taxonomy_app.py` + `ui/static/taxonomy.html` | The verifier UI (port 8001). Tree: Sections › product_type › section › products; click any node → its JSON + the source page with the bbox highlighted. |
