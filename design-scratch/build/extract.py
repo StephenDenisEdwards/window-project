@@ -728,6 +728,106 @@ def extract_grass_nexis():
     return products, quarantine
 
 
+def extract_pro_hinge():
+    """Pro euro hinges — Section B p2. Standard Item#/Opening/Overlay/Fixing/Close table (same as
+    Blum euro), DSPRO- SKUs; reuse emit_hinge. Gate on Opening (excludes the drill-bit block)."""
+    products, quarantine = [], []
+    for b in tx.parse_page(2):
+        if b["family"] != "concealed_hinge" or "PRO" not in (b["banner"] or "").upper():
+            continue
+        if not any("opening" in c["label"].lower() for c in (b.get("cols") or [])):
+            continue
+        for cells, sub, bbox in b["rows"]:
+            rec = tx.emit_hinge(cells, sub, 2, bbox)[0]
+            pn = rec.get("part_number") or ""
+            if not (pn == pn.upper() and " " not in pn and pn.startswith("DSPRO")):
+                quarantine.append({"page": 2, "raw": cells, "bbox": bbox})
+                continue
+            ov = rec.get("overlay_class")
+            prod = {
+                "part_number": pn, "brand": "Pro", "family": "hinge",
+                "product_type": "concealed_hinge", "section": _section_for(2) or b["banner"],
+                "opening_angle_deg": rec.get("opening_angle_deg"),
+                "overlay_class": ov if ov in OVERLAYS else None,
+                "fixing": rec.get("fixing") if rec.get("fixing") in FIXINGS else None,
+                "closing_type": rec.get("closing_type") if rec.get("closing_type") in CLOSINGS else None,
+                "_source": "wurth_b", "_page": 2, "_bbox": bbox,
+            }
+            if ov and ov not in OVERLAYS:
+                prod["overlay_raw"] = ov
+            products.append(prod)
+    return products, quarantine
+
+
+SALICE_HINGE_SKU = re.compile(r"UBC[0-9A-Z]{4,12}")
+
+
+def _fixing_salice(v):
+    v = (v or "").lower()
+    return "dowel" if "dowel" in v else "screw_on" if "screw" in v \
+        else "rapido" if ("rapido" in v or "cam lock" in v) else "logica" if "logica" in v else None
+
+
+def _salice_overlay_bands(page):
+    """Overlay sub-group headers read positionally (parse_page misses the Full and 1/2\" ones).
+    Returns [(y_norm, overlay_class_or_None, raw)] — 'full/half/inset' map; '1/2\" Overlay' kept raw."""
+    H = page.rect.height
+    bands = []
+    for blk in page.get_text("dict")["blocks"]:
+        for ln in blk.get("lines", []):
+            t = re.sub(r"\s+", " ", re.sub(r"[^\x20-\x7e]", " ", "".join(s["text"] for s in ln["spans"]))).strip()
+            tl = t.lower()
+            ov = "inset" if "inset hinges" in tl else "half" if "half overlay hinges" in tl \
+                else "full" if "full overlay hinges" in tl else (None if "overlay hinges" in tl else "skip")
+            if ov != "skip":
+                bands.append((ln["bbox"][1] / H, ov, t))
+    return bands
+
+
+def extract_salice_hinge():
+    """Salice euro hinges — Section B p92-97 (soft 92-94, self 95-97). TIOMOS-style
+    Item#/Boring/Fixing/Close; overlay is read positionally from the sub-group headers
+    (Full / 1/2\" / Half / Inset) since parse_page misses some. UBC- SKUs; gate on Boring."""
+    products, quarantine = [], []
+    doc = fitz.open(tx.PDF)
+    for p in range(92, 98):
+        bands = _salice_overlay_bands(doc[p - 1])
+
+        def band_for(y0n):
+            best, by = None, -1.0
+            for b in bands:
+                if b[0] <= y0n + 0.005 and b[0] > by:
+                    best, by = b, b[0]
+            return best
+
+        for b in tx.parse_page(p):
+            if b["family"] != "concealed_hinge" or "SALICE" not in (b["banner"] or "").upper():
+                continue
+            if not any("boring" in c["label"].lower() for c in (b.get("cols") or [])):
+                continue
+            for cells, sub, bbox in b["rows"]:
+                pn = tx.strip_callout(cells.get("Item #", "") or "")
+                if not (pn == pn.upper() and " " not in pn and SALICE_HINGE_SKU.fullmatch(pn)):
+                    quarantine.append({"page": p, "raw": cells, "bbox": bbox})
+                    continue
+                bd = band_for(bbox[1])
+                fx_raw = (_cell(cells, "fixing") or "").strip() or None
+                prod = {
+                    "part_number": pn, "brand": "Salice", "family": "hinge",
+                    "product_type": "concealed_hinge", "section": _section_for(p) or b["banner"],
+                    "overlay_class": bd[1] if bd else None, "overlay_raw": bd[2] if bd else None,
+                    "boring_pattern": (_cell(cells, "boring") or "").strip() or None,
+                    "fixing": _fixing_salice(fx_raw),
+                    "closing_type": _close_tiomos(_cell(cells, "clos")),
+                    "opening_angle_deg": None,            # not stated per-row in these tables
+                    "_source": "wurth_b", "_page": p, "_bbox": bbox,
+                }
+                if fx_raw and prod["fixing"] is None:
+                    prod["fixing_raw"] = fx_raw
+                products.append(prod)
+    return products, quarantine
+
+
 # add a new product type here once its extractor is written & verified
 EXTRACTORS = [
     ("blum_euro", extract_blum_euro),
@@ -741,6 +841,8 @@ EXTRACTORS = [
     ("grass_tiomos_specialty", extract_grass_tiomos_specialty),
     ("pro_baseplate", extract_pro_baseplate),
     ("grass_nexis", extract_grass_nexis),
+    ("pro_hinge", extract_pro_hinge),
+    ("salice_hinge", extract_salice_hinge),
 ]
 
 
