@@ -120,6 +120,50 @@ Adding a type = write one function (verify it), then add it to `EXTRACTORS`.
 - **Loose ends**: recover the 5 dropped rows (closes the open issue); decide whether finish
   variants (Onyx, Air) should be separate SKUs or a finish overlay on a base part.
 
+## Next step in detail: mapping the manufacturer catalogs
+
+"Map" here = the **taxonomy / reconnaissance pass** (the same "look before you write" step we did
+for Section B), NOT extraction. It's a distinct, cheap step that decides *what's there, where, and
+how to read it* — so the later extraction (and the engine work that depends on it) is targeted
+instead of a fishing expedition. Why it's needed and what it produces:
+
+**Why these catalogs need it.** `taxonomy.py` found 57 sections in Würth Section B but **0 in Grass
+TIOMOS and 1 in Grass NEXIS** — not because they're empty, but because the banner detector doesn't
+fire on them. The distributor catalog is a dense, uniform SKU price-list; the manufacturer catalogs
+are **marketing/technical-reference** docs — different headers, lots of prose, and the valuable
+content is **sparse and graphical** (charts/diagrams), not tabular.
+
+**What mapping produces** — a page inventory richer than the distributor taxonomy, because we're
+hunting the **engineering data the engine rules need** (see [ENGINE_V2_FIT.md](ENGINE_V2_FIT.md)):
+
+| What we're hunting | Feeds which engine gap | Looks like |
+|---|---|---|
+| Hinges-per-door / load chart | R007 → the count **derivation** | grid/graph: door height × weight → 2/3/4 hinges, per series |
+| Overlay chart | R004 / R005 | plate height + crank → overlay achieved |
+| Door-thickness range + cup depth | R006 / R015 | per-hinge technical-spec table |
+| Boring/drilling pattern | R009 refinement | diagram + values |
+| Plate↔hinge compatibility statements | confirms the `compatible_hinge_series` derivation | text/table |
+
+**Two things that make it its own sub-project:**
+1. **The data is graphical** → different extraction method. Charts aren't read by the positional
+   table parser; they need the **vision/LLM chart reader** (`spikes/chart_extract_spike.py` already
+   targets the TIOMOS mm/kg + NEXIS inch/pound hinges-per-door charts). Mapping says *which* ~handful
+   of pages to point vision at — you don't run vision over 116 pages.
+2. **The join is the point.** The manufacturer catalog uses **manufacturer part numbers**; our 888
+   products use **Würth SKUs**. Mapping establishes the correspondence so a chart attaches to
+   products we already have (often **series-level** — one load chart per series → every product in
+   that series inherits it). Mapping confirms whether the data is per-SKU or per-series.
+
+**Scoping caveat.** The manufacturer catalogs we have in hand are **only Grass** (TIOMOS + NEXIS),
+covering the 275 Grass hinges. **Blum/Salice manufacturer data we don't have** — we'd source it
+separately, or mine what Würth prints (the shelved **B-4 PRO overlay charts** are one in-hand
+source; Würth Section B may carry load info we skipped). So mapping is also a **gap audit**: which
+engine fields we can fill for which brands vs. what needs a catalog we'd have to go get.
+
+**Concretely:** (1) run reconnaissance over the 2 Grass PDFs and fix/replace the section detector;
+(2) pinpoint the load charts, overlay charts and spec tables, tagged by series + extraction method;
+(3) establish the manufacturer-part ↔ Würth-SKU/series join; (4) audit the gap. *Then* extract.
+
 ## Conventions
 
 - Trunk-based: commit straight to `master`, push, no PRs. Commit prefixes `feat:`/`fix:`/`chore:`.

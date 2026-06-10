@@ -183,7 +183,10 @@ Fields we captured that the engine doesn't yet use → candidate new rules:
    boundary check. Defer until the load charts are extracted.
 5. **Extract the manufacturer load + overlay charts** — the single source that unlocks R004/R005/R007
    (and R006/R015 via thickness/cup specs). This is the same "manufacturer-catalog gap" the stock-take
-   flagged; almost everything still missing points back to it.
+   flagged; almost everything still missing points back to it. **First "map" those catalogs** (a
+   reconnaissance/taxonomy pass — what's there, where, vision vs table, and the manufacturer-part ↔
+   Würth-SKU join); see _Next step in detail: mapping the manufacturer catalogs_ in
+   [EXTRACTION_STATUS.md](EXTRACTION_STATUS.md).
 6. **Add the new rules** (§8) incrementally.
 
 **Headline:** with just the adapter + the series-compat derivation, the engine would run ~8 rules
