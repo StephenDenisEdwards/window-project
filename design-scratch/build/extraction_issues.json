@@ -34,6 +34,18 @@
       "fix_options": "Positional header recovery (read the full title line above each table from the word layer, like the TEC fix), or human review to assign clean variant labels.",
       "noted_by": "claude",
       "noted_on": "2026-06-09"
+    },
+    {
+      "id": "blum-b15-glass-inset-row",
+      "catalog": "wurth_b",
+      "section": "BLUM SELF-CLOSE SPECIALTY EURO HINGES",
+      "pages": [15],
+      "status": "open",
+      "problem": "On B-15, parse_page captured only the Full + Half rows of the '95° CLIP top Glass Door Hinges' mini-table and dropped the Inset row (BP75T4300) — 1 hinge SKU present in the page text but not extracted (caught by the page-text cross-check). Everything else on B-8/9/14/15 is 0-loss.",
+      "resolution": "",
+      "fix_options": "Positional recovery of the single row, or pick it up when GLASS DOOR HINGES (B-55, a dedicated section) is extracted as its own type.",
+      "noted_by": "claude",
+      "noted_on": "2026-06-10"
     }
   ]
 }

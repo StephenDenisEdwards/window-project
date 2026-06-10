@@ -23,6 +23,23 @@ import table_extract_spike as tx  # noqa: E402
 
 OUT = os.path.join(os.path.dirname(__file__), "products.json")   # the single product database
 
+# page -> taxonomy section (wurth_b), so a product's `section` always links to a taxonomy node
+# (parse_page's per-block banner can diverge, e.g. a 'CLIP top BLUMOTION' divider read as a banner)
+_TAXJSON = json.load(io.open(os.path.join(os.path.dirname(__file__), "..", "taxonomy.json"), encoding="utf-8"))
+_SECTION_BY_PAGE = {}
+for _g in _TAXJSON["groups"]:
+    if _g["name"] == "Sections":
+        for _t in _g["types"]:
+            for _s in _t["sections"]:
+                if _s["catalog"] == "wurth_b":
+                    for _pg in range(_s["pages"][0], _s["pages"][1] + 1):
+                        _SECTION_BY_PAGE[_pg] = _s["section"]
+
+
+def _section_for(page):
+    return _SECTION_BY_PAGE.get(page)
+
+
 OVERLAYS = {"full", "half", "inset"}
 FIXINGS = {"screw_on", "dowel", "inserta", "expando"}
 CLOSINGS = {"soft", "self", "free"}
@@ -44,14 +61,19 @@ def _series_of(title):
     return None
 
 
-def extract_blum_cliptop():
-    """Blum CLIP / CLIP-top euro hinges — the cleanest Section B tables (pages 6,7,10-13)."""
-    pages = [6, 7, 10, 11, 12, 13]
+def extract_blum_euro():
+    """Blum euro hinges with the standard Item#/Opening/Overlay/Fixing/Close table — CLIP/CLIP-top
+    (6,7,10-13) plus zero-protrusion (8), blind-corner/aluminium (9) and bi-fold/blind-corner
+    specialty (14,15). Guard on the Opening column so the angled (Degree) and Onyx (Description)
+    tables on these pages are left to their own extractors."""
+    pages = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
     products, quarantine = [], []
     for p in pages:
         for b in tx.parse_page(p):
             if b["family"] != "concealed_hinge" or "BLUM" not in (b["banner"] or "").upper():
                 continue
+            if not any("opening" in c["label"].lower() for c in (b.get("cols") or [])):
+                continue                               # standard euro hinge table only
             for cells, sub, bbox in b["rows"]:
                 rec = tx.emit_hinge(cells, sub, p, bbox)[0]
                 pn = rec.get("part_number")
@@ -61,7 +83,7 @@ def extract_blum_cliptop():
                 ov = rec.get("overlay_class")
                 prod = {
                     "part_number": pn, "brand": "Blum", "family": "hinge",
-                    "product_type": "concealed_hinge", "section": b["banner"],
+                    "product_type": "concealed_hinge", "section": _section_for(p) or b["banner"],
                     "series": _series_of(b.get("title")),
                     "opening_angle_deg": rec.get("opening_angle_deg"),
                     "overlay_class": ov if ov in OVERLAYS else None,
@@ -614,7 +636,7 @@ def extract_grass_nexis():
 
 # add a new product type here once its extractor is written & verified
 EXTRACTORS = [
-    ("blum_cliptop", extract_blum_cliptop),
+    ("blum_euro", extract_blum_euro),
     ("blum_baseplate", extract_blum_baseplate),
     ("grass_tiomos", extract_grass_tiomos),
     ("grass_tiomos_baseplate", extract_grass_tiomos_baseplate),
