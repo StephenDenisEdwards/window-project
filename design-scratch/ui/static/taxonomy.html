@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>Taxonomy verifier</title>
 <style>
-  :root{--bg:#0f1320;--panel:#171c2e;--line:#2a3350;--txt:#e6e9f2;--dim:#9aa3bd;--accent:#4f8cff}
+  :root{--bg:#0f1320;--panel:#171c2e;--line:#33406b;--txt:#f4f6fc;--dim:#c8d0e8;--accent:#5b97ff}
   *{box-sizing:border-box} body{margin:0;font:13px/1.4 system-ui,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--txt)}
   header{display:flex;gap:14px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
   header h1{font-size:15px;margin:0}
@@ -19,7 +19,7 @@
   .item{padding:5px 8px;border-radius:6px;cursor:pointer;border:1px solid transparent;display:flex;gap:8px;align-items:baseline}
   .item:hover{background:#1d2540} .item.sel{background:#23304f;border-color:var(--accent)}
   .item .nm{flex:1} .item .pg{color:var(--dim);font-size:11px;white-space:nowrap}
-  .ty{display:inline-block;font-size:10px;padding:1px 6px;border-radius:8px;background:#2a3350;color:#bcd;margin-top:2px}
+  .ty{display:inline-block;font-size:11px;padding:1px 6px;border-radius:8px;background:#33406b;color:#dbe4f5;margin-top:2px}
   .stage{position:relative;display:inline-block;max-width:100%;border:1px solid var(--line);border-radius:6px}
   .stage img{display:block;max-width:100%}
   .hl{position:absolute;border:2px solid #ffcc33;background:rgba(255,204,51,.22);box-shadow:0 0 0 9999px rgba(8,10,18,.5)}
@@ -47,8 +47,12 @@
   .lct th,.lct td{border:1px solid var(--line);padding:3px 10px;text-align:left}
   .lct th{color:var(--dim);font-weight:600} .lct td b{color:#9fdcff}
   .json{background:#0c1120;border:1px solid var(--line);border-radius:6px;padding:10px;margin:8px 0;
-        font:12px/1.45 ui-monospace,Consolas,monospace;color:#cde;white-space:pre;overflow:auto;max-height:360px}
-  .json .k{color:#9fdcff}
+        font:12px/1.45 ui-monospace,Consolas,monospace;color:#e6ecf8;white-space:pre;overflow:auto;max-height:360px}
+  .json .k{color:#7fd4ff}
+  .jsonedit{width:100%;min-height:260px;background:#0c1120;color:#e6ecf8;border:1px solid var(--accent);
+        border-radius:6px;padding:10px;margin:6px 0;font:12px/1.45 ui-monospace,Consolas,monospace;white-space:pre;resize:vertical}
+  .savebtn{cursor:pointer;background:var(--accent);color:#fff;border:none;border-radius:5px;padding:6px 16px;margin-right:10px;font-weight:600}
+  .savemsg{font-weight:600}
 </style>
 </head>
 <body>
@@ -179,6 +183,21 @@ function jsonBlock(obj,label){
             .replace(/^(\s*)("[^"]+")(:)/gm,'$1<span class="k">$2</span>$3');
   return `<div class="cap">${label||"JSON node"}:</div><pre class="json">${js}</pre>`;
 }
+function editableJson(kind,obj){
+  return `<div class="cap">edit the JSON and Save — writes to the committed ${kind} registry:</div>
+    <textarea id="jsonedit" class="jsonedit" spellcheck="false">${esc(JSON.stringify(obj,null,2))}</textarea>
+    <div><button class="savebtn" onclick="saveNode('${kind}','${esc(obj.id||'')}')">Save</button>
+      <span id="savemsg" class="cap savemsg"></span></div>`;
+}
+async function saveNode(kind,id){
+  let data; const msg=$("#savemsg");
+  try{ data=JSON.parse($("#jsonedit").value); }
+  catch(e){ msg.style.color="#ff9b9b"; msg.textContent="✗ invalid JSON: "+e.message; return; }
+  const r=await fetch("/api/save_node",{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({kind,id,data})});
+  if(r.ok){ msg.style.color="#9fe6a6"; msg.textContent="✓ saved"; await load(); render(); if(BYID[curId]) sel(curId); }
+  else{ const t=await r.text(); msg.style.color="#ff9b9b"; msg.textContent="✗ "+t; }
+}
 function sel(id){
   curId=id;
   document.querySelectorAll(".item").forEach(e=>e.classList.toggle("sel",e.dataset.id===id));
@@ -196,14 +215,16 @@ function sel(id){
         <input type="text" id="rvnote" placeholder="note (optional, e.g. overlay chart)" value="${(rv.note||'').replace(/"/g,'&quot;')}">
         <button onclick="saveReview()">save</button>
       </div>`;
-  const jlabel = sc?"data sourcing (data_sourcing.json)" : lc?"load chart (load_charts.json)" : it?"issue (extraction_issues.json)":"section node (taxonomy.json)";
   const meta = sc?"data sourcing required" : lc?`load chart · ${src.label||s.catalog} · ${pl}` : `${it?'flagged for review':'auto type'} <b>${s.product_type}</b> · ${src.label||s.catalog} · ${pl}${it?'':' · ~'+s.approx_skus+' skus'}`;
   const imgcap = lc?'yellow box = the chart on the page' : it?'the flagged page:' : 'yellow box = the banner this section was identified from';
   const hasPage = s.page!=null && s.catalog;
+  // registry-backed nodes get an editable JSON editor; generated section/product nodes stay read-only
+  const jblock = sc?editableJson("sourcing",sc) : lc?editableJson("loadchart",lc) : it?editableJson("issue",it)
+    : jsonBlock(s,"section node (taxonomy.json)");
   $("#src").innerHTML=`<div class="big">${s.section}</div>
     <div class="cap">${meta}</div>
     ${mid}
-    ${jsonBlock(s, jlabel)}
+    ${jblock}
     ${hasPage?`<div class="cap">${imgcap}</div><div class="stage"><img src="/page/${s.catalog}/${s.page}.png">${hl}</div>`:""}`;
 }
 async function saveReview(){

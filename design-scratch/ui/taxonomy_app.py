@@ -124,6 +124,40 @@ def save_review(data):
         json.dump(data, f, ensure_ascii=False, indent=2, sort_keys=True)
 
 
+# editable curation registries: kind -> (file path, list key). Edited via /api/save_node.
+EDITABLE = {
+    "loadchart": (LOAD_CHARTS_PATH, "charts"),
+    "sourcing": (SOURCING_PATH, "items"),
+    "issue": (ISSUES_PATH, "issues"),
+}
+
+
+class NodeEdit(BaseModel):
+    kind: str
+    id: str
+    data: dict
+
+
+@app.post("/api/save_node")
+def save_node(e: NodeEdit):
+    """Replace one item (matched by id) in a committed registry file with edited JSON."""
+    if e.kind not in EDITABLE:
+        raise HTTPException(400, f"unknown kind '{e.kind}'")
+    path, key = EDITABLE[e.kind]
+    doc = json.load(io.open(path, encoding="utf-8")) if os.path.exists(path) else {key: []}
+    items = doc.get(key, [])
+    for i, it in enumerate(items):
+        if it.get("id") == e.id:
+            items[i] = e.data
+            break
+    else:
+        raise HTTPException(404, f"id '{e.id}' not found in {os.path.basename(path)}")
+    doc[key] = items
+    with io.open(path, "w", encoding="utf-8") as f:
+        json.dump(doc, f, ensure_ascii=False, indent=2)
+    return {"ok": True}
+
+
 @app.get("/api/taxonomy")
 def api_taxonomy():
     """Hierarchical tree: Sections -> product_type -> sections (those not flagged), and
