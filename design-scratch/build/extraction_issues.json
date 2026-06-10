@@ -36,14 +36,14 @@
       "noted_on": "2026-06-09"
     },
     {
-      "id": "blum-b15-glass-inset-row",
+      "id": "parse-page-dropped-rows",
       "catalog": "wurth_b",
-      "section": "BLUM SELF-CLOSE SPECIALTY EURO HINGES",
-      "pages": [15],
+      "section": "(various Section B hinge tables)",
+      "pages": [15, 30, 33],
       "status": "open",
-      "problem": "On B-15, parse_page captured only the Full + Half rows of the '95° CLIP top Glass Door Hinges' mini-table and dropped the Inset row (BP75T4300) — 1 hinge SKU present in the page text but not extracted (caught by the page-text cross-check). Everything else on B-8/9/14/15 is 0-loss.",
+      "problem": "parse_page occasionally drops a trailing row of a sub-table (the SKU is in the page text but never makes it into a parsed row). Caught by the page-text cross-check. Known dropped hinge SKUs: B-15 BP75T4300 (Inset glass-door); B-30 BP39C355B25, BP39C358B25; B-33 BP39C358C24, BP39C358C25 (Compact 39C wide-overlay). 5 hinges total. Everything else on those pages is 0-loss.",
       "resolution": "",
-      "fix_options": "Positional recovery of the single row, or pick it up when GLASS DOOR HINGES (B-55, a dedicated section) is extracted as its own type.",
+      "fix_options": "Positional row recovery (read the SKU's row from the word layer, like the TEC/NEXIS fixes), applied generically to these dropped rows.",
       "noted_by": "claude",
       "noted_on": "2026-06-10"
     }

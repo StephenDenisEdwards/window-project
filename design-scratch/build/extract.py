@@ -102,6 +102,11 @@ def _fixing_blum(v):
     return fxn if fxn in FIXINGS else None
 
 
+def parse_int(v):
+    m = re.search(r"\d+", v or "")
+    return int(m.group()) if m else None
+
+
 def extract_blum_angled():
     """Blum angled hinges — Section B p16-17. Item#/Degree/[Overlay]/Fixing/Close-Type/Box Qty;
     'Degree' is the angled-application angle (+15/-30, or 95), 'Close Type' carries the series
@@ -925,6 +930,98 @@ def extract_salice_specialty():
     return products, quarantine
 
 
+def extract_blum_compact_ff():
+    """Blum Compact face-frame hinges — Section B p30-35 (soft 30-31, self 33-35). Clean
+    Item#/Opening/Overlay/Fixing/Mount table, BP SKUs. Overlay is a fractional inch (FF), kept
+    raw. Closing from the section (soft vs self)."""
+    products, quarantine = [], []
+    for p in (30, 31, 33, 34, 35):
+        for b in tx.parse_page(p):
+            if "COMPACT" not in (b["banner"] or "").upper():   # parse_page family differs from taxonomy
+                continue
+            if not any("opening" in c["label"].lower() for c in b.get("cols") or []):
+                continue
+            soft = "soft-close" in (b["banner"] or "").lower()
+            for cells, sub, bbox in b["rows"]:
+                pn = tx.strip_callout(cells.get("Item #", "") or "")
+                if not clean_sku(pn):
+                    quarantine.append({"page": p, "raw": cells, "bbox": bbox})
+                    continue
+                products.append({
+                    "part_number": pn, "brand": "Blum", "family": "hinge",
+                    "product_type": "face_frame_hinge", "section": _section_for(p) or b["banner"],
+                    "opening_angle_deg": parse_int(_cell(cells, "opening")),
+                    "overlay_in": (_cell(cells, "overlay") or "").strip() or None,
+                    "fixing": _fixing_blum(_cell(cells, "fixing")),
+                    "mount": (_cell(cells, "mount") or "").strip().lower() or None,
+                    "closing_type": "soft" if soft else "self",
+                    "_source": "wurth_b", "_page": p, "_bbox": bbox,
+                })
+    return products, quarantine
+
+
+def extract_pro_ff():
+    """Pro face-frame hinges — Section B p5. Item#/Overlay/Cam-Adjust, DSPRO- SKUs; closing from
+    the -SC suffix (soft) else self. Gate excludes the drill-bit Description blocks."""
+    products, quarantine = [], []
+    for b in tx.parse_page(5):
+        if b["family"] not in ("face_frame_hinge", "concealed_hinge") or "PRO" not in (b["banner"] or "").upper():
+            continue
+        if not any("cam" in c["label"].lower() for c in b.get("cols") or []):
+            continue
+        for cells, sub, bbox in b["rows"]:
+            pn = tx.strip_callout(cells.get("Item #", "") or "")
+            if not (pn == pn.upper() and " " not in pn and pn.startswith("DSPRO")):
+                quarantine.append({"page": 5, "raw": cells, "bbox": bbox})
+                continue
+            products.append({
+                "part_number": pn, "brand": "Pro", "family": "hinge",
+                "product_type": "face_frame_hinge", "section": _section_for(5) or b["banner"],
+                "overlay_in": (_cell(cells, "overlay") or "").strip() or None,
+                "cam_adjustment": parse_int(_cell(cells, "cam")),
+                "closing_type": "soft" if pn.endswith("SC") else "self",
+                "_source": "wurth_b", "_page": 5, "_bbox": bbox,
+            })
+    return products, quarantine
+
+
+def _salice_sku_fixing(sku):
+    return {"P": "screw_on", "R": "dowel", "7": "rapido", "J": "logica"}.get(sku[4] if len(sku) > 4 else "")
+
+
+def extract_salice_ff():
+    """Salice face-frame hinges — Section B p103-104 (soft 103, self 104). Cells cram multiple
+    SKUs (screw-on + dowel, +R variant) with the overlay/boring, so read every UBC SKU per row by
+    regex; fixing is encoded in the SKU (char 4: P=screw-on, R=dowel). Overlay/boring shared per
+    row. Closing from the section."""
+    products, quarantine = [], []
+    ubc = re.compile(r"UBC[0-9A-Z]+")
+    for p in (103, 104):
+        for b in tx.parse_page(p):
+            bn = (b["banner"] or "").upper()
+            if "SALICE" not in bn or "FACE FRAME" not in bn:
+                continue
+            if "description" in " ".join(c["label"].lower() for c in b.get("cols") or []):
+                continue                                  # drill-bit accessory block
+            soft = "soft-close" in (b["banner"] or "").lower()
+            for cells, sub, bbox in b["rows"]:
+                rowtext = " ".join(v for v in cells.values() if v)
+                skus = [s for s in ubc.findall(rowtext) if len(s) >= 7]
+                ovm = re.search(r"\d+(?:-\d+)?/\d+\"", rowtext)
+                bm = re.search(r"\d+mm", rowtext)
+                for sku in skus:
+                    products.append({
+                        "part_number": sku, "brand": "Salice", "family": "hinge",
+                        "product_type": "face_frame_hinge", "section": _section_for(p) or b["banner"],
+                        "overlay_in": ovm.group(0) if ovm else None,
+                        "boring_pattern": bm.group(0) if bm else None,
+                        "fixing": _salice_sku_fixing(sku),
+                        "closing_type": "soft" if soft else "self",
+                        "_source": "wurth_b", "_page": p, "_bbox": bbox,
+                    })
+    return products, quarantine
+
+
 # add a new product type here once its extractor is written & verified
 EXTRACTORS = [
     ("blum_euro", extract_blum_euro),
@@ -942,6 +1039,9 @@ EXTRACTORS = [
     ("salice_hinge", extract_salice_hinge),
     ("grass_misc_specialty", extract_grass_misc_specialty),
     ("salice_specialty", extract_salice_specialty),
+    ("blum_compact_ff", extract_blum_compact_ff),
+    ("pro_ff", extract_pro_ff),
+    ("salice_ff", extract_salice_ff),
 ]
 
 
