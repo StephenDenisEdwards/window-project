@@ -155,6 +155,7 @@ Generated artifacts (gitignored, all under `rag/`):
 | `grass-tiomos-catalog.pdf` | Grass Tiomos hinge system |
 | `grass-nexis-catalog.pdf` | Grass Nexis hinge system |
 | `blum-tandem-plus-blumotion.pdf` | Blum TANDEM plus BLUMOTION concealed drawer runners |
+| `grass-dynapro-catalog.pdf` | Grass Dynapro concealed undermount drawer slide system |
 
 ## Documentation
 
