@@ -111,10 +111,10 @@
       "page": 8,
       "units": "inches/pounds",
       "bbox": [
-        0.4657,
-        0.2652,
-        0.9559,
-        0.4798
+        0.4706,
+        0.2929,
+        0.9395,
+        0.6288
       ],
       "status": "needs_verification",
       "axes": {
@@ -125,46 +125,45 @@
           5
         ],
         "door_height_thresholds_in": [
+          35,
           56,
           63,
           84,
           96
         ],
-        "door_height_thresholds_mm": [
-          1422,
-          1600,
-          2134,
-          2438
-        ],
+        "door_height_thresholds_mm": [],
         "weight_axis_lb": [
-          10,
+          15,
           20,
           30,
-          40,
-          50,
+          45,
           60
         ]
       },
-      "worked_example": "56in x 19lb -> 2 hinges (printed on the page)",
+      "worked_example": "56in (H) x 24in (W) x 19lb -> 3 hinges (printed on the page)",
       "cells": [
         {
-          "max_door_height_in": 63,
-          "hinges": 2
+          "hinges": 2,
+          "max_door_height_in": 35,
+          "max_weight_lb": 15
         },
         {
+          "hinges": 3,
           "max_door_height_in": 63,
-          "hinges": 3
+          "max_weight_lb": 30
         },
         {
+          "hinges": 4,
           "max_door_height_in": 84,
-          "hinges": 4
+          "max_weight_lb": 45
         },
         {
+          "hinges": 5,
           "max_door_height_in": 96,
-          "hinges": 5
+          "max_weight_lb": 60
         }
       ],
-      "note": "2-D grid: door height (inches, y) x hinge-count zones (x), weight (pounds) in the grid. Height->hinge thresholds are best-effort; weight boundaries within each zone need a human read against the chart image."
+      "note": "2-D staircase: smallest hinge count whose max_door_height_in AND max_weight_lb both cover the door (height = y-axis inches, weight = x-axis pounds). Confirmed against the printed example 56in x 19lb -> 3 hinges. Weight zone boundaries (15/30/45/60 lb) are approximate."
     }
   ]
 }
