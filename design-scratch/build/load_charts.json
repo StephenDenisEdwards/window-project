@@ -15,7 +15,7 @@
         0.3856,
         0.9318
       ],
-      "status": "needs_verification",
+      "status": "verified",
       "axes": {
         "hinge_counts": [
           2,
@@ -23,84 +23,62 @@
           4,
           5
         ],
-        "weight_bands_kg": [
-          [
-            4,
-            6
-          ],
-          [
-            7,
-            12
-          ],
-          [
-            13,
-            17
-          ],
-          [
-            18,
-            22
-          ]
-        ],
-        "weight_bands_lb": [
-          [
-            9,
-            13
-          ],
-          [
-            14,
-            26
-          ],
-          [
-            27,
-            37
-          ],
-          [
-            38,
-            48
-          ]
+        "door_height_thresholds_in": [
+          35.4,
+          63,
+          86.6,
+          96.4
         ],
         "door_height_thresholds_mm": [
           900,
           1600,
           2200,
           2450
+        ],
+        "weight_axis_lb": [
+          13,
+          26,
+          37,
+          48
+        ],
+        "weight_axis_kg": [
+          6,
+          12,
+          17,
+          22
         ]
       },
       "cells": [
         {
-          "weight_kg": [
-            4,
-            6
-          ],
+          "hinges": 2,
+          "max_door_height_in": 35.4,
+          "max_weight_lb": 13,
           "max_door_height_mm": 900,
-          "hinges": 2
+          "max_weight_kg": 6
         },
         {
-          "weight_kg": [
-            7,
-            12
-          ],
+          "hinges": 3,
+          "max_door_height_in": 63,
+          "max_weight_lb": 26,
           "max_door_height_mm": 1600,
-          "hinges": 3
+          "max_weight_kg": 12
         },
         {
-          "weight_kg": [
-            13,
-            17
-          ],
+          "hinges": 4,
+          "max_door_height_in": 86.6,
+          "max_weight_lb": 37,
           "max_door_height_mm": 2200,
-          "hinges": 4
+          "max_weight_kg": 17
         },
         {
-          "weight_kg": [
-            18,
-            22
-          ],
+          "hinges": 5,
+          "max_door_height_in": 96.4,
+          "max_weight_lb": 48,
           "max_door_height_mm": 2450,
-          "hinges": 5
+          "max_weight_kg": 22
         }
       ],
-      "note": "Diagonal staircase reading (weight band + max door height -> hinge count). Confirm the cell thresholds against the chart image; the chart also implies more hinges let a given weight go taller."
+      "note": "2-D staircase: smallest hinge count whose max_door_height AND max_weight both cover the door. Native mm/kg (imperial derived from the chart's printed values). Original chart shows weight bands 4-6/7-12/13-17/18-22 kg; expressed here as the max of each band."
     },
     {
       "id": "nexis-hinges-per-door",

@@ -92,7 +92,7 @@ function render(){
         const p=s.pages[0]===s.pages[1]?s.pages[0]:`${s.pages[0]}–${s.pages[1]}`;
         const note=isOther(s)&&s.review.note?` <span class="ty flag">${s.review.note}</span>`:"";
         const itag=s._issue?` <span class="ty ${s._issue.status==='resolved'?'ok':'flag'}">${s._issue.status||'open'}</span>`
-          :s._loadchart?` <span class="ty flag">${(s._loadchart.status||'').replace('_',' ')}</span>`
+          :s._loadchart?` <span class="ty ${s._loadchart.status==='verified'?'ok':'flag'}">${(s._loadchart.status||'').replace('_',' ')}</span>`
           :s._sourcing?` <span class="ty flag">${s._sourcing.status||'open'}</span>`:"";
         const eid=idOf(s), has=s.n_products>0, pop=!!expanded[eid];
         const car=has?`<span class="exp" data-exp="${eid}">${pop?"▾":"▸"}</span> `:`<span class="exp ph"></span> `;
@@ -150,22 +150,24 @@ function selProduct(eid,i){
 }
 function isOther(s){ return s.review&&s.review.status&&s.review.status!=="product"; }
 function loadChartView(lc){
-  const ax=lc.axes||{};
+  const ax=lc.axes||{}, num=v=>v==null?"":v;
   const counts=(ax.hinge_counts||[]).join(" / ");
-  const heights=ax.door_height_thresholds_mm?ax.door_height_thresholds_mm.map(h=>h+"mm").join(", ")
-    :(ax.door_height_thresholds_in||[]).map(h=>h+'"').join(", ");
-  const weights=ax.weight_bands_kg?ax.weight_bands_kg.map(b=>b[0]+"-"+b[1]+"kg").join(", ")
-    :(ax.weight_axis_lb?ax.weight_axis_lb.map(w=>w+"lb").join(", "):"—");
-  const rows=(lc.cells||[]).map(c=>{
-    const w=c.weight_kg?`${c.weight_kg[0]}–${c.weight_kg[1]} kg`:(c.weight_lb?`${c.weight_lb[0]}–${c.weight_lb[1]} lb`:"any");
-    const h=c.max_door_height_mm?`≤ ${c.max_door_height_mm} mm`:(c.max_door_height_in?`≤ ${c.max_door_height_in}"`:"—");
-    return `<tr><td>${w}</td><td>${h}</td><td><b>${c.hinges}</b></td></tr>`;
-  }).join("");
-  return `<div class="issuebox"><b>⚠ ${esc((lc.status||'needs_verification').replace(/_/g,' ').toUpperCase())}</b>`
-    +` — axes confirmed vs the page text; verify the cell mapping against the chart image below.</div>`
+  const heights=(ax.door_height_thresholds_in||[]).map(h=>h+'"').join(", ");
+  const heightsmm=(ax.door_height_thresholds_mm||[]).map(h=>h+"mm").join(", ");
+  const weights=(ax.weight_axis_lb||[]).map(w=>w+"lb").join(", ");
+  const weightskg=(ax.weight_axis_kg||[]).map(w=>w+"kg").join(", ");
+  const rows=(lc.cells||[]).map(c=>
+    `<tr><td>≤ ${num(c.max_door_height_in)}" / ${num(c.max_door_height_mm)}mm</td>`
+    +`<td>≤ ${num(c.max_weight_lb)}lb / ${num(c.max_weight_kg)}kg</td>`
+    +`<td><b>${c.hinges}</b></td></tr>`).join("");
+  const verified=(lc.status||"")==="verified";
+  const banner=verified
+    ? `<div class="issuebox" style="border-color:#274a2c;background:#16241a;color:#bfe6c0"><b>✓ VERIFIED</b> — checked against the chart image.</div>`
+    : `<div class="issuebox"><b>⚠ ${esc((lc.status||'needs_verification').replace(/_/g,' ').toUpperCase())}</b> — axes confirmed vs the page text; verify the cell mapping against the chart image below.</div>`;
+  return banner
     +`<div class="cap"><b>${esc(lc.brand)} ${esc(lc.series)}</b> · ${esc(lc.units)} · hinge counts ${esc(counts)}</div>`
-    +`<div class="cap">weight bands: ${esc(weights)}<br>door heights: ${esc(heights)}</div>`
-    +`<table class="lct"><thead><tr><th>weight</th><th>max door height</th><th>hinges</th></tr></thead><tbody>${rows}</tbody></table>`
+    +`<div class="cap">door heights: ${esc(heights)}${heightsmm?'  ('+esc(heightsmm)+')':''}<br>weights: ${esc(weights)}${weightskg?'  ('+esc(weightskg)+')':''}</div>`
+    +`<table class="lct"><thead><tr><th>max door height</th><th>max weight</th><th>hinges</th></tr></thead><tbody>${rows}</tbody></table>`
     +(lc.worked_example?`<div class="cap">worked example: ${esc(lc.worked_example)}</div>`:"")
     +(lc.note?`<div class="cap">${esc(lc.note)}</div>`:"");
 }
