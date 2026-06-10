@@ -154,6 +154,7 @@ Generated artifacts (gitignored, all under `rag/`):
 | `wurth-baer-section-b-concealed-hinges.pdf` | Wurth Baer Section B — concealed hinges |
 | `grass-tiomos-catalog.pdf` | Grass Tiomos hinge system |
 | `grass-nexis-catalog.pdf` | Grass Nexis hinge system |
+| `blum-tandem-plus-blumotion.pdf` | Blum TANDEM plus BLUMOTION concealed drawer runners |
 
 ## Documentation
 
