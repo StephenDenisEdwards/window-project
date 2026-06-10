@@ -41,6 +41,7 @@
   .prod .spec{color:var(--dim);font-size:11px}
   .ploading{color:var(--dim);font-style:italic;padding:4px 8px}
   .ty.ok{background:#274a2c;color:#bfe6c0}
+  .warn{color:#ffb454;font-weight:700;font-size:11px;white-space:nowrap}
   .issuebox{margin:10px 0;padding:10px;border:1px solid #5a3030;border-radius:6px;background:#241a1a;color:#ffd0d0}
   .issuebox .resol{margin-top:6px;color:#bfe6c0;border-top:1px solid #3a2a2a;padding-top:6px}
   .lct{border-collapse:collapse;margin:8px 0;font-size:12px}
@@ -81,13 +82,15 @@ function render(){
   const q=$("#q").value.toLowerCase();
   $("#count").textContent=`${DATA.counts.products} product sections · ${DATA.counts.other} in Other · ${DATA.counts.issues||0} issues (${DATA.counts.issues_open||0} open) · ${DATA.counts.charts||0} load charts`;
   let html="";
+  const warn=n=>n>0?` <span class="warn" title="${n} product(s) missing expected data">⚠ ${n}</span>`:"";
+  const sumInc=secs=>secs.reduce((a,s)=>a+(s.n_incomplete||0),0);
   DATA.groups.forEach(g=>{
     const types=g.types.map(t=>({...t,sections:t.sections.filter(s=>matches(s,q))})).filter(t=>t.sections.length||(!q&&g.name==="Other"));
     if(!types.length) return;
-    html+=`<div class="group">${g.name}</div>`;
+    html+=`<div class="group">${g.name}${warn(types.reduce((a,t)=>a+sumInc(t.sections),0))}</div>`;
     types.forEach(t=>{
       const ck="t_"+g.name+"_"+t.product_type, open=q||!collapsed[ck];
-      html+=`<div class="type" data-ck="${ck}">${open?"▾":"▸"} ${t.product_type} <span class="ct">(${t.sections.length})</span></div>`;
+      html+=`<div class="type" data-ck="${ck}">${open?"▾":"▸"} ${t.product_type} <span class="ct">(${t.sections.length})</span>${warn(sumInc(t.sections))}</div>`;
       if(open){ html+=`<div class="kids">`+t.sections.map(s=>{
         const p=s.pages[0]===s.pages[1]?s.pages[0]:`${s.pages[0]}–${s.pages[1]}`;
         const note=isOther(s)&&s.review.note?` <span class="ty flag">${s.review.note}</span>`:"";
@@ -99,7 +102,7 @@ function render(){
         const badge=has?` <span class="badge">${s.n_products}</span>`:"";
         const pg=s._sourcing?"needs sourcing":`p${p}${badge} · ~${s.approx_skus}`;
         return `<div class="item ${isOther(s)?'notprod':''}" data-id="${eid}">
-          <div class="nm">${car}${s.section}${note}${itag}</div>
+          <div class="nm">${car}${s.section}${note}${itag}${warn(s.n_incomplete||0)}</div>
           <div class="pg">${pg}</div></div>`
           +(has&&pop?`<div class="prodkids">${renderProds(eid)}</div>`:"");
       }).join("")+`</div>`; }
@@ -117,9 +120,10 @@ function renderProds(eid){
   if(!list.length) return `<div class="ploading">no products</div>`;
   return list.map((p,i)=>{
     const ov=p.overlay_class||p.overlay_raw||"—";
+    const mw=p._missing&&p._missing.length?` <span class="warn" title="missing: ${p._missing.join(', ')}">⚠</span>`:"";
     return `<div class="prod" data-eid="${eid}" data-i="${i}">
-      <span class="pn">${p.part_number}</span>
-      <span class="spec">${p.opening_angle_deg}° · ${ov} · ${p.fixing||"—"} · ${p.closing_type||"—"}</span></div>`;
+      <span class="pn">${p.part_number}${mw}</span>
+      <span class="spec">${p.opening_angle_deg?p.opening_angle_deg+"°":"—"} · ${ov} · ${p.fixing||"—"} · ${p.closing_type||"—"}</span></div>`;
   }).join("");
 }
 async function toggleProds(eid){
@@ -141,9 +145,14 @@ function selProduct(eid,i){
   let hl="";
   if(p._bbox){const[x0,y0,x1,y1]=p._bbox;
     hl=`<div class="hl" style="left:${x0*100}%;top:${y0*100}%;width:${(x1-x0)*100}%;height:${(y1-y0)*100}%"></div>`;}
+  const miss=p._missing&&p._missing.length
+    ? `<div class="issuebox"><b>⚠ MISSING DATA (${p._missing.length})</b> — expected fields not populated: ${esc(p._missing.join(", "))}`
+        +`<div class="resol" style="color:#cdd5e8;border-top-color:#3a2a2a">Some are catalog-design (Blum tables omit boring pattern; Salice omit opening angle); others may be genuine extraction gaps.</div></div>`
+    : `<div class="cap" style="color:#9fe6a6">✓ complete — all expected fields present</div>`;
   $("#src").innerHTML=`<div class="big">${p.part_number}</div>
     <div class="cap"><b>${p.brand} ${p.series||""}</b> · ${p.product_type} · ${src.label||p._source} · ${pl}</div>
-    <div class="cap">opening ${p.opening_angle_deg}° · overlay ${ov} · fixing ${p.fixing||"—"} · ${p.closing_type||"—"} close</div>
+    <div class="cap">opening ${p.opening_angle_deg?p.opening_angle_deg+"°":"—"} · overlay ${ov} · fixing ${p.fixing||"—"} · ${p.closing_type||"—"} close</div>
+    ${miss}
     ${jsonBlock(p,"product node (products.json)")}
     <div class="cap">yellow box = this product's row on the page</div>
     <div class="stage"><img src="/page/${p._source}/${p._page}.png">${hl}</div>`;

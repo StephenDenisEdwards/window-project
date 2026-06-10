@@ -56,6 +56,43 @@ def load_issues():
     return []
 
 
+def missing_fields(p):
+    """Which expected fields are absent for a product (drives the completeness indicator).
+    NB: some gaps are catalog-design (e.g. Blum tables print opening angle not boring, Salice the
+    reverse) and some are genuine — the UI surfaces both for the user to judge."""
+    pt = p.get("product_type")
+
+    def has(*ks):
+        return any(p.get(k) not in (None, "") for k in ks)
+
+    m = []
+    if pt in ("concealed_hinge", "face_frame_hinge"):
+        if not has("series"):
+            m.append("series")
+        if not has("overlay_class", "overlay_raw", "overlay_in"):
+            m.append("overlay")
+        if not has("opening_angle_deg"):
+            m.append("opening_angle")
+        if not has("boring_pattern", "boring_pattern_mm"):
+            m.append("boring_pattern")
+        if not has("fixing"):
+            m.append("fixing")
+        if not has("closing_type"):
+            m.append("closing_type")
+    elif pt == "baseplate":
+        if not has("series"):
+            m.append("series")
+        if p.get("height_mm") is None:
+            m.append("height_mm")
+        if not has("fixing_type"):
+            m.append("fixing_type")
+        if not has("material"):
+            m.append("material")
+        if not has("plate_style"):
+            m.append("plate_style")
+    return m
+
+
 def load_charts():
     if os.path.exists(LOAD_CHARTS_PATH):
         return json.load(io.open(LOAD_CHARTS_PATH, encoding="utf-8")).get("charts", [])
@@ -163,9 +200,12 @@ def api_taxonomy():
     """Hierarchical tree: Sections -> product_type -> sections (those not flagged), and
     Other -> Misc (sections a human flagged as 'not a product type')."""
     rev = load_review()
-    pcount = collections.Counter((p["_source"], p["section"]) for p in load_products())
+    prods = load_products()
+    pcount = collections.Counter((p["_source"], p["section"]) for p in prods)
+    incomplete = collections.Counter((p["_source"], p["section"]) for p in prods if missing_fields(p))
     secs = [{**s, "review": rev.get(_key(s["catalog"], s["section"])),
-             "n_products": pcount.get((s["catalog"], s["section"]), 0)} for s in TAX]
+             "n_products": pcount.get((s["catalog"], s["section"]), 0),
+             "n_incomplete": incomplete.get((s["catalog"], s["section"]), 0)} for s in TAX]
 
     def cat(s):
         r = s.get("review")
@@ -206,8 +246,11 @@ def api_taxonomy():
 
 @app.get("/api/products")
 def api_products(catalog: str, section: str):
-    """Lazy-load the extracted products under one section (child nodes in the tree)."""
+    """Lazy-load the extracted products under one section (child nodes in the tree).
+    Each product is tagged with _missing (expected fields absent for it)."""
     prods = [p for p in load_products() if p["_source"] == catalog and p["section"] == section]
+    for p in prods:
+        p["_missing"] = missing_fields(p)
     return {"catalog": catalog, "section": section, "products": prods}
 
 
