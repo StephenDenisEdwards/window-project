@@ -27,3 +27,4 @@ What becomes easier or more difficult to do because of this change?
 | [ADR-001](ADR-001-flat-n-candidate-solver.md) | Flat N-candidate solver as default production solver | Accepted |
 | [ADR-002](ADR-002-llm-agent-family-generation.md) | LLM agent code generation for product family onboarding | Accepted |
 | [ADR-003](ADR-003-conversational-via-microx-mcp.md) | Conversational layer via Micro-X MCP server with deterministic-first guardrail | Proposed |
+| [ADR-004](ADR-004-hinge-count-derivation-standalone.md) | Hinge-count derivation as a standalone module, not embedded in the engine | Accepted |
