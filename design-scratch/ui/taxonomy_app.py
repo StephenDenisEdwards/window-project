@@ -38,6 +38,8 @@ OTHER_CATS = ["reference", "charts"]   # non-product buckets under "Other" (tool
 PRODUCTS_PATH = os.path.join(BUILD, "products.json")
 # durable registry of problematic pages found during extraction (committed); shown under Other
 ISSUES_PATH = os.path.join(BUILD, "extraction_issues.json")
+# manufacturer 'hinges per door' load charts (committed); shown under a Load charts group
+LOAD_CHARTS_PATH = os.path.join(BUILD, "load_charts.json")
 
 
 def load_products():
@@ -50,6 +52,25 @@ def load_issues():
     if os.path.exists(ISSUES_PATH):
         return json.load(io.open(ISSUES_PATH, encoding="utf-8")).get("issues", [])
     return []
+
+
+def load_charts():
+    if os.path.exists(LOAD_CHARTS_PATH):
+        return json.load(io.open(LOAD_CHARTS_PATH, encoding="utf-8")).get("charts", [])
+    return []
+
+
+def _loadchart_nodes():
+    """Each load chart as a node under the 'Load charts' group (verify cells vs the chart image)."""
+    nodes = []
+    for c in load_charts():
+        nodes.append({
+            "catalog": c["source"], "section": f"{c['brand']} {c['series']} — {c.get('title', 'load chart')}",
+            "product_type": c["brand"], "pages": [c["page"], c["page"]], "page": c["page"],
+            "bbox": c.get("bbox"), "approx_skus": 0, "brand": c["brand"],
+            "n_products": 0, "review": None, "_loadchart": c,
+        })
+    return nodes
 
 
 def _issue_nodes():
@@ -107,9 +128,20 @@ def api_taxonomy():
     issue_nodes = _issue_nodes()
     other_group["types"].append({"product_type": "Needs Review", "sections": issue_nodes})
     open_issues = sum(1 for n in issue_nodes if (n["_issue"].get("status") or "open") != "resolved")
-    return {"groups": [sections_group, other_group], "sources": SOURCES,
+
+    chart_nodes = _loadchart_nodes()
+    by_brand: dict = {}
+    for n in chart_nodes:
+        by_brand.setdefault(n["product_type"], []).append(n)
+    charts_group = {"name": "Load charts",
+                    "types": [{"product_type": b, "sections": by_brand[b]} for b in sorted(by_brand)]}
+
+    groups = [sections_group, other_group]
+    if chart_nodes:
+        groups.append(charts_group)
+    return {"groups": groups, "sources": SOURCES,
             "counts": {"products": len(products), "other": sum(len(v) for v in other_by.values()),
-                       "issues": len(issue_nodes), "issues_open": open_issues}}
+                       "issues": len(issue_nodes), "issues_open": open_issues, "charts": len(chart_nodes)}}
 
 
 @app.get("/api/products")

@@ -1,0 +1,54 @@
+{
+  "_doc": "Manufacturer 'Number of Hinges per Door' load charts (series-level — apply to every hinge of that series). AXES are confirmed against the page text layer. CELL mapping is best-effort read from the chart diagram and is flagged needs_verification — surfaced in the UI so a human can confirm it against the rendered chart. This is the data the engine's hinge-count derivation (ENGINE_V2_FIT.md §7) needs.",
+  "charts": [
+    {
+      "id": "tiomos-hinges-per-door",
+      "brand": "Grass",
+      "series": "TIOMOS",
+      "title": "Number of Hinges Per Door",
+      "source": "grass_tiomos",
+      "page": 47,
+      "units": "mm/kg",
+      "bbox": [0.0327, 0.6881, 0.3758, 0.9722],
+      "status": "needs_verification",
+      "axes": {
+        "hinge_counts": [2, 3, 4, 5],
+        "weight_bands_kg": [[4, 6], [7, 12], [13, 17], [18, 22]],
+        "weight_bands_lb": [[9, 13], [14, 26], [27, 37], [38, 48]],
+        "door_height_thresholds_mm": [900, 1600, 2200, 2450]
+      },
+      "cells": [
+        {"weight_kg": [4, 6],   "max_door_height_mm": 900,  "hinges": 2},
+        {"weight_kg": [7, 12],  "max_door_height_mm": 1600, "hinges": 3},
+        {"weight_kg": [13, 17], "max_door_height_mm": 2200, "hinges": 4},
+        {"weight_kg": [18, 22], "max_door_height_mm": 2450, "hinges": 5}
+      ],
+      "note": "Diagonal staircase reading (weight band + max door height -> hinge count). Confirm the cell thresholds against the chart image; the chart also implies more hinges let a given weight go taller."
+    },
+    {
+      "id": "nexis-hinges-per-door",
+      "brand": "Grass",
+      "series": "NEXIS",
+      "title": "Number of Hinges per Door",
+      "source": "grass_nexis",
+      "page": 8,
+      "units": "inches/pounds",
+      "bbox": [0.4657, 0.2652, 0.9559, 0.4798],
+      "status": "needs_verification",
+      "axes": {
+        "hinge_counts": [2, 3, 4, 5],
+        "door_height_thresholds_in": [56, 63, 84, 96],
+        "door_height_thresholds_mm": [1422, 1600, 2134, 2438],
+        "weight_axis_lb": [10, 20, 30, 40, 50, 60]
+      },
+      "worked_example": "56in x 19lb -> 2 hinges (printed on the page)",
+      "cells": [
+        {"max_door_height_in": 63, "hinges": 2},
+        {"max_door_height_in": 63, "hinges": 3},
+        {"max_door_height_in": 84, "hinges": 4},
+        {"max_door_height_in": 96, "hinges": 5}
+      ],
+      "note": "2-D grid: door height (inches, y) x hinge-count zones (x), weight (pounds) in the grid. Height->hinge thresholds are best-effort; weight boundaries within each zone need a human read against the chart image."
+    }
+  ]
+}

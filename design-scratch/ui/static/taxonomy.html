@@ -43,6 +43,9 @@
   .ty.ok{background:#274a2c;color:#bfe6c0}
   .issuebox{margin:10px 0;padding:10px;border:1px solid #5a3030;border-radius:6px;background:#241a1a;color:#ffd0d0}
   .issuebox .resol{margin-top:6px;color:#bfe6c0;border-top:1px solid #3a2a2a;padding-top:6px}
+  .lct{border-collapse:collapse;margin:8px 0;font-size:12px}
+  .lct th,.lct td{border:1px solid var(--line);padding:3px 10px;text-align:left}
+  .lct th{color:var(--dim);font-weight:600} .lct td b{color:#9fdcff}
   .json{background:#0c1120;border:1px solid var(--line);border-radius:6px;padding:10px;margin:8px 0;
         font:12px/1.45 ui-monospace,Consolas,monospace;color:#cde;white-space:pre;overflow:auto;max-height:360px}
   .json .k{color:#9fdcff}
@@ -72,7 +75,7 @@ async function load(){
 function matches(s,q){ return !q || s.section.toLowerCase().includes(q)||s.product_type.includes(q)||(s.brand||"").toLowerCase().includes(q); }
 function render(){
   const q=$("#q").value.toLowerCase();
-  $("#count").textContent=`${DATA.counts.products} product sections · ${DATA.counts.other} in Other · ${DATA.counts.issues||0} issues (${DATA.counts.issues_open||0} open)`;
+  $("#count").textContent=`${DATA.counts.products} product sections · ${DATA.counts.other} in Other · ${DATA.counts.issues||0} issues (${DATA.counts.issues_open||0} open) · ${DATA.counts.charts||0} load charts`;
   let html="";
   DATA.groups.forEach(g=>{
     const types=g.types.map(t=>({...t,sections:t.sections.filter(s=>matches(s,q))})).filter(t=>t.sections.length||(!q&&g.name==="Other"));
@@ -84,7 +87,7 @@ function render(){
       if(open){ html+=`<div class="kids">`+t.sections.map(s=>{
         const p=s.pages[0]===s.pages[1]?s.pages[0]:`${s.pages[0]}–${s.pages[1]}`;
         const note=isOther(s)&&s.review.note?` <span class="ty flag">${s.review.note}</span>`:"";
-        const itag=s._issue?` <span class="ty ${s._issue.status==='resolved'?'ok':'flag'}">${s._issue.status||'open'}</span>`:"";
+        const itag=s._issue?` <span class="ty ${s._issue.status==='resolved'?'ok':'flag'}">${s._issue.status||'open'}</span>`:s._loadchart?` <span class="ty flag">${(s._loadchart.status||'').replace('_',' ')}</span>`:"";
         const eid=idOf(s), has=s.n_products>0, pop=!!expanded[eid];
         const car=has?`<span class="exp" data-exp="${eid}">${pop?"▾":"▸"}</span> `:`<span class="exp ph"></span> `;
         const badge=has?` <span class="badge">${s.n_products}</span>`:"";
@@ -139,6 +142,26 @@ function selProduct(eid,i){
     <div class="stage"><img src="/page/${p._source}/${p._page}.png">${hl}</div>`;
 }
 function isOther(s){ return s.review&&s.review.status&&s.review.status!=="product"; }
+function loadChartView(lc){
+  const ax=lc.axes||{};
+  const counts=(ax.hinge_counts||[]).join(" / ");
+  const heights=ax.door_height_thresholds_mm?ax.door_height_thresholds_mm.map(h=>h+"mm").join(", ")
+    :(ax.door_height_thresholds_in||[]).map(h=>h+'"').join(", ");
+  const weights=ax.weight_bands_kg?ax.weight_bands_kg.map(b=>b[0]+"-"+b[1]+"kg").join(", ")
+    :(ax.weight_axis_lb?ax.weight_axis_lb.map(w=>w+"lb").join(", "):"—");
+  const rows=(lc.cells||[]).map(c=>{
+    const w=c.weight_kg?`${c.weight_kg[0]}–${c.weight_kg[1]} kg`:(c.weight_lb?`${c.weight_lb[0]}–${c.weight_lb[1]} lb`:"any");
+    const h=c.max_door_height_mm?`≤ ${c.max_door_height_mm} mm`:(c.max_door_height_in?`≤ ${c.max_door_height_in}"`:"—");
+    return `<tr><td>${w}</td><td>${h}</td><td><b>${c.hinges}</b></td></tr>`;
+  }).join("");
+  return `<div class="issuebox"><b>⚠ ${esc((lc.status||'needs_verification').replace(/_/g,' ').toUpperCase())}</b>`
+    +` — axes confirmed vs the page text; verify the cell mapping against the chart image below.</div>`
+    +`<div class="cap"><b>${esc(lc.brand)} ${esc(lc.series)}</b> · ${esc(lc.units)} · hinge counts ${esc(counts)}</div>`
+    +`<div class="cap">weight bands: ${esc(weights)}<br>door heights: ${esc(heights)}</div>`
+    +`<table class="lct"><thead><tr><th>weight</th><th>max door height</th><th>hinges</th></tr></thead><tbody>${rows}</tbody></table>`
+    +(lc.worked_example?`<div class="cap">worked example: ${esc(lc.worked_example)}</div>`:"")
+    +(lc.note?`<div class="cap">${esc(lc.note)}</div>`:"");
+}
 function jsonBlock(obj,label){
   const js=JSON.stringify(obj,null,2).replace(/&/g,"&amp;").replace(/</g,"&lt;")
             .replace(/^(\s*)("[^"]+")(:)/gm,'$1<span class="k">$2</span>$3');
@@ -148,23 +171,26 @@ function sel(id){
   curId=id;
   document.querySelectorAll(".item").forEach(e=>e.classList.toggle("sel",e.dataset.id===id));
   document.querySelectorAll(".prod").forEach(e=>e.classList.remove("psel"));
-  const s=BYID[id],src=DATA.sources[s.catalog]||{},pl=(src.page_label||"p{n}").replace("{n}",s.page),rv=s.review||{},it=s._issue;
+  const s=BYID[id],src=DATA.sources[s.catalog]||{},pl=(src.page_label||"p{n}").replace("{n}",s.page),rv=s.review||{},it=s._issue,lc=s._loadchart;
   let hl="";
   if(s.bbox){const[x0,y0,x1,y1]=s.bbox;
     hl=`<div class="hl" style="left:${x0*100}%;top:${y0*100}%;width:${(x1-x0)*100}%;height:${(y1-y0)*100}%"></div>`;}
-  const mid = it
-    ? `<div class="issuebox"><b>⚠ ${(it.status||'open').toUpperCase()}</b> — ${esc(it.problem)}`
+  const mid = lc ? loadChartView(lc)
+    : it ? `<div class="issuebox"><b>⚠ ${(it.status||'open').toUpperCase()}</b> — ${esc(it.problem)}`
         +(it.resolution?`<div class="resol"><b>Resolution:</b> ${esc(it.resolution)}</div>`:'')+`</div>`
     : `<div class="review">
         <div>classify: <select id="rvstatus">${statusOptions(rv.status)}</select></div>
         <input type="text" id="rvnote" placeholder="note (optional, e.g. overlay chart)" value="${(rv.note||'').replace(/"/g,'&quot;')}">
         <button onclick="saveReview()">save</button>
       </div>`;
+  const jlabel = lc?"load chart (load_charts.json)" : it?"issue (extraction_issues.json)":"section node (taxonomy.json)";
+  const meta = lc?`load chart · ${src.label||s.catalog} · ${pl}` : `${it?'flagged for review':'auto type'} <b>${s.product_type}</b> · ${src.label||s.catalog} · ${pl}${it?'':' · ~'+s.approx_skus+' skus'}`;
+  const imgcap = lc?'yellow box = the chart on the page' : it?'the flagged page:' : 'yellow box = the banner this section was identified from';
   $("#src").innerHTML=`<div class="big">${s.section}</div>
-    <div class="cap">${it?'flagged for review':'auto type'} <b>${s.product_type}</b> · ${src.label||s.catalog} · ${pl}${it?'':' · ~'+s.approx_skus+' skus'}</div>
+    <div class="cap">${meta}</div>
     ${mid}
-    ${jsonBlock(s, it?"issue (extraction_issues.json)":"section node (taxonomy.json)")}
-    <div class="cap">${it?'the flagged page:':'yellow box = the banner this section was identified from'}</div>
+    ${jsonBlock(s, jlabel)}
+    <div class="cap">${imgcap}</div>
     <div class="stage"><img src="/page/${s.catalog}/${s.page}.png">${hl}</div>`;
 }
 async function saveReview(){
