@@ -131,13 +131,26 @@
           84,
           96
         ],
-        "door_height_thresholds_mm": [],
+        "door_height_thresholds_mm": [
+          889,
+          1422,
+          1600,
+          2134,
+          2438
+        ],
         "weight_axis_lb": [
           15,
           20,
           30,
           45,
           60
+        ],
+        "weight_axis_kg": [
+          6.8,
+          9.1,
+          13.6,
+          20.4,
+          27.2
         ]
       },
       "worked_example": "56in (H) x 24in (W) x 19lb -> 3 hinges (printed on the page)",
@@ -145,22 +158,30 @@
         {
           "hinges": 2,
           "max_door_height_in": 35,
-          "max_weight_lb": 15
+          "max_weight_lb": 15,
+          "max_door_height_mm": 889,
+          "max_weight_kg": 6.8
         },
         {
           "hinges": 3,
           "max_door_height_in": 63,
-          "max_weight_lb": 30
+          "max_weight_lb": 30,
+          "max_door_height_mm": 1600,
+          "max_weight_kg": 13.6
         },
         {
           "hinges": 4,
           "max_door_height_in": 84,
-          "max_weight_lb": 45
+          "max_weight_lb": 45,
+          "max_door_height_mm": 2134,
+          "max_weight_kg": 20.4
         },
         {
           "hinges": 5,
           "max_door_height_in": 96,
-          "max_weight_lb": 60
+          "max_weight_lb": 60,
+          "max_door_height_mm": 2438,
+          "max_weight_kg": 27.2
         }
       ],
       "note": "2-D staircase: smallest hinge count whose max_door_height_in AND max_weight_lb both cover the door (height = y-axis inches, weight = x-axis pounds). Confirmed against the printed example 56in x 19lb -> 3 hinges. Weight zone boundaries (15/30/45/60 lb) are approximate."
